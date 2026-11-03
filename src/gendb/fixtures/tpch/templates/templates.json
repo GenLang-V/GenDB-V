@@ -1,0 +1,674 @@
+{
+ "format": "gendb.tpch.templates.v1",
+ "meaning": "A test fixture: the 22 TPC-H templates of the TPC-H workload (benchmarks/tpc-h/queries/) in the form some tests read. Each parameter $n is free over its whole SQL type; `name` is the TPC-H specification's substitution-parameter name in lowercase (several spec parameters folded into one pattern keep the spec names joined, e.g. Q13 `words`); `validation_arguments` are the specification's validation values (argument texts in slot order). The keys are ../integrity-constraints.json (8 primary keys, 7 foreign keys).",
+ "integrity_constraints": "../integrity-constraints.json",
+ "templates": {
+  "Q01": {
+   "sql": "q01.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "delta",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1998-09-02"
+   ]
+  },
+  "Q02": {
+   "sql": "q02.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "size",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "type",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "region",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "15",
+    "%BRASS",
+    "EUROPE"
+   ]
+  },
+  "Q03": {
+   "sql": "q03.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "segment",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "BUILDING",
+    "1995-03-15"
+   ]
+  },
+  "Q04": {
+   "sql": "q04.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1993-07-01"
+   ]
+  },
+  "Q05": {
+   "sql": "q05.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "region",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "ASIA",
+    "1994-01-01"
+   ]
+  },
+  "Q06": {
+   "sql": "q06.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "discount",
+     "type": "numeric(15,2)",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "quantity",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1994-01-01",
+    "0.06",
+    "24"
+   ]
+  },
+  "Q07": {
+   "sql": "q07.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "nation1",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "nation2",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "FRANCE",
+    "GERMANY"
+   ]
+  },
+  "Q08": {
+   "sql": "q08.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "nation",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "region",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "type",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "BRAZIL",
+    "AMERICA",
+    "ECONOMY ANODIZED STEEL"
+   ]
+  },
+  "Q09": {
+   "sql": "q09.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "color",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "%green%"
+   ]
+  },
+  "Q10": {
+   "sql": "q10.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1993-10-01"
+   ]
+  },
+  "Q11": {
+   "sql": "q11.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "nation",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "fraction",
+     "type": "numeric(38,10)",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "GERMANY",
+    "0.0000010000"
+   ]
+  },
+  "Q12": {
+   "sql": "q12.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "shipmode1",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "shipmode2",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "MAIL",
+    "SHIP",
+    "1994-01-01"
+   ]
+  },
+  "Q13": {
+   "sql": "q13.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "words",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "%special%requests%"
+   ]
+  },
+  "Q14": {
+   "sql": "q14.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1995-09-01"
+   ]
+  },
+  "Q15": {
+   "sql": "q15.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "1996-01-01"
+   ]
+  },
+  "Q16": {
+   "sql": "q16.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "brand",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "type",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "size1",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 4,
+     "name": "size2",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 5,
+     "name": "size3",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 6,
+     "name": "size4",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 7,
+     "name": "size5",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 8,
+     "name": "size6",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 9,
+     "name": "size7",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 10,
+     "name": "size8",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "Brand#45",
+    "MEDIUM POLISHED%",
+    "49",
+    "14",
+    "23",
+    "45",
+    "19",
+    "3",
+    "36",
+    "9"
+   ]
+  },
+  "Q17": {
+   "sql": "q17.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "brand",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "container",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "Brand#23",
+    "MED BOX"
+   ]
+  },
+  "Q18": {
+   "sql": "q18.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "quantity",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "300"
+   ]
+  },
+  "Q19": {
+   "sql": "q19.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "brand1",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "quantity1",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "brand2",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 4,
+     "name": "quantity2",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 5,
+     "name": "brand3",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 6,
+     "name": "quantity3",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "Brand#12",
+    "1",
+    "Brand#23",
+    "10",
+    "Brand#34",
+    "20"
+   ]
+  },
+  "Q20": {
+   "sql": "q20.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "color",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "date",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "nation",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "forest%",
+    "1994-01-01",
+    "CANADA"
+   ]
+  },
+  "Q21": {
+   "sql": "q21.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "nation",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "SAUDI ARABIA"
+   ]
+  },
+  "Q22": {
+   "sql": "q22.sql",
+   "parameters": [
+    {
+     "index": 1,
+     "name": "i1",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "i2",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "i3",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 4,
+     "name": "i4",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 5,
+     "name": "i5",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 6,
+     "name": "i6",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 7,
+     "name": "i7",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "validation_arguments": [
+    "13",
+    "31",
+    "23",
+    "29",
+    "30",
+    "18",
+    "17"
+   ]
+  }
+ }
+}

@@ -1,0 +1,12 @@
+[package]
+name = "gendb-artifacts"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Content-addressed object store, append-only records and admitted package records"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }

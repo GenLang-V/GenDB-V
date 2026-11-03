@@ -1,0 +1,460 @@
+{
+ "name": "suppliers",
+ "tables": [
+  {
+   "columns": [
+    "ps_partkey",
+    "ps_suppkey",
+    "ps_availqty",
+    "ps_supplycost",
+    "ps_comment"
+   ],
+   "table": "partsupp"
+  },
+  {
+   "columns": [
+    "s_suppkey",
+    "s_name",
+    "s_address",
+    "s_nationkey",
+    "s_phone",
+    "s_acctbal",
+    "s_comment"
+   ],
+   "table": "supplier"
+  },
+  {
+   "columns": [
+    "n_nationkey",
+    "n_name",
+    "n_regionkey",
+    "n_comment"
+   ],
+   "table": "nation"
+  },
+  {
+   "columns": [
+    "r_regionkey",
+    "r_name",
+    "r_comment"
+   ],
+   "table": "region"
+  }
+ ],
+ "parts": [
+  "partsupp.layout: U64 [rows, block rows]",
+  "partsupp.groups: U64 group starts",
+  "partsupp.ps_partkey: U32 codes",
+  "partsupp.ps_partkey: I64 group bases",
+  "partsupp.ps_suppkey: U32 codes",
+  "partsupp.ps_suppkey: I64 group bases",
+  "partsupp.ps_availqty: U16 codes",
+  "partsupp.ps_availqty: I64 group bases",
+  "partsupp.ps_supplycost: U32 codes",
+  "partsupp.ps_supplycost: I64 group bases",
+  "partsupp.ps_comment: U64 offsets",
+  "partsupp.ps_comment: U8 bytes",
+  "partsupp.key_index_kind(ps_partkey): U64 [key index kind: 0 none, 1 stored rows sorted by key, 2 key index]",
+  "supplier.layout: U64 [rows, block rows]",
+  "supplier.groups: U64 group starts",
+  "supplier.s_suppkey: U32 codes",
+  "supplier.s_suppkey: I64 group bases",
+  "supplier.s_name: U64 offsets",
+  "supplier.s_name: U8 bytes",
+  "supplier.s_address: U64 offsets",
+  "supplier.s_address: U8 bytes",
+  "supplier.s_nationkey: U8 codes",
+  "supplier.s_nationkey: I64 group bases",
+  "supplier.s_phone: U64 offsets",
+  "supplier.s_phone: U8 bytes",
+  "supplier.s_acctbal: U32 codes",
+  "supplier.s_acctbal: I64 group bases",
+  "supplier.s_comment: U64 offsets",
+  "supplier.s_comment: U8 bytes",
+  "supplier.key_index_kind(s_suppkey): U64 [key index kind: 0 none, 1 stored rows sorted by key, 2 key index]",
+  "nation.layout: U64 [rows, block rows]",
+  "nation.groups: U64 group starts",
+  "nation.n_nationkey: U8 codes",
+  "nation.n_nationkey: I64 group bases",
+  "nation.n_name: U64 offsets",
+  "nation.n_name: U8 bytes",
+  "nation.n_regionkey: U8 codes",
+  "nation.n_regionkey: I64 group bases",
+  "nation.n_comment: U64 offsets",
+  "nation.n_comment: U8 bytes",
+  "region.layout: U64 [rows, block rows]",
+  "region.groups: U64 group starts",
+  "region.r_regionkey: U8 codes",
+  "region.r_regionkey: I64 group bases",
+  "region.r_name: U64 offsets",
+  "region.r_name: U8 bytes",
+  "region.r_comment: U64 offsets",
+  "region.r_comment: U8 bytes"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "partsupp",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 1,
+   "table": "partsupp",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 2,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_partkey"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_partkey"
+   ]
+  },
+  {
+   "part": 4,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_suppkey"
+   ]
+  },
+  {
+   "part": 5,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_suppkey"
+   ]
+  },
+  {
+   "part": 6,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_availqty"
+   ]
+  },
+  {
+   "part": 7,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_availqty"
+   ]
+  },
+  {
+   "part": 8,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_supplycost"
+   ]
+  },
+  {
+   "part": 9,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_supplycost"
+   ]
+  },
+  {
+   "part": 10,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_comment"
+   ]
+  },
+  {
+   "part": 11,
+   "table": "partsupp",
+   "kind": "base_payload",
+   "columns": [
+    "ps_comment"
+   ]
+  },
+  {
+   "part": 12,
+   "table": "partsupp",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "ps_partkey"
+   ]
+  },
+  {
+   "part": 13,
+   "table": "supplier",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 14,
+   "table": "supplier",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 15,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_suppkey"
+   ]
+  },
+  {
+   "part": 16,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_suppkey"
+   ]
+  },
+  {
+   "part": 17,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_name"
+   ]
+  },
+  {
+   "part": 18,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_name"
+   ]
+  },
+  {
+   "part": 19,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_address"
+   ]
+  },
+  {
+   "part": 20,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_address"
+   ]
+  },
+  {
+   "part": 21,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_nationkey"
+   ]
+  },
+  {
+   "part": 22,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_nationkey"
+   ]
+  },
+  {
+   "part": 23,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_phone"
+   ]
+  },
+  {
+   "part": 24,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_phone"
+   ]
+  },
+  {
+   "part": 25,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_acctbal"
+   ]
+  },
+  {
+   "part": 26,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_acctbal"
+   ]
+  },
+  {
+   "part": 27,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_comment"
+   ]
+  },
+  {
+   "part": 28,
+   "table": "supplier",
+   "kind": "base_payload",
+   "columns": [
+    "s_comment"
+   ]
+  },
+  {
+   "part": 29,
+   "table": "supplier",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "s_suppkey"
+   ]
+  },
+  {
+   "part": 30,
+   "table": "nation",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 31,
+   "table": "nation",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 32,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_nationkey"
+   ]
+  },
+  {
+   "part": 33,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_nationkey"
+   ]
+  },
+  {
+   "part": 34,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_name"
+   ]
+  },
+  {
+   "part": 35,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_name"
+   ]
+  },
+  {
+   "part": 36,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_regionkey"
+   ]
+  },
+  {
+   "part": 37,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_regionkey"
+   ]
+  },
+  {
+   "part": 38,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_comment"
+   ]
+  },
+  {
+   "part": 39,
+   "table": "nation",
+   "kind": "base_payload",
+   "columns": [
+    "n_comment"
+   ]
+  },
+  {
+   "part": 40,
+   "table": "region",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 41,
+   "table": "region",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 42,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_regionkey"
+   ]
+  },
+  {
+   "part": 43,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_regionkey"
+   ]
+  },
+  {
+   "part": 44,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_name"
+   ]
+  },
+  {
+   "part": 45,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_name"
+   ]
+  },
+  {
+   "part": 46,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_comment"
+   ]
+  },
+  {
+   "part": 47,
+   "table": "region",
+   "kind": "base_payload",
+   "columns": [
+    "r_comment"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "partsupp, supplier, nation and region in canonical row order: uniform 65536-row groups, frame-of-reference coded numeric/integer columns, text as offsets + bytes; key flags: partsupp rows sorted by ps_partkey and supplier rows by s_suppkey (kind 1).",
+  "units": "Integers exact: bigint as integers, numeric(15,2) as coefficients of scale 2 (value = coefficient / 100), dates as days since 2000-01-01 (Val::Date); frame-of-reference value = group base (I64, or U64 for dictionary indices and row positions) + unsigned code (U8/U16/U32) of the row; text offsets are byte offsets (U64, from 0) into the U8 byte part; group starts and row positions are stored-row indices; block size 65536 rows."
+ }
+}

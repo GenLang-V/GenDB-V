@@ -1,0 +1,77 @@
+{
+ "format": "gendb-sql-ast-v1",
+ "verus_interface": "gendb-verus-sql-core-v2",
+ "comment": "Single source of the resolved typed SQL AST encoding, mirroring the Verus AST of SQLSpec (spec `sqlspec/syntax/ast.rs`, exec AST of `sqlspec/interpreter`; modules `spec::ast` / `exec::ast` of an assembled crate) constructor for constructor. Read at run time by the Python parser (`frontend/parser/gendb_sql_frontend/ast.py`, path `../ast/ast_schema.json` from the parser directory) and embedded at compile time by the Rust crate gendb-frontend (`frontend/src/ast/schema.rs`, include_str!); the Rust parser binding refuses a parser directory whose schema file differs from the embedded one. Node kinds are the Verus variant names; a sort is a Verus type (spec name, exec name, view function). Variant forms: tuple = Enum::Kind(a, b), struct = Enum::Kind { f: a }, unit = Enum::Kind, record = a struct type. Field kinds: ref:<sort> (inline child), box:<sort> (Box child), seq:<sort> (Seq child list; exec Vec; its view is the sort's list_view) are node ids of earlier nodes; bool; enum:<E> (one of enums[E]); scalar_ty (a ScalarTy object); bytes (JSON string, UTF-8 text without NUL); int:<exec> (spec int, JSON decimal string, exec machine type); nat:<exec> (spec nat, JSON integer >= 0); opt_nat:<exec> (null or nat); i32 / i64 (machine integer in spec and exec, JSON integer). A node is {\"id\", \"tag\" (the variant name; `kind` is a Verus field name), fields..., annotation}. Every node except the root has exactly one parent; nodes are in post-order (ids = positions). Annotations (the resolver's PostgreSQL-level static types, not part of the Verus AST): expr nodes carry `type`, query nodes carry `columns`. Form `param` (kind `Param`, VERIFIED_AGENT_PROOFS) is not a Verus constructor: a typed statement parameter `$index`, declared in the document's optional `params` section ([{index, type}], ascending) and always the child of a `Lit`; the emitter renders a free parameter as the value `ps[slot]` of `query_spec_at(ps)` (slot = rank among the free parameters) and the host substitutes a fixed one by the literal of its value (gendb-frontend `params`). Sort fields `teq` / `teq_intro` name the typing-equivalence relation of the sort and the lemma that builds it for a child list (SQLSpec `bridge::params`); `ordered` and `order_key` sorts contain no literal.",
+ "sorts": {
+  "literal":   {"spec": "Literal",      "exec": "ELiteral",      "view": "view_lit", "teq": "lit_teq"},
+  "expr":      {"spec": "Expr",         "exec": "EExpr",         "view": "view_expr", "list_view": "view_exprs", "teq": "expr_teq", "teq_intro": "lemma_exprs_teq_intro"},
+  "pred":      {"spec": "Pred",         "exec": "EPred",         "view": "view_pred", "teq": "pred_teq"},
+  "agg":       {"spec": "Agg",          "exec": "EAgg",          "view": "view_agg", "list_view": "view_aggs", "teq": "agg_teq", "teq_intro": "lemma_aggs_teq_intro"},
+  "query":     {"spec": "Query",        "exec": "EQuery",        "view": "view_query", "teq": "query_teq"},
+  "order_key": {"spec": "OrderKey",     "exec": "EOrderKey",     "view": "view_order_key", "list_view": "view_order_keys"},
+  "ordered":   {"spec": "OrderedQuery", "exec": "EOrderedQuery", "view": "view_ordered", "teq": "ordered_teq"}
+ },
+ "root_sort": "ordered",
+ "annotations": {"expr": "coltype", "query": "coltypes"},
+ "enums": {
+  "IntKind": ["Int4", "Int8"],
+  "NumKind": ["Int4", "Int8", "Numeric"],
+  "ArithOp": ["Add", "Sub", "Mul"],
+  "CmpOp": ["Eq", "Ne", "Lt", "Le", "Gt", "Ge"],
+  "CastOp": ["Int4ToInt8", "IntToNumeric", "DateToTimestamp"],
+  "ScalarFn": ["DivInt4", "DivInt8", "DivNumeric", "Like", "Substring2", "Substring3", "ExtractYear", "ExtractMonth", "ExtractDay", "PadBpchar"]
+ },
+ "scalar_types": {"Bool": [], "Int4": [], "Int8": [], "Numeric": ["scale"], "Date": [], "Timestamp": [], "Text": []},
+ "sql_types": {
+  "bool": {}, "int4": {}, "int8": {}, "numeric": {"typmod": "opt_typmod"}, "date": {}, "timestamp": {},
+  "text": {}, "varchar": {"max_chars": "opt_nat"}, "bpchar": {"n": "opt_nat"}
+ },
+ "kinds": {
+  "Null":         {"sort": "literal",   "form": "struct", "fields": [["ty", "scalar_ty"]]},
+  "Bool":         {"sort": "literal",   "form": "tuple",  "fields": [["value", "bool"]]},
+  "Int":          {"sort": "literal",   "form": "struct", "fields": [["v", "int:i64"], ["kind", "enum:IntKind"]]},
+  "Num":          {"sort": "literal",   "form": "struct", "fields": [["coeff", "int:i128"], ["scale", "nat:u32"]]},
+  "Date":         {"sort": "literal",   "form": "struct", "fields": [["y", "int:i32"], ["m", "int:i32"], ["d", "int:i32"]]},
+  "Text":         {"sort": "literal",   "form": "tuple",  "fields": [["bytes", "bytes"]]},
+  "Param":        {"sort": "literal",   "form": "param",  "fields": [["index", "nat:u32"]]},
+
+  "Col":          {"sort": "expr",      "form": "tuple",  "fields": [["index", "nat:usize"]]},
+  "Lit":          {"sort": "expr",      "form": "tuple",  "fields": [["lit", "ref:literal"]]},
+  "Neg":          {"sort": "expr",      "form": "struct", "fields": [["kind", "enum:NumKind"], ["arg", "box:expr"]]},
+  "Arith":        {"sort": "expr",      "form": "struct", "fields": [["op", "enum:ArithOp"], ["kind", "enum:NumKind"], ["a", "box:expr"], ["b", "box:expr"]]},
+  "Cast":         {"sort": "expr",      "form": "struct", "fields": [["cast", "enum:CastOp"], ["arg", "box:expr"]]},
+  "AddInterval":  {"sort": "expr",      "form": "struct", "fields": [["arg", "box:expr"], ["months", "i32"], ["days", "i32"], ["micros", "i64"]]},
+  "Call":         {"sort": "expr",      "form": "struct", "fields": [["f", "enum:ScalarFn"], ["args", "seq:expr"]]},
+  "If":           {"sort": "expr",      "form": "struct", "fields": [["cond", "box:pred"], ["then_e", "box:expr"], ["else_e", "box:expr"]]},
+  "Subquery":     {"sort": "expr",      "form": "tuple",  "fields": [["q", "box:query"]]},
+
+  "Cmp":          {"sort": "pred",      "form": "struct", "fields": [["op", "enum:CmpOp"], ["a", "ref:expr"], ["b", "ref:expr"]]},
+  "And":          {"sort": "pred",      "form": "tuple",  "fields": [["a", "box:pred"], ["b", "box:pred"]]},
+  "Or":           {"sort": "pred",      "form": "tuple",  "fields": [["a", "box:pred"], ["b", "box:pred"]]},
+  "Not":          {"sort": "pred",      "form": "tuple",  "fields": [["p", "box:pred"]]},
+  "IsNull":       {"sort": "pred",      "form": "tuple",  "fields": [["e", "ref:expr"]]},
+  "OfBool":       {"sort": "pred",      "form": "tuple",  "fields": [["e", "ref:expr"]]},
+  "Exists":       {"sort": "pred",      "form": "tuple",  "fields": [["q", "box:query"]]},
+  "AnyCmp":       {"sort": "pred",      "form": "struct", "fields": [["op", "enum:CmpOp"], ["e", "ref:expr"], ["q", "box:query"]]},
+
+  "CountStar":    {"sort": "agg",       "form": "unit",   "fields": []},
+  "Count":        {"sort": "agg",       "form": "tuple",  "fields": [["e", "ref:expr"]]},
+  "Sum":          {"sort": "agg",       "form": "struct", "fields": [["kind", "enum:NumKind"], ["arg", "ref:expr"]]},
+  "Min":          {"sort": "agg",       "form": "tuple",  "fields": [["e", "ref:expr"]]},
+  "Max":          {"sort": "agg",       "form": "tuple",  "fields": [["e", "ref:expr"]]},
+  "Avg":          {"sort": "agg",       "form": "struct", "fields": [["kind", "enum:NumKind"], ["arg", "ref:expr"]]},
+  "DistinctAgg":  {"sort": "agg",       "form": "tuple",  "fields": [["inner", "box:agg"]]},
+
+  "Table":        {"sort": "query",     "form": "tuple",  "fields": [["table", "nat:usize"]]},
+  "Filter":       {"sort": "query",     "form": "struct", "fields": [["pred", "ref:pred"], ["input", "box:query"]]},
+  "Project":      {"sort": "query",     "form": "struct", "fields": [["exprs", "seq:expr"], ["input", "box:query"]]},
+  "Product":      {"sort": "query",     "form": "struct", "fields": [["left", "box:query"], ["right", "box:query"]]},
+  "LeftJoin":     {"sort": "query",     "form": "struct", "fields": [["left", "box:query"], ["right", "box:query"], ["on", "ref:pred"]]},
+  "Aggregate":    {"sort": "query",     "form": "struct", "fields": [["aggs", "seq:agg"], ["input", "box:query"]]},
+  "GroupBy":      {"sort": "query",     "form": "struct", "fields": [["keys", "seq:expr"], ["aggs", "seq:agg"], ["input", "box:query"]]},
+  "Distinct":     {"sort": "query",     "form": "tuple",  "fields": [["input", "box:query"]]},
+
+  "OrderKey":     {"sort": "order_key", "form": "record", "fields": [["col", "nat:usize"], ["desc", "bool"], ["nulls_first", "bool"]]},
+  "OrderedQuery": {"sort": "ordered",   "form": "record", "fields": [["body", "ref:query"], ["keys", "seq:order_key"], ["limit", "opt_nat:u64"], ["offset", "nat:u64"]]}
+ }
+}

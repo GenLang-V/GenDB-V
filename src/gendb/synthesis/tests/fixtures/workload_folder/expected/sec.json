@@ -1,0 +1,779 @@
+{
+ "format_version": 2,
+ "dataset": {
+  "tables": [
+   {
+    "name": "sub",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "cik",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "sic",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "countryba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "stprba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "cityba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "countryinc",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "form",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "period",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "fy",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "fp",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "filed",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "accepted",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "prevrpt",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "nciks",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "afs",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "wksi",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "fye",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "instance",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "num",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "ddate",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "qtrs",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "uom",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "coreg",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "value",
+      "ty": {
+       "Decimal": {
+        "p": 28,
+        "s": 4
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "footnote",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "tag",
+    "fields": [
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "custom",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "abstract",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "datatype",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "iord",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "crdr",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "tlabel",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "doc",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "pre",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "report",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "line",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "stmt",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "inpth",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "rfile",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "plabel",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "negating",
+      "ty": "I32",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "name": "Q1",
+   "sql": "SELECT stmt, rfile, COUNT(*) AS cnt,\n       COUNT(DISTINCT adsh) AS num_filings,\n       AVG(line) AS avg_line_num\nFROM pre\nWHERE stmt IS NOT NULL\nGROUP BY stmt, rfile\nORDER BY cnt DESC;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "objective": {
+    "kind": "execution_time",
+    "targets": [
+     {
+      "workers": 1,
+      "median_ns": 447843000,
+      "provenance": "<targets> Q1 v0 1 threads: the faster of DuckDB (476.574) and Umbra (447.843) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "workers": 32,
+      "median_ns": 30014000,
+      "provenance": "<targets> Q1 v0 32 threads: the faster of DuckDB (66.733) and Umbra (30.014) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "workers": 64,
+      "median_ns": 58427000,
+      "provenance": "<targets> Q1 v0 64 threads: the faster of DuckDB (58.427) and Umbra (61.847) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     }
+    ],
+    "early_stop": {
+     "min_speedup": 5
+    }
+   }
+  },
+  {
+   "name": "Q2",
+   "sql": "SELECT s.name, n.tag, n.value\nFROM num n\nJOIN sub s ON n.adsh = s.adsh\nJOIN (\n    SELECT adsh, tag, MAX(value) AS max_value\n    FROM num\n    WHERE uom = $1 AND value IS NOT NULL\n    GROUP BY adsh, tag\n) m ON n.adsh = m.adsh AND n.tag = m.tag AND n.value = m.max_value\nWHERE n.uom = $1 AND s.fy = $2 AND n.value IS NOT NULL\nORDER BY n.value DESC, s.name, n.tag\nLIMIT 100;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "parameters": [
+    {
+     "index": 1,
+     "name": "uom",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "fy",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "objective": {
+    "kind": "execution_time",
+    "bindings": [
+     {
+      "name": "v0",
+      "arguments": [
+       "pure",
+       "2022"
+      ]
+     },
+     {
+      "name": "v1",
+      "arguments": [
+       "pure",
+       "2023"
+      ]
+     },
+     {
+      "name": "v2",
+      "arguments": [
+       "shares",
+       "2024"
+      ]
+     }
+    ],
+    "targets": [
+     {
+      "binding": "v0",
+      "workers": 1,
+      "median_ns": 237170000,
+      "provenance": "<targets> Q2 v0 1 threads: the faster of DuckDB (4283.558) and Umbra (237.17) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v0",
+      "workers": 32,
+      "median_ns": 19299000,
+      "provenance": "<targets> Q2 v0 32 threads: the faster of DuckDB (202.909) and Umbra (19.299) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v0",
+      "workers": 64,
+      "median_ns": 75496000,
+      "provenance": "<targets> Q2 v0 64 threads: the faster of DuckDB (176.645) and Umbra (75.496) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 1,
+      "median_ns": 232309000,
+      "provenance": "<targets> Q2 v1 1 threads: the faster of DuckDB (4083.75) and Umbra (232.309) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 32,
+      "median_ns": 19306000,
+      "provenance": "<targets> Q2 v1 32 threads: the faster of DuckDB (250.049) and Umbra (19.306) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 64,
+      "median_ns": 96284000,
+      "provenance": "<targets> Q2 v1 64 threads: the faster of DuckDB (173.126) and Umbra (96.284) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 1,
+      "median_ns": 992632000,
+      "provenance": "<targets> Q2 v2 1 threads: the faster of DuckDB (4989.182) and Umbra (992.632) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 32,
+      "median_ns": 63696000,
+      "provenance": "<targets> Q2 v2 32 threads: the faster of DuckDB (320.042) and Umbra (63.696) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 64,
+      "median_ns": 132011000,
+      "provenance": "<targets> Q2 v2 64 threads: the faster of DuckDB (230.961) and Umbra (132.011) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     }
+    ],
+    "early_stop": {
+     "min_speedup": 5
+    }
+   }
+  },
+  {
+   "name": "Q4",
+   "sql": "SELECT s.sic, t.tlabel, p.stmt,\n       COUNT(DISTINCT s.cik) AS num_companies,\n       SUM(n.value) AS total_value,\n       AVG(n.value) AS avg_value\nFROM num n\nJOIN sub s ON n.adsh = s.adsh\nJOIN tag t ON n.tag = t.tag AND n.version = t.version\nJOIN pre p ON n.adsh = p.adsh AND n.tag = p.tag AND n.version = p.version\nWHERE n.uom = $1 AND p.stmt = $2\n      AND s.sic BETWEEN $3 AND $4\n      AND n.value IS NOT NULL AND t.abstract = 0\nGROUP BY s.sic, t.tlabel, p.stmt\nHAVING COUNT(DISTINCT s.cik) >= 2\nORDER BY total_value DESC\nLIMIT 500;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "parameters": [
+    {
+     "index": 1,
+     "name": "uom",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "stmt",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "sic_low",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 4,
+     "name": "sic_high",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ],
+   "objective": {
+    "kind": "execution_time",
+    "bindings": [
+     {
+      "name": "v0",
+      "arguments": [
+       "USD",
+       "EQ",
+       "4000",
+       "4999"
+      ]
+     },
+     {
+      "name": "v1",
+      "arguments": [
+       "USD",
+       "BS",
+       "2000",
+       "2999"
+      ]
+     },
+     {
+      "name": "v2",
+      "arguments": [
+       "shares",
+       "EQ",
+       "6000",
+       "6999"
+      ]
+     }
+    ],
+    "targets": [
+     {
+      "binding": "v0",
+      "workers": 1,
+      "median_ns": 1867447000,
+      "provenance": "<targets> Q4 v0 1 threads: the faster of DuckDB (4672.021) and Umbra (1867.447) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v0",
+      "workers": 32,
+      "median_ns": 138814000,
+      "provenance": "<targets> Q4 v0 32 threads: the faster of DuckDB (366.321) and Umbra (138.814) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v0",
+      "workers": 64,
+      "median_ns": 206059000,
+      "provenance": "<targets> Q4 v0 64 threads: the faster of DuckDB (291.771) and Umbra (206.059) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 1,
+      "median_ns": 2939285000,
+      "provenance": "<targets> Q4 v1 1 threads: the faster of DuckDB (6231.895) and Umbra (2939.285) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 32,
+      "median_ns": 257403000,
+      "provenance": "<targets> Q4 v1 32 threads: the faster of DuckDB (401.843) and Umbra (257.403) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v1",
+      "workers": 64,
+      "median_ns": 365693000,
+      "provenance": "<targets> Q4 v1 64 threads: the faster of DuckDB (365.693) and Umbra (407.643) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 1,
+      "median_ns": 564436000,
+      "provenance": "<targets> Q4 v2 1 threads: the faster of DuckDB (3490.931) and Umbra (564.436) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 32,
+      "median_ns": 55396000,
+      "provenance": "<targets> Q4 v2 32 threads: the faster of DuckDB (347.908) and Umbra (55.396) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     },
+     {
+      "binding": "v2",
+      "workers": 64,
+      "median_ns": 144589000,
+      "provenance": "<targets> Q4 v2 64 threads: the faster of DuckDB (323.923) and Umbra (144.589) ms, untuned, SEC-EDGAR keys declared",
+      "timing_scope": "median of 3 hot runs after 1 warm run, wall clock of query execution including result fetch"
+     }
+    ],
+    "early_stop": {
+     "min_speedup": 5
+    }
+   }
+  }
+ ],
+ "hardware": {
+  "threads": [
+   1,
+   32,
+   64
+  ]
+ },
+ "max_concurrent_queries": 6,
+ "max_concurrent_preparations": 8,
+ "author_executable": "<path>",
+ "library": "<path>",
+ "barriers": "<locks>",
+ "prepared_workload": "<path>",
+ "data_allowance": {
+  "live_bytes": 5439582957
+ },
+ "output_home": "<path>",
+ "workload_storage": {
+  "limits": {
+   "max_iterations": 3,
+   "max_cost_usd": "unset",
+   "spend_policy": "estimated_usd",
+   "max_retries_per_iteration": "unset",
+   "author_timeout_seconds": "unset"
+  }
+ },
+ "storage_policy": {
+  "kind": "physical_only"
+ },
+ "integrity_constraints": {
+  "trust": "user_declared",
+  "declarations": [
+   {
+    "table": "sub",
+    "sql": "PRIMARY KEY (adsh)"
+   },
+   {
+    "table": "tag",
+    "sql": "PRIMARY KEY (tag, version)"
+   },
+   {
+    "table": "pre",
+    "sql": "PRIMARY KEY (adsh, report, line)"
+   },
+   {
+    "table": "num",
+    "sql": "FOREIGN KEY (adsh) REFERENCES sub (adsh)"
+   },
+   {
+    "table": "pre",
+    "sql": "FOREIGN KEY (adsh) REFERENCES sub (adsh)"
+   },
+   {
+    "table": "num",
+    "sql": "FOREIGN KEY (tag, version) REFERENCES tag (tag, version)"
+   },
+   {
+    "table": "pre",
+    "sql": "FOREIGN KEY (tag, version) REFERENCES tag (tag, version)"
+   }
+  ]
+ },
+ "validation": {
+  "kind": "formal_proofs",
+  "numeric_relative_tolerance": "1e-9",
+  "required_engines": [
+   "duckdb",
+   "umbra"
+  ],
+  "saved_answers": [
+   {
+    "query": "Q1",
+    "binding": "statement",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q1",
+    "binding": "statement",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v0",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v0",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v1",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v1",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v2",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q2",
+    "binding": "v2",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v0",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v0",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v1",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v1",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v2",
+    "engine": "duckdb",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   },
+   {
+    "query": "Q4",
+    "binding": "v2",
+    "engine": "umbra",
+    "description": "<text>",
+    "path": "<path>",
+    "rows_pointer": "<path>"
+   }
+  ]
+ }
+}

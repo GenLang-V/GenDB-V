@@ -1,0 +1,51 @@
+{
+ "name": "tag_tv",
+ "tables": [
+  {
+   "columns": [
+    "tag",
+    "version",
+    "custom",
+    "abstract",
+    "datatype",
+    "iord",
+    "crdr",
+    "tlabel",
+    "doc"
+   ],
+   "table": "tag"
+  }
+ ],
+ "parts": [
+  "tag_first: U64, tag count + 1 entries: per tag code c the number of tv_order positions whose row's tag code is below c",
+  "tv_version: U64, one per tv_order position: the version code of the row at that position"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "tag",
+   "kind": "index_keys",
+   "columns": [
+    "tag"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "tag",
+   "kind": "index_keys",
+   "columns": [
+    "version"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "the 28 parts of storage tag unchanged, then tag_first (per tag code, its first tv_order position) and tv_version (the version code at each tv_order position): a (tag, version) -> row index over tag's own keys.",
+  "units": "positions: tv_order positions; codes: tag's own tag / version dictionary positions; rows: canonical tag rows"
+ },
+ "built_from": {
+  "sources": [
+   "tag"
+  ],
+  "extends": "tag"
+ }
+}

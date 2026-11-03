@@ -1,0 +1,20 @@
+# TPC-H converter, run by ../setup_data.sh: dbgen `.tbl` text -> one Parquet file per table with Int64 integers,
+# Decimal128(15,2), Date32 and Utf8, all non-null, every value checked back against the text.
+# Standalone package (own workspace); dependency versions are the ones pinned by src/gendb.
+[package]
+name = "decimal-store"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0"
+
+[workspace]
+
+[dependencies]
+arrow = "=58.1.0"
+datafusion = "=53.1.0"
+parquet = "=58.1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }

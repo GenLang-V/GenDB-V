@@ -1,0 +1,478 @@
+{
+ "name": "custpart",
+ "tables": [
+  {
+   "columns": [
+    "c_custkey",
+    "c_name",
+    "c_address",
+    "c_nationkey",
+    "c_phone",
+    "c_acctbal",
+    "c_mktsegment",
+    "c_comment"
+   ],
+   "table": "customer"
+  },
+  {
+   "columns": [
+    "p_partkey",
+    "p_name",
+    "p_mfgr",
+    "p_brand",
+    "p_type",
+    "p_size",
+    "p_container",
+    "p_retailprice",
+    "p_comment"
+   ],
+   "table": "part"
+  }
+ ],
+ "parts": [
+  "customer.layout: U64 [rows, block rows]",
+  "customer.groups: U64 group starts",
+  "customer.c_custkey: U32 codes",
+  "customer.c_custkey: I64 group bases",
+  "customer.c_name: U64 offsets",
+  "customer.c_name: U8 bytes",
+  "customer.c_address: U64 offsets",
+  "customer.c_address: U8 bytes",
+  "customer.c_nationkey: U8 codes",
+  "customer.c_nationkey: I64 group bases",
+  "customer.c_phone: U64 offsets",
+  "customer.c_phone: U8 bytes",
+  "customer.c_acctbal: U32 codes",
+  "customer.c_acctbal: I64 group bases",
+  "customer.c_mktsegment: U8 codes of dictionary indices",
+  "customer.c_mktsegment: U64 group bases of dictionary indices",
+  "customer.c_mktsegment: U64 dictionary offsets",
+  "customer.c_mktsegment: U8 dictionary bytes",
+  "customer.c_comment: U64 offsets",
+  "customer.c_comment: U8 bytes",
+  "customer.key_index_kind(c_custkey): U64 [key index kind: 0 none, 1 stored rows sorted by key, 2 key index]",
+  "part.layout: U64 [rows, block rows]",
+  "part.groups: U64 group starts",
+  "part.p_partkey: U32 codes",
+  "part.p_partkey: I64 group bases",
+  "part.p_name: U64 offsets",
+  "part.p_name: U8 bytes",
+  "part.p_mfgr: U8 codes of dictionary indices",
+  "part.p_mfgr: U64 group bases of dictionary indices",
+  "part.p_mfgr: U64 dictionary offsets",
+  "part.p_mfgr: U8 dictionary bytes",
+  "part.p_brand: U8 codes of dictionary indices",
+  "part.p_brand: U64 group bases of dictionary indices",
+  "part.p_brand: U64 dictionary offsets",
+  "part.p_brand: U8 dictionary bytes",
+  "part.p_type: U8 codes of dictionary indices",
+  "part.p_type: U64 group bases of dictionary indices",
+  "part.p_type: U64 dictionary offsets",
+  "part.p_type: U8 dictionary bytes",
+  "part.p_size: U8 codes",
+  "part.p_size: I64 group bases",
+  "part.p_container: U8 codes of dictionary indices",
+  "part.p_container: U64 group bases of dictionary indices",
+  "part.p_container: U64 dictionary offsets",
+  "part.p_container: U8 dictionary bytes",
+  "part.p_retailprice: U32 codes",
+  "part.p_retailprice: I64 group bases",
+  "part.p_comment: U64 offsets",
+  "part.p_comment: U8 bytes",
+  "part.key_index_kind(p_partkey): U64 [key index kind: 0 none, 1 stored rows sorted by key, 2 key index]"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "customer",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 1,
+   "table": "customer",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 2,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_custkey"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_custkey"
+   ]
+  },
+  {
+   "part": 4,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_name"
+   ]
+  },
+  {
+   "part": 5,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_name"
+   ]
+  },
+  {
+   "part": 6,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_address"
+   ]
+  },
+  {
+   "part": 7,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_address"
+   ]
+  },
+  {
+   "part": 8,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_nationkey"
+   ]
+  },
+  {
+   "part": 9,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_nationkey"
+   ]
+  },
+  {
+   "part": 10,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_phone"
+   ]
+  },
+  {
+   "part": 11,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_phone"
+   ]
+  },
+  {
+   "part": 12,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_acctbal"
+   ]
+  },
+  {
+   "part": 13,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_acctbal"
+   ]
+  },
+  {
+   "part": 14,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_mktsegment"
+   ]
+  },
+  {
+   "part": 15,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_mktsegment"
+   ]
+  },
+  {
+   "part": 16,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_mktsegment"
+   ]
+  },
+  {
+   "part": 17,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_mktsegment"
+   ]
+  },
+  {
+   "part": 18,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_comment"
+   ]
+  },
+  {
+   "part": 19,
+   "table": "customer",
+   "kind": "base_payload",
+   "columns": [
+    "c_comment"
+   ]
+  },
+  {
+   "part": 20,
+   "table": "customer",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "c_custkey"
+   ]
+  },
+  {
+   "part": 21,
+   "table": "part",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 22,
+   "table": "part",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 23,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_partkey"
+   ]
+  },
+  {
+   "part": 24,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_partkey"
+   ]
+  },
+  {
+   "part": 25,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_name"
+   ]
+  },
+  {
+   "part": 26,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_name"
+   ]
+  },
+  {
+   "part": 27,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_mfgr"
+   ]
+  },
+  {
+   "part": 28,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_mfgr"
+   ]
+  },
+  {
+   "part": 29,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_mfgr"
+   ]
+  },
+  {
+   "part": 30,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_mfgr"
+   ]
+  },
+  {
+   "part": 31,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_brand"
+   ]
+  },
+  {
+   "part": 32,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_brand"
+   ]
+  },
+  {
+   "part": 33,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_brand"
+   ]
+  },
+  {
+   "part": 34,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_brand"
+   ]
+  },
+  {
+   "part": 35,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_type"
+   ]
+  },
+  {
+   "part": 36,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_type"
+   ]
+  },
+  {
+   "part": 37,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_type"
+   ]
+  },
+  {
+   "part": 38,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_type"
+   ]
+  },
+  {
+   "part": 39,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_size"
+   ]
+  },
+  {
+   "part": 40,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_size"
+   ]
+  },
+  {
+   "part": 41,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_container"
+   ]
+  },
+  {
+   "part": 42,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_container"
+   ]
+  },
+  {
+   "part": 43,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_container"
+   ]
+  },
+  {
+   "part": 44,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_container"
+   ]
+  },
+  {
+   "part": 45,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_retailprice"
+   ]
+  },
+  {
+   "part": 46,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_retailprice"
+   ]
+  },
+  {
+   "part": 47,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_comment"
+   ]
+  },
+  {
+   "part": 48,
+   "table": "part",
+   "kind": "base_payload",
+   "columns": [
+    "p_comment"
+   ]
+  },
+  {
+   "part": 49,
+   "table": "part",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "p_partkey"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "customer and part in canonical row order (stored row j = source row j): uniform 65536-row groups, every numeric/integer column frame-of-reference coded, low-cardinality text (c_mktsegment, p_mfgr, p_brand, p_type, p_container) as sorted dictionaries with U8 codes, other text as offsets + bytes; key flags: stored rows sorted by c_custkey / p_partkey (kind 1), so key lookups binary-search or probe the dense position.",
+  "units": "Integers exact: bigint as integers, numeric(15,2) as coefficients of scale 2 (value = coefficient / 100), dates as days since 2000-01-01 (Val::Date); frame-of-reference value = group base (I64, or U64 for dictionary indices and row positions) + unsigned code (U8/U16/U32) of the row; text offsets are byte offsets (U64, from 0) into the U8 byte part; group starts and row positions are stored-row indices; block size 65536 rows."
+ }
+}

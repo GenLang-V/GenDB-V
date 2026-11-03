@@ -1,0 +1,21 @@
+[package]
+name = "gendb-storage"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Trusted original-format import, prepared captures and basic storage I/O (projected columns, archives, read-only mappings, stored parts)"
+
+[dependencies]
+gendb-artifacts = { workspace = true }
+gendb-frontend = { workspace = true }
+arrow = { workspace = true }
+async-trait = { workspace = true }
+datafusion = { workspace = true }
+libc = { workspace = true }
+parquet = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }

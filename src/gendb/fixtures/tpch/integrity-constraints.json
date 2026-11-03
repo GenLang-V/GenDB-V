@@ -1,0 +1,20 @@
+{
+  "trust": "user_declared",
+  "declarations": [
+    {"table": "lineitem", "sql": "PRIMARY KEY (l_orderkey, l_linenumber)"},
+    {"table": "orders", "sql": "PRIMARY KEY (o_orderkey)"},
+    {"table": "customer", "sql": "PRIMARY KEY (c_custkey)"},
+    {"table": "part", "sql": "PRIMARY KEY (p_partkey)"},
+    {"table": "partsupp", "sql": "PRIMARY KEY (ps_partkey, ps_suppkey)"},
+    {"table": "supplier", "sql": "PRIMARY KEY (s_suppkey)"},
+    {"table": "nation", "sql": "PRIMARY KEY (n_nationkey)"},
+    {"table": "region", "sql": "PRIMARY KEY (r_regionkey)"},
+    {"table": "lineitem", "sql": "FOREIGN KEY (l_orderkey) REFERENCES orders (o_orderkey)"},
+    {"table": "lineitem", "sql": "FOREIGN KEY (l_partkey, l_suppkey) REFERENCES partsupp (ps_partkey, ps_suppkey)"},
+    {"table": "orders", "sql": "FOREIGN KEY (o_custkey) REFERENCES customer (c_custkey)"},
+    {"table": "customer", "sql": "FOREIGN KEY (c_nationkey) REFERENCES nation (n_nationkey)"},
+    {"table": "partsupp", "sql": "FOREIGN KEY (ps_partkey) REFERENCES part (p_partkey)"},
+    {"table": "partsupp", "sql": "FOREIGN KEY (ps_suppkey) REFERENCES supplier (s_suppkey)"},
+    {"table": "supplier", "sql": "FOREIGN KEY (s_nationkey) REFERENCES nation (n_nationkey)"}
+  ]
+}

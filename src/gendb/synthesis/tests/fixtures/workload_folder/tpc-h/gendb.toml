@@ -1,0 +1,5 @@
+name = "tpch"
+mode = "templates"
+storage = "designed"
+threads = [1, 32, 64]
+compare_with = "duckdb"

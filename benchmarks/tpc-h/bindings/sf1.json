@@ -1,0 +1,446 @@
+{
+ "schema": "gendb.tpch.bindings.v1",
+ "kind": "visible",
+ "seed": 20261002,
+ "scale_factor": 1,
+ "generator": "bindings/generate_bindings.py",
+ "templates": "queries/",
+ "queries": {
+  "Q01": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DELTA": 90
+    },
+    "arguments": [
+     "1998-09-02"
+    ],
+    "params": {
+     "delta": "1998-09-02"
+    }
+   }
+  ],
+  "Q02": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SIZE": 15,
+     "TYPE": "BRASS",
+     "REGION": "EUROPE"
+    },
+    "arguments": [
+     "15",
+     "%BRASS",
+     "EUROPE"
+    ],
+    "params": {
+     "size": "15",
+     "type": "%BRASS",
+     "region": "EUROPE"
+    }
+   }
+  ],
+  "Q03": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SEGMENT": "BUILDING",
+     "DATE": "1995-03-15"
+    },
+    "arguments": [
+     "BUILDING",
+     "1995-03-15"
+    ],
+    "params": {
+     "segment": "BUILDING",
+     "date": "1995-03-15"
+    }
+   }
+  ],
+  "Q04": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1993-07-01"
+    },
+    "arguments": [
+     "1993-07-01"
+    ],
+    "params": {
+     "date": "1993-07-01"
+    }
+   }
+  ],
+  "Q05": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "REGION": "ASIA",
+     "DATE": "1994-01-01"
+    },
+    "arguments": [
+     "ASIA",
+     "1994-01-01"
+    ],
+    "params": {
+     "region": "ASIA",
+     "date": "1994-01-01"
+    }
+   }
+  ],
+  "Q06": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "24"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "24"
+    }
+   }
+  ],
+  "Q07": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION1": "FRANCE",
+     "NATION2": "GERMANY"
+    },
+    "arguments": [
+     "FRANCE",
+     "GERMANY"
+    ],
+    "params": {
+     "nation1": "FRANCE",
+     "nation2": "GERMANY"
+    }
+   }
+  ],
+  "Q08": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "BRAZIL",
+     "REGION": "AMERICA",
+     "TYPE": "ECONOMY ANODIZED STEEL"
+    },
+    "arguments": [
+     "BRAZIL",
+     "AMERICA",
+     "ECONOMY ANODIZED STEEL"
+    ],
+    "params": {
+     "nation": "BRAZIL",
+     "region": "AMERICA",
+     "type": "ECONOMY ANODIZED STEEL"
+    }
+   }
+  ],
+  "Q09": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "COLOR": "green"
+    },
+    "arguments": [
+     "%green%"
+    ],
+    "params": {
+     "color": "%green%"
+    }
+   }
+  ],
+  "Q10": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1993-10-01"
+    },
+    "arguments": [
+     "1993-10-01"
+    ],
+    "params": {
+     "date": "1993-10-01"
+    }
+   }
+  ],
+  "Q11": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "GERMANY",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "GERMANY",
+     "0.0001000000"
+    ],
+    "params": {
+     "nation": "GERMANY",
+     "fraction": "0.0001000000"
+    }
+   }
+  ],
+  "Q12": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SHIPMODE1": "MAIL",
+     "SHIPMODE2": "SHIP",
+     "DATE": "1994-01-01"
+    },
+    "arguments": [
+     "MAIL",
+     "SHIP",
+     "1994-01-01"
+    ],
+    "params": {
+     "shipmode1": "MAIL",
+     "shipmode2": "SHIP",
+     "date": "1994-01-01"
+    }
+   }
+  ],
+  "Q13": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "WORD1": "special",
+     "WORD2": "requests"
+    },
+    "arguments": [
+     "%special%requests%"
+    ],
+    "params": {
+     "words": "%special%requests%"
+    }
+   }
+  ],
+  "Q14": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1995-09-01"
+    },
+    "arguments": [
+     "1995-09-01"
+    ],
+    "params": {
+     "date": "1995-09-01"
+    }
+   }
+  ],
+  "Q15": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1996-01-01"
+    },
+    "arguments": [
+     "1996-01-01"
+    ],
+    "params": {
+     "date": "1996-01-01"
+    }
+   }
+  ],
+  "Q16": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "BRAND": "Brand#45",
+     "TYPE": "MEDIUM POLISHED",
+     "SIZE1": 49,
+     "SIZE2": 14,
+     "SIZE3": 23,
+     "SIZE4": 45,
+     "SIZE5": 19,
+     "SIZE6": 3,
+     "SIZE7": 36,
+     "SIZE8": 9
+    },
+    "arguments": [
+     "Brand#45",
+     "MEDIUM POLISHED%",
+     "49",
+     "14",
+     "23",
+     "45",
+     "19",
+     "3",
+     "36",
+     "9"
+    ],
+    "params": {
+     "brand": "Brand#45",
+     "type": "MEDIUM POLISHED%",
+     "size1": "49",
+     "size2": "14",
+     "size3": "23",
+     "size4": "45",
+     "size5": "19",
+     "size6": "3",
+     "size7": "36",
+     "size8": "9"
+    }
+   }
+  ],
+  "Q17": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "BRAND": "Brand#23",
+     "CONTAINER": "MED BOX"
+    },
+    "arguments": [
+     "Brand#23",
+     "MED BOX"
+    ],
+    "params": {
+     "brand": "Brand#23",
+     "container": "MED BOX"
+    }
+   }
+  ],
+  "Q18": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "QUANTITY": 300
+    },
+    "arguments": [
+     "300"
+    ],
+    "params": {
+     "quantity": "300"
+    }
+   }
+  ],
+  "Q19": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "QUANTITY1": 1,
+     "QUANTITY2": 10,
+     "QUANTITY3": 20,
+     "BRAND1": "Brand#12",
+     "BRAND2": "Brand#23",
+     "BRAND3": "Brand#34"
+    },
+    "arguments": [
+     "Brand#12",
+     "1",
+     "Brand#23",
+     "10",
+     "Brand#34",
+     "20"
+    ],
+    "params": {
+     "brand1": "Brand#12",
+     "quantity1": "1",
+     "brand2": "Brand#23",
+     "quantity2": "10",
+     "brand3": "Brand#34",
+     "quantity3": "20"
+    }
+   }
+  ],
+  "Q20": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "COLOR": "forest",
+     "DATE": "1994-01-01",
+     "NATION": "CANADA"
+    },
+    "arguments": [
+     "forest%",
+     "1994-01-01",
+     "CANADA"
+    ],
+    "params": {
+     "color": "forest%",
+     "date": "1994-01-01",
+     "nation": "CANADA"
+    }
+   }
+  ],
+  "Q21": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "SAUDI ARABIA"
+    },
+    "arguments": [
+     "SAUDI ARABIA"
+    ],
+    "params": {
+     "nation": "SAUDI ARABIA"
+    }
+   }
+  ],
+  "Q22": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "I1": "13",
+     "I2": "31",
+     "I3": "23",
+     "I4": "29",
+     "I5": "30",
+     "I6": "18",
+     "I7": "17"
+    },
+    "arguments": [
+     "13",
+     "31",
+     "23",
+     "29",
+     "30",
+     "18",
+     "17"
+    ],
+    "params": {
+     "i1": "13",
+     "i2": "31",
+     "i3": "23",
+     "i4": "29",
+     "i5": "30",
+     "i6": "18",
+     "i7": "17"
+    }
+   }
+  ]
+ }
+}

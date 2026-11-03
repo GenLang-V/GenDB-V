@@ -1,0 +1,89 @@
+{
+ "blocks": [
+  {
+   "covers": [
+    "NULL",
+    "Duplicate rows",
+    "SQL errors",
+    "Row order and ties"
+   ],
+   "formula": "⟦Q⟧(db)",
+   "formulaText": "every allowed answer of query {Q} on database {db}",
+   "id": "sqlspec",
+   "line": "SQLSpec defines what SQL means, in math.",
+   "title": "SQLSpec"
+  },
+  {
+   "id": "synthesis",
+   "line": "An AI agent writes the code and its proofs. It chooses the data layout, the algorithms and the proofs.",
+   "order": [
+    {
+     "icon": "zap",
+     "text": "Fastest design first"
+    },
+    {
+     "icon": "shield-check",
+     "text": "Then the proofs"
+    }
+   ],
+   "parts": [
+    {
+     "icon": "hard-drive",
+     "text": "Layout, builder, proof",
+     "title": "Storage"
+    },
+    {
+     "icon": "code-xml",
+     "text": "Code, proof",
+     "title": "Query"
+    }
+   ],
+   "title": "Agentic code and proof synthesis"
+  },
+  {
+   "fixed": "The agent cannot change the claim.",
+   "id": "verification",
+   "line": "Verus checks the code and the proofs against SQLSpec. GenDB-V runs only code that Verus accepts.",
+   "targets": [
+    {
+     "formula": "query(build(db)) ∈ ⟦Q⟧(db)",
+     "mode": "One query template",
+     "scope": "for every valid {db} and every parameter value"
+    },
+    {
+     "formula": "engine(build(db), Q) ∈ ⟦Q⟧(db)",
+     "mode": "One engine",
+     "scope": "for every valid {db} and every supported query {Q}"
+    }
+   ],
+   "title": "Independent verification"
+  }
+ ],
+ "highlights": [
+  {
+   "icon": "shield-check",
+   "id": "correct",
+   "lines": [
+    "Mathematically sound. Formally verified."
+   ],
+   "title": "Correct"
+  },
+  {
+   "icon": "zap",
+   "id": "fast",
+   "lines": [
+    "Specialized to your workload."
+   ],
+   "title": "Fast"
+  },
+  {
+   "icon": "layers",
+   "id": "coverage",
+   "lines": [
+    "Template and engine synthesis."
+   ],
+   "title": "Coverage"
+  }
+ ],
+ "title": "Design"
+}

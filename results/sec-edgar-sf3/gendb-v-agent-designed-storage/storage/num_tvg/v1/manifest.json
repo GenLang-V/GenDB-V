@@ -1,0 +1,65 @@
+{
+ "name": "num_tvg",
+ "tables": [
+  {
+   "columns": [
+    "adsh",
+    "tag",
+    "version",
+    "ddate",
+    "qtrs",
+    "uom",
+    "coreg",
+    "value",
+    "footnote"
+   ],
+   "table": "num"
+  }
+ ],
+ "parts": [
+  "run_groups: U64, R + 1 entries; the groups of run r are [run_groups[r], run_groups[r + 1]) (layout offsets)",
+  "group_start: U32, G + 1 entries; group g is stored rows [group_start[g], group_start[g + 1]) (row positions)",
+  "group_key: U32, G entries; the pair code (tag, version) shared by every row of group g (index key)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "num",
+   "kind": "layout_offsets_counts",
+   "columns": [
+    "adsh",
+    "tag",
+    "version"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "num",
+   "kind": "layout_offsets_counts",
+   "columns": [
+    "adsh",
+    "tag",
+    "version"
+   ]
+  },
+  {
+   "part": 2,
+   "table": "num",
+   "kind": "index_keys",
+   "columns": [
+    "tag",
+    "version"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "the 27 parts of storage num unchanged, then a group index over num's stored order: per run its group range (run_groups), per group its first row (group_start) and its pair code (group_key). A group is a maximal range of rows of one run with one pair code.",
+  "units": "run_groups: group indices; group_start: stored row positions of num; group_key: num pair codes (positions in num's pair list)"
+ },
+ "built_from": {
+  "sources": [
+   "num"
+  ],
+  "extends": "num"
+ }
+}

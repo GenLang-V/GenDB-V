@@ -1,0 +1,50 @@
+CREATE TABLE lineitem (
+    l_orderkey bigint NOT NULL,
+    l_partkey bigint NOT NULL,
+    l_suppkey bigint NOT NULL,
+    l_linenumber bigint NOT NULL,
+    l_quantity numeric(15,2) NOT NULL,
+    l_extendedprice numeric(15,2) NOT NULL,
+    l_discount numeric(15,2) NOT NULL,
+    l_tax numeric(15,2) NOT NULL,
+    l_returnflag text NOT NULL,
+    l_linestatus text NOT NULL,
+    l_shipdate date NOT NULL,
+    l_commitdate date NOT NULL,
+    l_receiptdate date NOT NULL,
+    l_shipinstruct text NOT NULL,
+    l_shipmode text NOT NULL,
+    l_comment text NOT NULL
+);
+CREATE TABLE orders (
+    o_orderkey bigint NOT NULL,
+    o_custkey bigint NOT NULL,
+    o_orderstatus text NOT NULL,
+    o_totalprice numeric(15,2) NOT NULL,
+    o_orderdate date NOT NULL,
+    o_orderpriority text NOT NULL,
+    o_clerk text NOT NULL,
+    o_shippriority bigint NOT NULL,
+    o_comment text NOT NULL
+);
+CREATE TABLE customer (
+    c_custkey bigint NOT NULL,
+    c_name text NOT NULL,
+    c_address text NOT NULL,
+    c_nationkey bigint NOT NULL,
+    c_phone text NOT NULL,
+    c_acctbal numeric(15,2) NOT NULL,
+    c_mktsegment text NOT NULL,
+    c_comment text NOT NULL
+);
+CREATE TABLE part (
+    p_partkey bigint NOT NULL,
+    p_name text NOT NULL,
+    p_mfgr text NOT NULL,
+    p_brand text NOT NULL,
+    p_type text NOT NULL,
+    p_size bigint NOT NULL,
+    p_container text NOT NULL,
+    p_retailprice numeric(15,2) NOT NULL,
+    p_comment text NOT NULL
+);

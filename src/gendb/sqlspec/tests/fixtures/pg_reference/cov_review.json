@@ -1,0 +1,74 @@
+{
+ "fixture": "cov_review",
+ "description": "VERUS_SQL_COVERAGE review fixes M1/M2: NULLIF's result type is the left input type of PostgreSQL's resolved '=' (text for every text-family pair except bpchar = bpchar), seen through output types and enclosing =, IN and LIKE; a simple CASE's untyped operand is resolved to text before the WHEN comparisons.",
+ "ddl": [
+  {
+   "sql": "CREATE TABLE t (c4 char(4), t text, v varchar(10), i4 integer, i8 bigint, n numeric(10,2));"
+  }
+ ],
+ "tables": [
+  {
+   "name": "t",
+   "columns": ["c4", "t", "v", "i4", "i8", "n"],
+   "rows": [
+    ["ab", "zz", "ab", 1, 1, "1.00"],
+    ["ab", "ab", "ab", 2, 2, "2.00"],
+    ["x", "x ", "x", 3, 3, "3.50"]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "nullif_types",
+   "sql": "SELECT i4, nullif(c4, t) AS a, nullif(c4, 'x') AS b, nullif(v, t) AS c, nullif(v, 'x') AS d, nullif(t, c4) AS e, nullif(i4, i8) AS f, nullif(i4, n) AS g, nullif(n, i4) AS h FROM t",
+   "note": "M1 result types: text for bpchar = text, varchar = text/unknown, text = bpchar; character(4) for bpchar = unknown; int4 = int8 is cross-type (integer); an integer against numeric is cast (numeric)."
+  },
+  {
+   "name": "nullif_typmods",
+   "sql": "SELECT i4, nullif(c4, c4) AS a, nullif('ab ', c4) AS b, nullif(NULL, n) AS c, nullif(NULL, c4) AS d, nullif(n, n) AS e FROM t",
+   "note": "M1 type modifiers: a typed left operand of bpchar = bpchar / numeric = numeric keeps its typmod; an untyped one is coerced to the operator's input type without one."
+  },
+  {
+   "name": "nullif_text_eq_padded_literal",
+   "sql": "SELECT i4 FROM t WHERE nullif(c4, t) = 'ab '",
+   "note": "M1: nullif(c4, t) is text, so = 'ab ' is texteq('ab', 'ab ') = false: no row (a bpchar result would trim the literal and match row 1)."
+  },
+  {
+   "name": "nullif_text_in_padded_literal",
+   "sql": "SELECT i4 FROM t WHERE nullif(c4, t) IN ('ab ', 'q')",
+   "note": "M1: the IN list common type is text: no row."
+  },
+  {
+   "name": "nullif_text_like",
+   "sql": "SELECT i4 FROM t WHERE nullif(c4, t) LIKE 'ab__'",
+   "note": "M1: textlike on the unpadded 'ab' is false: no row (bpcharlike would pad row 1 to 'ab  ')."
+  },
+  {
+   "name": "nullif_text_eq_varchar",
+   "sql": "SELECT i4 FROM t WHERE nullif(c4, t) = v",
+   "note": "M1: text = varchar is texteq (the bpchar = varchar refusal does not apply to a text NULLIF): rows 1 and 3; row 2's NULLIF is NULL."
+  },
+  {
+   "name": "simple_case_unknown_operand",
+   "sql": "SELECT i4, CASE 'ab ' WHEN c4 THEN 'hit' ELSE 'miss' END AS r FROM t",
+   "note": "M2: the untyped operand is text, so each WHEN is texteq('ab ', rtrim(c4)): always miss (a bpchar operand would hit rows 1 and 2)."
+  },
+  {
+   "name": "simple_case_column_operand",
+   "sql": "SELECT i4, CASE c4 WHEN 'ab ' THEN 'hit' ELSE 'miss' END AS r FROM t",
+   "note": "M2 control: a char(4) operand makes the WHEN literal bpchar: hit, hit, miss."
+  },
+  {
+   "name": "simple_case_unknown_operand_int",
+   "sql": "SELECT CASE '1' WHEN i4 THEN 'hit' ELSE 'miss' END AS r FROM t",
+   "expect": "error",
+   "note": "M2: text = integer has no operator (42883 at parse time); GenDB's frontend refuses it (type_mismatch), which is not a match."
+  },
+  {
+   "name": "simple_case_null_operand_int",
+   "sql": "SELECT CASE NULL WHEN i4 THEN 'hit' ELSE 'miss' END AS r FROM t",
+   "expect": "error",
+   "note": "M2: an untyped NULL operand is text too: 42883; GenDB's frontend refuses it (type_mismatch), which is not a match."
+  }
+ ]
+}

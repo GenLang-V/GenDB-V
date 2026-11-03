@@ -1,0 +1,373 @@
+{
+ "format_version": 2,
+ "dataset": {
+  "tables": [
+   {
+    "name": "ax_owner",
+    "fields": [
+     {
+      "name": "ow_id",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ow_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "ow_rank",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "ow_born",
+      "ty": "Date32",
+      "nullable": true
+     },
+     {
+      "name": "ow_credit",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "ow_weight",
+      "ty": {
+       "Decimal": {
+        "p": 38,
+        "s": 6
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "ow_note",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "ow_code",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_kind",
+    "fields": [
+     {
+      "name": "kd_code",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "kd_group",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "kd_weight",
+      "ty": "I32",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_item",
+    "fields": [
+     {
+      "name": "it_owner",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "it_line",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "it_kind",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "it_qty",
+      "ty": {
+       "Decimal": {
+        "p": 12,
+        "s": 4
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "it_price",
+      "ty": {
+       "Decimal": {
+        "p": 28,
+        "s": 4
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "it_day",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "it_flag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "it_tiny",
+      "ty": {
+       "Decimal": {
+        "p": 3,
+        "s": 0
+       }
+      },
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_event",
+    "fields": [
+     {
+      "name": "ev_seq",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ev_owner",
+      "ty": "I64",
+      "nullable": true
+     },
+     {
+      "name": "ev_line",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "ev_at",
+      "ty": "Date32",
+      "nullable": true
+     },
+     {
+      "name": "ev_amount",
+      "ty": {
+       "Decimal": {
+        "p": 18,
+        "s": 9
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "ev_memo",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_void",
+    "fields": [
+     {
+      "name": "vd_id",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "vd_text",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "name": "X01",
+   "sql": "SELECT ow_id, ow_name, ow_rank, ow_born, ow_credit\nFROM ax_owner\nWHERE ow_id > $1 AND ow_credit >= $2 AND ow_born < $3 AND ow_name <> $4\nORDER BY ow_id;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "parameters": [
+    {
+     "index": 1,
+     "name": "min_id",
+     "type": "bigint",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "min_credit",
+     "type": "numeric(15,2)",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 3,
+     "name": "born_before",
+     "type": "date",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 4,
+     "name": "not_name",
+     "type": "text",
+     "binding": {
+      "free": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "X02",
+   "sql": "SELECT ow_id, ow_rank, ow_note\nFROM ax_owner\nWHERE (ow_rank IS NULL OR ow_rank > $1) AND ow_note IS NOT NULL\nORDER BY ow_id;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "parameters": [
+    {
+     "index": 1,
+     "name": "rank_above",
+     "type": "integer",
+     "binding": {
+      "free": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "X03",
+   "sql": "SELECT it_owner, it_line, it_qty * it_price AS amount, it_qty + it_tiny AS adjusted, it_price - $1 AS shifted\nFROM ax_item\nWHERE it_price IS NOT NULL AND it_qty > $2\nORDER BY it_owner, it_line;\n",
+   "limits": {
+    "max_iterations": 3,
+    "max_cost_usd": "unset",
+    "spend_policy": "estimated_usd",
+    "max_retries_per_iteration": "unset",
+    "author_timeout_seconds": "unset"
+   },
+   "parameters": [
+    {
+     "index": 1,
+     "name": "price_shift",
+     "type": "numeric(28,4)",
+     "binding": {
+      "free": {}
+     }
+    },
+    {
+     "index": 2,
+     "name": "min_qty",
+     "type": "numeric(12,4)",
+     "binding": {
+      "free": {}
+     }
+    }
+   ]
+  }
+ ],
+ "hardware": {
+  "threads": [
+   1,
+   32,
+   64
+  ]
+ },
+ "max_concurrent_preparations": 8,
+ "author_executable": "<path>",
+ "barriers": "<locks>",
+ "max_concurrent_queries": 1,
+ "library": "<path>",
+ "storage_policy": {
+  "kind": "fixed_flat"
+ },
+ "integrity_constraints": {
+  "trust": "user_declared",
+  "declarations": [
+   {
+    "table": "ax_owner",
+    "sql": "PRIMARY KEY (ow_id)"
+   },
+   {
+    "table": "ax_kind",
+    "sql": "PRIMARY KEY (kd_code)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "PRIMARY KEY (it_owner, it_line)"
+   },
+   {
+    "table": "ax_event",
+    "sql": "PRIMARY KEY (ev_seq)"
+   },
+   {
+    "table": "ax_void",
+    "sql": "PRIMARY KEY (vd_id)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "FOREIGN KEY (it_owner) REFERENCES ax_owner (ow_id)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "FOREIGN KEY (it_kind) REFERENCES ax_kind (kd_code)"
+   },
+   {
+    "table": "ax_event",
+    "sql": "FOREIGN KEY (ev_owner, ev_line) REFERENCES ax_item (it_owner, it_line)"
+   }
+  ]
+ },
+ "validation": {
+  "kind": "formal_proofs",
+  "numeric_relative_tolerance": "1e-9",
+  "required_engines": [
+   "duckdb"
+  ]
+ }
+}

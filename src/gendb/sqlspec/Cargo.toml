@@ -1,0 +1,13 @@
+[package]
+name = "gendb-sqlspec"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "SQLSpec: the Verus SQL semantics library (syntax, semantics, interpreter, proofs), embedded at compile time, and the host side of its verified reference evaluator"
+build = "build.rs"
+
+[dependencies]
+gendb-frontend = { workspace = true }
+libc = { workspace = true }
+serde_json = { workspace = true }

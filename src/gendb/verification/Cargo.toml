@@ -1,0 +1,30 @@
+[package]
+name = "gendb-verification"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Pinned Verus toolchain, fixed proof obligations and candidate crate assembly, and framework-owned admission"
+
+[dependencies]
+gendb-artifacts = { workspace = true }
+gendb-frontend = { workspace = true }
+gendb-registry = { workspace = true }
+gendb-runtime = { workspace = true }
+gendb-sqlspec = { workspace = true }
+gendb-storage = { workspace = true }
+arrow = { workspace = true }
+datafusion = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+# The Verus runs' death signal (`gendb_runtime::process_stop::die_with_controller`); tests/verus_toolchain.rs loads the
+# compiled fixture libraries (dlopen).
+libc = { workspace = true }
+
+[build-dependencies]
+# build.rs: the preflight source identity (`GENDB_PREFLIGHT_SOURCES`).
+sha2 = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }

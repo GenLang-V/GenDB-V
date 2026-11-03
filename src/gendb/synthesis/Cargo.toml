@@ -1,0 +1,37 @@
+[package]
+name = "gendb-synthesis"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Public synthesis controller, query authoring, author prompts and tools, provider sessions and accounting (outside the TCB)"
+
+# Dependencies: the generic controller; the verified query orchestration, which calls verification admission, storage,
+# runtime, frontend and artifacts; sqlspec for the evaluator labels of the author contract; the registry index of the
+# storage-aware author contracts.
+[dependencies]
+gendb-artifacts = { workspace = true }
+gendb-frontend = { workspace = true }
+gendb-registry = { workspace = true }
+gendb-storage = { workspace = true }
+gendb-runtime = { workspace = true }
+gendb-sqlspec = { workspace = true }
+gendb-verification = { workspace = true }
+libc = { workspace = true }
+# Profile symbolization of engine libraries (engine::profile): ELF symbol tables only; the version Cargo.lock already pins.
+object = { version = "=0.37.3", default-features = false, features = ["read_core", "elf", "std"] }
+serde = { workspace = true }
+# Pinned author CLI identity and short crate versions in local job results.
+sha2 = { workspace = true }
+# arbitrary_precision as in the earlier version's program synthesis (Cargo unifies it for every crate linked into the same binary).
+serde_json = { workspace = true, features = ["arbitrary_precision"] }
+tokio = { workspace = true }
+# Workload folders (workload_folder): gendb.toml settings; Parquet footers of the folder's data checked against schema.sql.
+toml = { version = "=1.1.8", default-features = false, features = ["std", "parse", "serde"] }
+arrow = { workspace = true }
+parquet = { workspace = true }
+
+# The public fixture integration (controller::workload_run::public_fixture) writes a tiny Parquet dataset.
+[dev-dependencies]
+arrow = { workspace = true }
+parquet = { workspace = true }

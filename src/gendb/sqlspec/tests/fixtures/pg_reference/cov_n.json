@@ -1,0 +1,260 @@
+{
+ "fixture": "cov_n",
+ "description": "VERUS_SQL_COVERAGE task N: integer and numeric division (signs, NULL, 22012, MIN / -1 22003, value-dependent result scale, half-away-from-zero ties) and AVG (int4/int8/numeric to numeric, NULL/empty, magnitude-dependent scale, no overflow of the int4 sum, AVG of dynamic-scale values), plus one dynamic-scale GROUP BY key. Rows are selected per case by g; y is a numeric(10,0) copy of a where numeric division of integral values is shown.",
+ "ddl": [
+  {
+   "sql": "CREATE TABLE t (id integer NOT NULL, g integer NOT NULL, a integer, b integer, c bigint, x numeric(17,4), y numeric(10,0));"
+  }
+ ],
+ "tables": [
+  {
+   "name": "t",
+   "columns": [
+    "id",
+    "g",
+    "a",
+    "b",
+    "c",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     7,
+     2,
+     7,
+     "7.0000",
+     "7"
+    ],
+    [
+     2,
+     1,
+     -7,
+     2,
+     -7,
+     "-7.0000",
+     "-7"
+    ],
+    [
+     3,
+     1,
+     7,
+     -2,
+     7,
+     null,
+     "7"
+    ],
+    [
+     4,
+     1,
+     -7,
+     -2,
+     -7,
+     "2.2500",
+     "-7"
+    ],
+    [
+     5,
+     2,
+     null,
+     0,
+     null,
+     null,
+     null
+    ],
+    [
+     6,
+     3,
+     1,
+     0,
+     1,
+     "1.0000",
+     null
+    ],
+    [
+     7,
+     4,
+     -2147483648,
+     -1,
+     null,
+     null,
+     null
+    ],
+    [
+     8,
+     5,
+     null,
+     -1,
+     -9223372036854775808,
+     null,
+     null
+    ],
+    [
+     9,
+     6,
+     3,
+     2,
+     null,
+     "3000000000000.0001",
+     "3"
+    ],
+    [
+     10,
+     6,
+     15000,
+     10000,
+     null,
+     null,
+     "15000"
+    ],
+    [
+     11,
+     7,
+     null,
+     1,
+     null,
+     null,
+     null
+    ],
+    [
+     12,
+     8,
+     2147483647,
+     1,
+     9223372036854775807,
+     null,
+     null
+    ],
+    [
+     13,
+     8,
+     2147483647,
+     1,
+     9223372036854775807,
+     null,
+     null
+    ],
+    [
+     14,
+     9,
+     10000,
+     1,
+     null,
+     null,
+     null
+    ],
+    [
+     15,
+     9,
+     20000,
+     1,
+     null,
+     null,
+     null
+    ],
+    [
+     16,
+     10,
+     1,
+     10000,
+     null,
+     null,
+     "1"
+    ],
+    [
+     17,
+     10,
+     2,
+     3,
+     null,
+     "3000000000000.0001",
+     "2"
+    ],
+    [
+     18,
+     10,
+     -2,
+     3,
+     null,
+     null,
+     "-2"
+    ],
+    [
+     19,
+     12,
+     null,
+     2,
+     null,
+     "-3000000000000.0001",
+     null
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "int_div_signs",
+   "sql": "SELECT id, a / b AS q4, c / b AS q8 FROM t WHERE g = 1",
+   "note": "int4 / int4 is int4 and int8 / int4 is int8, truncated toward zero: 7/2 = 3, -7/2 = -3, 7/-2 = -3, -7/-2 = 3."
+  },
+  {
+   "name": "int_div_null_by_zero",
+   "sql": "SELECT a / b AS q4, c / b AS q8 FROM t WHERE g = 2",
+   "note": "Division is strict: NULL / 0 is NULL, not 22012."
+  },
+  {
+   "name": "int_div_by_zero",
+   "sql": "SELECT a / b AS q FROM t WHERE g = 3",
+   "expect": "error",
+   "note": "1 / 0 is 22012 (row-dependent, so no plan-time folding)."
+  },
+  {
+   "name": "int4_min_div_minus_one",
+   "sql": "SELECT a / b AS q FROM t WHERE g = 4",
+   "expect": "error",
+   "note": "-2147483648 / -1 is 22003 (integer out of range)."
+  },
+  {
+   "name": "int8_min_div_minus_one",
+   "sql": "SELECT c / b AS q FROM t WHERE g = 5",
+   "expect": "error",
+   "note": "int8 -9223372036854775808 / -1 (int4 divisor cast to int8) is 22003 (bigint out of range)."
+  },
+  {
+   "name": "num_div_scale_and_rounding",
+   "sql": "SELECT id, y / b AS qa, x / b AS qx FROM t WHERE g IN (1, 6, 10, 12)",
+   "note": "select_div_scale: 7/2 at scale 16, 2.25/-2 at 20 (leading digit 2 <= 2), 1/10000 at 24, 3/2 at 16 vs 15000/10000 at 20, 3000000000000.0001/3 at 8; 2/3 and -2/3 round to ...67; 3000000000000.0001/2 and -3000000000000.0001/2 are exact ties at scale 4 and round away from zero."
+  },
+  {
+   "name": "num_div_by_zero",
+   "sql": "SELECT x / b AS q FROM t WHERE g = 3",
+   "expect": "error",
+   "note": "numeric 1.0000 / 0 is 22012."
+  },
+  {
+   "name": "avg_types_and_groups",
+   "sql": "SELECT g, AVG(a) AS avg_a, AVG(c) AS avg_c, AVG(x) AS avg_x, COUNT(*) AS n FROM t WHERE g IN (1, 7, 8, 9) GROUP BY g",
+   "note": "AVG of int4/int8/numeric is numeric; NULLs ignored; an all-NULL group is NULL; a zero average of ints has scale 20; 2 x 2147483647 averages without overflow (scale 8); 2 x (2^63 - 1) exactly (scale 0); {10000, 20000} at scale 12; numeric {7, -7, NULL, 2.25} (scale 4) is 0.75 at scale 20."
+  },
+  {
+   "name": "avg_empty",
+   "sql": "SELECT AVG(a) AS avg_a, AVG(x) AS avg_x, COUNT(*) AS n FROM t WHERE g = 100",
+   "note": "AVG over no rows is NULL."
+  },
+  {
+   "name": "avg_of_dynamic_scale",
+   "sql": "SELECT AVG(y / b) AS m FROM t WHERE g = 6",
+   "note": "AVG sums 1.5000000000000000 (scale 16) and 1.50000000000000000000 (scale 20) exactly at scale 20, then divides by 2."
+  },
+  {
+   "name": "group_by_dynamic_scale_key",
+   "sql": "SELECT y / b AS q, COUNT(*) AS n FROM t WHERE g = 6 GROUP BY y / b",
+   "value_only_columns": [
+    "q"
+   ],
+   "note": "3/2 (scale 16) and 15000/10000 (scale 20) are one group by SQL value equality; the displayed key scale is the representative's (PostgreSQL: plan-dependent; GenDB: first occurrence, R1/D2), so q is compared by value only."
+  }
+ ]
+}

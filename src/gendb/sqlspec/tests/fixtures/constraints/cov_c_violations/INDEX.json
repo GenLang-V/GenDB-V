@@ -1,0 +1,210 @@
+[
+ {
+  "name": "pk_duplicate",
+  "table": "pk2",
+  "added_rows": [
+   [
+    1,
+    1,
+    99
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23505",
+  "note": "duplicate composite PRIMARY KEY (1, 1)"
+ },
+ {
+  "name": "pk_null",
+  "table": "pk2",
+  "added_rows": [
+   [
+    null,
+    3,
+    0
+   ]
+  ],
+  "expect_evaluator": "invalid_input",
+  "postgres_insert": "23502",
+  "note": "NULL in a PRIMARY KEY column: the column is NOT NULL, so db_wf fails (verified entry status BadDatabase, host status invalid_input)"
+ },
+ {
+  "name": "unique_duplicate",
+  "table": "uq",
+  "added_rows": [
+   [
+    6,
+    1,
+    1
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23505",
+  "note": "UNIQUE (x, y) duplicate (1, 1)"
+ },
+ {
+  "name": "unique_nnd_null_duplicate",
+  "table": "uqn",
+  "added_rows": [
+   [
+    4,
+    1,
+    null
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23505",
+  "note": "UNIQUE NULLS NOT DISTINCT: (1, NULL) twice"
+ },
+ {
+  "name": "fk_simple_missing",
+  "table": "fks",
+  "added_rows": [
+   [
+    4,
+    9,
+    9
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "MATCH SIMPLE: (9, 9) has no referenced row"
+ },
+ {
+  "name": "fk_full_partial_null",
+  "table": "fkf",
+  "added_rows": [
+   [
+    4,
+    1,
+    null
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "MATCH FULL: partly NULL (x=1, y=NULL)"
+ },
+ {
+  "name": "fk_full_permuted_missing",
+  "table": "fkf",
+  "added_rows": [
+   [
+    5,
+    2,
+    2
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "MATCH FULL (y, x) -> (b, a): (a=2, b=2) missing"
+ },
+ {
+  "name": "check_false",
+  "table": "ck",
+  "added_rows": [
+   [
+    4,
+    0,
+    2,
+    "1.00"
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23514",
+  "note": "CHECK (a > 0) is False"
+ },
+ {
+  "name": "check_error",
+  "table": "ck",
+  "added_rows": [
+   [
+    5,
+    1,
+    0,
+    "1.00"
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "22012",
+  "note": "CHECK (10 / b > 1) raises division by zero: the row cannot be stored"
+ },
+ {
+  "name": "check_case_false",
+  "table": "ck",
+  "added_rows": [
+   [
+    6,
+    1,
+    2,
+    "150.00"
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23514",
+  "note": "CHECK (CASE ... END < 100) is False"
+ },
+ {
+  "name": "self_fk_missing",
+  "table": "emp",
+  "added_rows": [
+   [
+    4,
+    7
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "self FK: boss 7 does not exist (checked at commit, INITIALLY DEFERRED)"
+ },
+ {
+  "name": "fk_int8_numeric_missing",
+  "table": "fkn",
+  "added_rows": [
+   [
+    3,
+    3
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "bigint 3 references no numeric key (1.00, 2.50)"
+ },
+ {
+  "name": "fk_bpchar_varchar_trailing",
+  "table": "fkb",
+  "added_rows": [
+   [
+    3,
+    "cd"
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "char 'cd' (rtrim) does not equal varchar 'cd  '"
+ },
+ {
+  "name": "fk_timestamp_date_missing",
+  "table": "fkt",
+  "added_rows": [
+   [
+    2,
+    "2020-01-01 00:00:01"
+   ]
+  ],
+  "expect_evaluator": "constraint_violation",
+  "postgres_insert": "23503",
+  "note": "timestamp one microsecond past midnight references no date"
+ },
+ {
+  "name": "check_capacity",
+  "table": "cap",
+  "added_rows": [
+   [
+    2,
+    "9999.99"
+   ]
+  ],
+  "expect_evaluator": "capacity",
+  "postgres_insert": "accepted",
+  "note": "CHECK intermediate 9999.99^10 exceeds the i128 numeric coefficient: Capacity (PostgreSQL stores the row; honest executable-domain refusal)"
+ }
+]

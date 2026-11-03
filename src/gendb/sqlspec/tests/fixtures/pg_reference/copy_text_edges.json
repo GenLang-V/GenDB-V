@@ -1,0 +1,15 @@
+{"fixture": "copy_text_edges",
+ "description": "COPY text decoding edges: blank line = one empty-string row, empty result, NULL vs '', escapes, duplicates; one SQL error for candidate status checks.",
+ "cases": [
+  {"name": "one_empty_string", "sql": "SELECT ''::text AS v",
+   "note": "COPY emits a blank line; must be one row [''], not zero rows"},
+  {"name": "empty_result", "sql": "SELECT ''::text AS v WHERE false",
+   "note": "COPY emits nothing; zero rows"},
+  {"name": "text_edges_bag",
+   "sql": "SELECT v FROM (VALUES (''::text), (''), (NULL), (E'a\\nb'), (E'tab\\tin'), (E'back\\\\slash'), ('\\N'), (' ')) AS s(v)",
+   "note": "duplicate '', NULL distinct from '' and from the two-character text \\N, embedded newline/tab/backslash, a single blank"},
+  {"name": "two_empty_columns",
+   "sql": "SELECT a, b FROM (VALUES (''::text, ''::text), ('', NULL), (NULL, '')) AS s(a, b)",
+   "note": "rows '\\t', '\\t\\N', '\\N\\t'"},
+  {"name": "division_by_zero", "sql": "SELECT 1 / 0 AS x", "expect": "error"}
+ ]}

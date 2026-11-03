@@ -1,0 +1,34 @@
+{
+ "fixture": "tpch_all22_q11",
+ "description": "TPC-H Q11 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 930.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [3, "EUROPE"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [6, "FRANCE", 3],
+    [7, "GERMANY", 3]
+  ]},
+  {"name": "supplier", "columns": ["s_suppkey", "s_name", "s_address", "s_nationkey", "s_phone", "s_acctbal", "s_comment"], "rows": [
+    [1, "Supplier#000000001", "1 Rue de Lyon", 6, "16-200-200-2001", "5000.00", "fixture"],
+    [2, "Supplier#000000002", "2 Hauptstrasse", 7, "17-200-200-2002", "4000.00", "fixture"],
+    [12, "Supplier#000000012", "12 Koenigsallee", 7, "17-200-200-2012", "3000.00", "fixture"]
+  ]},
+  {"name": "part", "columns": ["p_partkey", "p_name", "p_mfgr", "p_brand", "p_type", "p_size", "p_container", "p_retailprice"], "defaults": {"p_comment": "fixture"}, "rows": [
+    [2, "antique blue ivory metallic", "Manufacturer#2", "Brand#22", "STANDARD POLISHED BRASS", 15, "WRAP CASE", "100.00"],
+    [3, "blush chartreuse cream navy", "Manufacturer#3", "Brand#33", "LARGE BRUSHED BRASS", 15, "LG DRUM", "100.00"],
+    [8, "rose salmon sienna tan", "Manufacturer#4", "Brand#41", "MEDIUM BRUSHED TIN", 49, "JUMBO BOX", "100.00"]
+  ]},
+  {"name": "partsupp", "columns": ["ps_partkey", "ps_suppkey", "ps_availqty", "ps_supplycost"], "defaults": {"ps_comment": "fixture"}, "rows": [
+    [2, 1, 500, "100.00"],
+    [2, 2, 1000, "150.00"],
+    [3, 2, 500, "80.00"],
+    [3, 12, 100, "90.00"],
+    [8, 2, 1, "1.00"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q11", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q11"}, "order_keys": [{"column": "value", "descending": true}], "note": "HAVING against an uncorrelated scalar subquery. GERMANY suppliers 2 and 12; part 3 sums both (40000 + 9000). Total 199001.00, threshold 19.90...; part 8 (1.00) is below it. Supplier 1 (FRANCE) is filtered out."}
+ ]
+}

@@ -1,0 +1,401 @@
+{
+ "format_version": 2,
+ "dataset": {
+  "tables": [
+   {
+    "name": "ax_owner",
+    "fields": [
+     {
+      "name": "ow_id",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ow_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "ow_rank",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "ow_born",
+      "ty": "Date32",
+      "nullable": true
+     },
+     {
+      "name": "ow_credit",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "ow_weight",
+      "ty": {
+       "Decimal": {
+        "p": 38,
+        "s": 6
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "ow_note",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "ow_code",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_kind",
+    "fields": [
+     {
+      "name": "kd_code",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "kd_group",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "kd_weight",
+      "ty": "I32",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_item",
+    "fields": [
+     {
+      "name": "it_owner",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "it_line",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "it_kind",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "it_qty",
+      "ty": {
+       "Decimal": {
+        "p": 12,
+        "s": 4
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "it_price",
+      "ty": {
+       "Decimal": {
+        "p": 28,
+        "s": 4
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "it_day",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "it_flag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "it_tiny",
+      "ty": {
+       "Decimal": {
+        "p": 3,
+        "s": 0
+       }
+      },
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_event",
+    "fields": [
+     {
+      "name": "ev_seq",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ev_owner",
+      "ty": "I64",
+      "nullable": true
+     },
+     {
+      "name": "ev_line",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "ev_at",
+      "ty": "Date32",
+      "nullable": true
+     },
+     {
+      "name": "ev_amount",
+      "ty": {
+       "Decimal": {
+        "p": 18,
+        "s": 9
+       }
+      },
+      "nullable": true
+     },
+     {
+      "name": "ev_memo",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "ax_void",
+    "fields": [
+     {
+      "name": "vd_id",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "vd_text",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   }
+  ]
+ },
+ "queries": [],
+ "hardware": {
+  "threads": [
+   1,
+   32,
+   64
+  ]
+ },
+ "max_concurrent_preparations": 8,
+ "author_executable": "<path>",
+ "barriers": "<locks>",
+ "max_concurrent_queries": 1,
+ "library": "<path>",
+ "storage_policy": {
+  "kind": "physical_only",
+  "eligible_storages": [
+   {
+    "package": "3f74a56177005e7a21f2514f56eba06d138f7765dd529a7bf5fffd9cad48eb68",
+    "review": "<text>"
+   },
+   {
+    "package": "a2cf117754627c9845263035a60162a60ff1552d92ce79555270e6410c05fb55",
+    "review": "<text>"
+   },
+   {
+    "package": "87a4e1dd060cfcbb15cfe87fd4ac3e9a4f9b52dde0f7102e2785de126ea840f1",
+    "review": "<text>"
+   },
+   {
+    "package": "157e3421c48a2111e4a83665dfc228b1672917c81fce4f94cdfb57808d47df3d",
+    "review": "<text>"
+   },
+   {
+    "package": "42c587ae7416b513930a3da1166cfc25bfcf2c5bdb594d58c0228ea564d50018",
+    "review": "<text>"
+   }
+  ]
+ },
+ "integrity_constraints": {
+  "trust": "user_declared",
+  "declarations": [
+   {
+    "table": "ax_owner",
+    "sql": "PRIMARY KEY (ow_id)"
+   },
+   {
+    "table": "ax_kind",
+    "sql": "PRIMARY KEY (kd_code)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "PRIMARY KEY (it_owner, it_line)"
+   },
+   {
+    "table": "ax_event",
+    "sql": "PRIMARY KEY (ev_seq)"
+   },
+   {
+    "table": "ax_void",
+    "sql": "PRIMARY KEY (vd_id)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "FOREIGN KEY (it_owner) REFERENCES ax_owner (ow_id)"
+   },
+   {
+    "table": "ax_item",
+    "sql": "FOREIGN KEY (it_kind) REFERENCES ax_kind (kd_code)"
+   },
+   {
+    "table": "ax_event",
+    "sql": "FOREIGN KEY (ev_owner, ev_line) REFERENCES ax_item (it_owner, it_line)"
+   }
+  ]
+ },
+ "validation": {
+  "kind": "formal_proofs",
+  "numeric_relative_tolerance": "1e-9",
+  "required_engines": [
+   "duckdb"
+  ]
+ },
+ "engine": {
+  "line": "general",
+  "templates": "<path>",
+  "timing_binding": "v0",
+  "variants": "<path>",
+  "storage_seed": {
+   "source_library": "<path>",
+   "packages": [
+    "3f74a56177005e7a21f2514f56eba06d138f7765dd529a7bf5fffd9cad48eb68",
+    "a2cf117754627c9845263035a60162a60ff1552d92ce79555270e6410c05fb55",
+    "87a4e1dd060cfcbb15cfe87fd4ac3e9a4f9b52dde0f7102e2785de126ea840f1",
+    "157e3421c48a2111e4a83665dfc228b1672917c81fce4f94cdfb57808d47df3d",
+    "42c587ae7416b513930a3da1166cfc25bfcf2c5bdb594d58c0228ea564d50018"
+   ]
+  },
+  "limits": {
+   "max_iterations": "unset",
+   "max_cost_usd": "438",
+   "spend_policy": "estimated_usd",
+   "max_retries_per_iteration": "unset",
+   "author_timeout_seconds": "unset"
+  },
+  "scales": [
+   {
+    "name": "tiny",
+    "locations": {
+     "ax_owner": [
+      "<path>"
+     ],
+     "ax_kind": [
+      "<path>"
+     ],
+     "ax_item": [
+      "<path>"
+     ],
+     "ax_event": [
+      "<path>"
+     ],
+     "ax_void": [
+      "<path>"
+     ]
+    },
+    "prepared_workload": "<path>",
+    "bindings": "<path>",
+    "saved_answers": [
+     {
+      "query": "X01",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "X01",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "X02",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "X02",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "X03",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "X03",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     }
+    ],
+    "original_data_bytes": 39507,
+    "original_data_record": "<path>"
+   }
+  ],
+  "branches": 1,
+  "call_limit_seconds": 60,
+  "anon_memory_limit_bytes": 154618822656
+ }
+}

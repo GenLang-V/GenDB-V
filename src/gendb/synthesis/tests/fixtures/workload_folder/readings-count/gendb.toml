@@ -1,0 +1,5 @@
+mode = "templates"
+storage = "plain"
+goal = "correct"
+compare_with = "none"
+numeric_tolerance = "0"

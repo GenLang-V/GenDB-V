@@ -1,0 +1,23 @@
+# Storage `flat_nation`
+
+fixed flat storage of nation: every column as a plain typed array in source row order, one part per column, two (offsets, bytes) per text column
+
+Units: bigint I64, integer I32, date I32 days since 1970-01-01, numeric I128 coefficient at the declared scale, text I64 offsets into U8 UTF-8 bytes
+
+## Tables and columns
+
+- `nation`: n_nationkey, n_name, n_regionkey, n_comment
+
+## Parts
+
+- N_NATIONKEY I64 of n_nationkey
+- N_NAME_OFFSETS I64 of n_name
+- N_NAME_BYTES U8 of n_name
+- N_REGIONKEY I64 of n_regionkey
+- N_COMMENT_OFFSETS I64 of n_comment
+- N_COMMENT_BYTES U8 of n_comment
+
+## Code
+
+- [`interface/`](interface/): the storage's contract (`represents`) and readers, as admitted.
+- [`builder/`](builder/): the verified builder.

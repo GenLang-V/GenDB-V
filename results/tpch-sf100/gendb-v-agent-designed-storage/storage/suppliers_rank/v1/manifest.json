@@ -1,0 +1,94 @@
+{
+ "name": "suppliers_rank",
+ "tables": [
+  {
+   "columns": [
+    "ps_partkey",
+    "ps_suppkey",
+    "ps_availqty",
+    "ps_supplycost",
+    "ps_comment"
+   ],
+   "table": "partsupp"
+  },
+  {
+   "columns": [
+    "s_suppkey",
+    "s_name",
+    "s_address",
+    "s_nationkey",
+    "s_phone",
+    "s_acctbal",
+    "s_comment"
+   ],
+   "table": "supplier"
+  },
+  {
+   "columns": [
+    "n_nationkey",
+    "n_name",
+    "n_regionkey",
+    "n_comment"
+   ],
+   "table": "nation"
+  },
+  {
+   "columns": [
+    "r_regionkey",
+    "r_name",
+    "r_comment"
+   ],
+   "table": "region"
+  }
+ ],
+ "parts": [
+  "SBAL (U32): supplier rows in descending s_acctbal order (row positions only), or empty",
+  "PSMETA (I64 [mode, kmin]): mode 1 = dense directory over ps_suppkey values kmin .. kmin + nk",
+  "PSOFFS (U32, nk + 1): positions offs[e] .. offs[e + 1] of PSPERM hold the partsupp rows of ps_suppkey kmin + e",
+  "PSPERM (U32): partsupp row positions grouped by ps_suppkey (rows ascending within a key)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "supplier",
+   "kind": "permutation",
+   "columns": [
+    "s_acctbal"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "partsupp",
+   "kind": "layout_offsets_counts",
+   "columns": [
+    "ps_suppkey"
+   ]
+  },
+  {
+   "part": 2,
+   "table": "partsupp",
+   "kind": "index_keys",
+   "columns": [
+    "ps_suppkey"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "partsupp",
+   "kind": "permutation",
+   "columns": [
+    "ps_suppkey"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "storage suppliers unchanged (48 inherited parts), then a permutation of the supplier rows by s_acctbal descending and a dense ps_suppkey directory of partsupp (I64 [mode, kmin], U32 offsets, U32 permutation of the partsupp rows grouped by ps_suppkey)",
+  "units": "row positions of suppliers' stored (canonical) supplier and partsupp rows; directory entry e is ps_suppkey kmin + e; offsets are permutation positions"
+ },
+ "built_from": {
+  "sources": [
+   "suppliers"
+  ],
+  "extends": "suppliers"
+ }
+}

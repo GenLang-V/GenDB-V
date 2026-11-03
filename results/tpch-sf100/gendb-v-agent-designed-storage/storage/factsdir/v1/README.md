@@ -1,0 +1,22 @@
+# Storage `factsdir`
+
+facts unchanged (75 inherited parts: lineitem and orders, orders by o_orderdate, lineitem co-clustered), then a dense directory over facts' l_partkey key index (I64 [mode, kmin], U32 offsets: positions offs[k - kmin] .. offs[k - kmin + 1] of the index hold exactly the stored lineitem rows of l_partkey k) and a dense o_orderkey directory of orders (I64 [mode, kmin], U32 stored orders row per key, 0xffffffff for absent keys). The interface restates facts' description of the inherited parts (base_represents) so a query reads only this storage.
+
+Units: keys are bigint l_partkey / o_orderkey values; l_partkey offsets are positions (0 .. lineitem rows) in the inherited l_partkey key index; o_orderkey entries are stored orders rows (0 .. orders rows) of facts
+
+## Tables and columns
+
+- `lineitem`: l_orderkey, l_partkey, l_suppkey, l_linenumber, l_quantity, l_extendedprice, l_discount, l_tax, l_returnflag, l_linestatus, l_shipdate, l_commitdate, l_receiptdate, l_shipinstruct, l_shipmode
+- `orders`: o_orderkey, o_custkey, o_orderstatus, o_totalprice, o_orderdate, o_orderpriority, o_shippriority
+
+## Parts
+
+- lineitem: I64 [mode, kmin]: l_partkey directory mode (1: present) and smallest l_partkey
+- lineitem: U32 l_partkey directory offsets into the inherited l_partkey key index, nkeys + 1 entries (mode 1)
+- orders: I64 [mode, kmin]: o_orderkey directory mode (1: present) and smallest o_orderkey
+- orders: U32 o_orderkey directory: entry e is the stored orders row whose o_orderkey is kmin + e, or 0xffffffff when none
+
+## Code
+
+- [`interface/`](interface/): the storage's contract (`represents`) and readers, as admitted.
+- [`builder/`](builder/): the verified builder.

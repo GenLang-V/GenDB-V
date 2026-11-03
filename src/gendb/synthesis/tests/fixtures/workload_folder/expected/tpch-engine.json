@@ -1,0 +1,851 @@
+{
+ "format_version": 2,
+ "dataset": {
+  "tables": [
+   {
+    "name": "lineitem",
+    "fields": [
+     {
+      "name": "l_orderkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "l_partkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "l_suppkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "l_linenumber",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "l_quantity",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "l_extendedprice",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "l_discount",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "l_tax",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "l_returnflag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "l_linestatus",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "l_shipdate",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "l_commitdate",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "l_receiptdate",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "l_shipinstruct",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "l_shipmode",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "l_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "orders",
+    "fields": [
+     {
+      "name": "o_orderkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "o_custkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "o_orderstatus",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "o_totalprice",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "o_orderdate",
+      "ty": "Date32",
+      "nullable": false
+     },
+     {
+      "name": "o_orderpriority",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "o_clerk",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "o_shippriority",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "o_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "customer",
+    "fields": [
+     {
+      "name": "c_custkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "c_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "c_address",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "c_nationkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "c_phone",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "c_acctbal",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "c_mktsegment",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "c_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "part",
+    "fields": [
+     {
+      "name": "p_partkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "p_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "p_mfgr",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "p_brand",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "p_type",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "p_size",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "p_container",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "p_retailprice",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "p_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "partsupp",
+    "fields": [
+     {
+      "name": "ps_partkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ps_suppkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ps_availqty",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "ps_supplycost",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "ps_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "supplier",
+    "fields": [
+     {
+      "name": "s_suppkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "s_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "s_address",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "s_nationkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "s_phone",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "s_acctbal",
+      "ty": {
+       "Decimal": {
+        "p": 15,
+        "s": 2
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "s_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "nation",
+    "fields": [
+     {
+      "name": "n_nationkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "n_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "n_regionkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "n_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "region",
+    "fields": [
+     {
+      "name": "r_regionkey",
+      "ty": "I64",
+      "nullable": false
+     },
+     {
+      "name": "r_name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "r_comment",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   }
+  ]
+ },
+ "queries": [],
+ "hardware": {
+  "threads": [
+   1,
+   32,
+   64
+  ]
+ },
+ "max_concurrent_queries": 1,
+ "max_concurrent_preparations": 8,
+ "author_executable": "<path>",
+ "library": "<path>",
+ "barriers": "<locks>",
+ "storage_policy": {
+  "kind": "physical_only",
+  "eligible_storages": [
+   {
+    "package": "bb78445ef9f63de96eb9a4f6525071a63d21111d6015373d4703048c5441727a",
+    "review": "<text>"
+   },
+   {
+    "package": "20e79ca546075b6bc530f7219285f05d8be601c10afc6a8b0b724e888f8d7766",
+    "review": "<text>"
+   },
+   {
+    "package": "eb9f99672d1890af9116576d4cdce5b37b78cb2612d0415ec90f1f99e8bae6e3",
+    "review": "<text>"
+   },
+   {
+    "package": "6c1132383aef1345fc83dcf6008e3ab7dac777cc33dfa6022095fb3932860712",
+    "review": "<text>"
+   },
+   {
+    "package": "d4dea8e5f38770c0d1cdbccbf2aa594bca8ea23e32afad782667df8eb93cb4b3",
+    "review": "<text>"
+   },
+   {
+    "package": "3d2e9f75109c936a82de3ab8800c13186cc3e3a2b7f1fa6bf2e5b6f04cd15553",
+    "review": "<text>"
+   },
+   {
+    "package": "62968e8e2cb4451bbdc10c94ff1167937d3243335ed9bd1a08629d4fe25bed52",
+    "review": "<text>"
+   },
+   {
+    "package": "eaf5602d2f2a5fc69908bfe6cc9e9dc9f73d299b2596690f6255ae28ec24e90b",
+    "review": "<text>"
+   }
+  ]
+ },
+ "integrity_constraints": {
+  "trust": "user_declared",
+  "declarations": [
+   {
+    "table": "lineitem",
+    "sql": "PRIMARY KEY (l_orderkey, l_linenumber)"
+   },
+   {
+    "table": "orders",
+    "sql": "PRIMARY KEY (o_orderkey)"
+   },
+   {
+    "table": "customer",
+    "sql": "PRIMARY KEY (c_custkey)"
+   },
+   {
+    "table": "part",
+    "sql": "PRIMARY KEY (p_partkey)"
+   },
+   {
+    "table": "partsupp",
+    "sql": "PRIMARY KEY (ps_partkey, ps_suppkey)"
+   },
+   {
+    "table": "supplier",
+    "sql": "PRIMARY KEY (s_suppkey)"
+   },
+   {
+    "table": "nation",
+    "sql": "PRIMARY KEY (n_nationkey)"
+   },
+   {
+    "table": "region",
+    "sql": "PRIMARY KEY (r_regionkey)"
+   },
+   {
+    "table": "lineitem",
+    "sql": "FOREIGN KEY (l_orderkey) REFERENCES orders (o_orderkey)"
+   },
+   {
+    "table": "lineitem",
+    "sql": "FOREIGN KEY (l_partkey, l_suppkey) REFERENCES partsupp (ps_partkey, ps_suppkey)"
+   },
+   {
+    "table": "orders",
+    "sql": "FOREIGN KEY (o_custkey) REFERENCES customer (c_custkey)"
+   },
+   {
+    "table": "customer",
+    "sql": "FOREIGN KEY (c_nationkey) REFERENCES nation (n_nationkey)"
+   },
+   {
+    "table": "partsupp",
+    "sql": "FOREIGN KEY (ps_partkey) REFERENCES part (p_partkey)"
+   },
+   {
+    "table": "partsupp",
+    "sql": "FOREIGN KEY (ps_suppkey) REFERENCES supplier (s_suppkey)"
+   },
+   {
+    "table": "supplier",
+    "sql": "FOREIGN KEY (s_nationkey) REFERENCES nation (n_nationkey)"
+   }
+  ]
+ },
+ "validation": {
+  "kind": "formal_proofs",
+  "numeric_relative_tolerance": "1e-9",
+  "required_engines": [
+   "duckdb",
+   "umbra"
+  ]
+ },
+ "engine": {
+  "line": "general",
+  "templates": "<path>",
+  "timing_binding": "v0",
+  "variants": "<path>",
+  "storage_seed": {
+   "source_library": "<path>",
+   "packages": [
+    "bb78445ef9f63de96eb9a4f6525071a63d21111d6015373d4703048c5441727a",
+    "20e79ca546075b6bc530f7219285f05d8be601c10afc6a8b0b724e888f8d7766",
+    "eb9f99672d1890af9116576d4cdce5b37b78cb2612d0415ec90f1f99e8bae6e3",
+    "6c1132383aef1345fc83dcf6008e3ab7dac777cc33dfa6022095fb3932860712",
+    "d4dea8e5f38770c0d1cdbccbf2aa594bca8ea23e32afad782667df8eb93cb4b3",
+    "3d2e9f75109c936a82de3ab8800c13186cc3e3a2b7f1fa6bf2e5b6f04cd15553",
+    "62968e8e2cb4451bbdc10c94ff1167937d3243335ed9bd1a08629d4fe25bed52",
+    "eaf5602d2f2a5fc69908bfe6cc9e9dc9f73d299b2596690f6255ae28ec24e90b"
+   ]
+  },
+  "limits": {
+   "max_iterations": "unset",
+   "max_cost_usd": "438",
+   "spend_policy": "estimated_usd",
+   "max_retries_per_iteration": "unset",
+   "author_timeout_seconds": "unset"
+  },
+  "scales": [
+   {
+    "name": "sf1",
+    "locations": {
+     "lineitem": [
+      "<path>"
+     ],
+     "orders": [
+      "<path>"
+     ],
+     "customer": [
+      "<path>"
+     ],
+     "part": [
+      "<path>"
+     ],
+     "partsupp": [
+      "<path>"
+     ],
+     "supplier": [
+      "<path>"
+     ],
+     "nation": [
+      "<path>"
+     ],
+     "region": [
+      "<path>"
+     ]
+    },
+    "prepared_workload": "<path>",
+    "bindings": "<path>",
+    "targets": "<path>",
+    "saved_answers": [
+     {
+      "query": "Q01",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     }
+    ],
+    "original_data_bytes": 1100693130,
+    "original_data_record": "<path>"
+   },
+   {
+    "name": "sf100",
+    "locations": {
+     "lineitem": [
+      "<path>"
+     ],
+     "orders": [
+      "<path>"
+     ],
+     "customer": [
+      "<path>"
+     ],
+     "part": [
+      "<path>"
+     ],
+     "partsupp": [
+      "<path>"
+     ],
+     "supplier": [
+      "<path>"
+     ],
+     "nation": [
+      "<path>"
+     ],
+     "region": [
+      "<path>"
+     ]
+    },
+    "prepared_workload": "<path>",
+    "bindings": "<path>",
+    "targets": "<path>",
+    "saved_answers": [
+     {
+      "query": "Q01",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v1",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v2",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q01",
+      "binding": "v2",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v1",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v2",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q06",
+      "binding": "v2",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v1",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v2",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q11",
+      "binding": "v2",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     }
+    ],
+    "original_data_bytes": 114641618862,
+    "original_data_record": "<path>"
+   }
+  ],
+  "branches": 1,
+  "call_limit_seconds": 60,
+  "anon_memory_limit_bytes": 154618822656,
+  "reuse_libraries": [
+   "<path>"
+  ],
+  "emphasis": "co_optimization"
+ }
+}

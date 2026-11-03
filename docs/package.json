@@ -1,0 +1,14 @@
+{
+  "name": "gendb-v-site",
+  "private": true,
+  "description": "The GenDB-V website: build, serve and check (README.md)",
+  "type": "module",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "serve": "node serve.mjs",
+    "check": "node checks/pages.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

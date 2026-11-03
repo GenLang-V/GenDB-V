@@ -1,0 +1,128 @@
+{
+ "queries": {
+  "Q1": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [],
+    "params": {},
+    "rows": {
+     "duckdb": 14,
+     "umbra": 14
+    }
+   }
+  ],
+  "Q2": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "pure",
+     "2022"
+    ],
+    "params": {
+     "uom": "pure",
+     "fy": "2022"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "pure",
+     "2023"
+    ],
+    "params": {
+     "uom": "pure",
+     "fy": "2023"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "shares",
+     "2024"
+    ],
+    "params": {
+     "uom": "shares",
+     "fy": "2024"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   }
+  ],
+  "Q4": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "USD",
+     "EQ",
+     "4000",
+     "4999"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "EQ",
+     "sic_low": "4000",
+     "sic_high": "4999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "BS",
+     "2000",
+     "2999"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "BS",
+     "sic_low": "2000",
+     "sic_high": "2999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "shares",
+     "EQ",
+     "6000",
+     "6999"
+    ],
+    "params": {
+     "uom": "shares",
+     "stmt": "EQ",
+     "sic_low": "6000",
+     "sic_high": "6999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   }
+  ]
+ }
+}

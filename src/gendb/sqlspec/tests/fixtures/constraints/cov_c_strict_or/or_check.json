@@ -1,0 +1,32 @@
+{
+ "fixture": "cov_c_strict_or_or",
+ "description": "C review M1 (known deviation, not a PostgreSQL match). PostgreSQL 18.3 stores row (5, 0) under CHECK (b = 0 OR a / b > 1) (target/pg-evidence/verus-sql-cov-c-review/probe.result.json or_check); the semantics' strict OR evaluates a / b and raises 22012, so the verified checker reports constraint_violation.",
+ "ddl": [
+  {
+   "path": "src/gendb/sqlspec/tests/fixtures/constraints/cov_c_strict_or/or_check.sql"
+  }
+ ],
+ "tables": [
+  {
+   "name": "t",
+   "columns": [
+    "a",
+    "b"
+   ],
+   "rows": [
+    [
+     5,
+     0
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "or_check_row_5_0",
+   "sql": "SELECT a, b FROM t",
+   "expect_evaluator": "constraint_violation",
+   "postgres": "row stored; SELECT returns 5|0"
+  }
+ ]
+}

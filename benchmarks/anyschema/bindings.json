@@ -1,0 +1,483 @@
+{
+ "schema": "gendb.tpch.bindings.v1",
+ "kind": "visible",
+ "benchmark": "anyschema",
+ "scale": "tiny",
+ "meaning": "The visible bindings of the anyschema templates: v0 and v1 for every template, chosen on the generated data (generate.py) to reach edge values (type minimum and maximum, empty text, multibyte text, leap days, empty inputs).",
+ "queries": {
+  "X01": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "10",
+     "0.00",
+     "2000-01-01",
+     "dup"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-9223372036854775808",
+     "-9999999999999.99",
+     "2030-12-31",
+     ""
+    ]
+   }
+  ],
+  "X02": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-2147483648"
+    ]
+   }
+  ],
+  "X03": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "1000.5000",
+     "0.0000"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-9999999999999999.9999",
+     "-500000.0000"
+    ]
+   }
+  ],
+  "X04": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "7",
+     "3.00"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-3",
+     "-0.07"
+    ]
+   }
+  ],
+  "X05": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "1000",
+     "0.00",
+     "debit",
+     "credit",
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9000000000000000000",
+     "100.00",
+     "",
+     "λ",
+     "-50"
+    ]
+   }
+  ],
+  "X06": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "owner 0%",
+     "7"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "_ü%",
+     "2"
+    ]
+   }
+  ],
+  "X07": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "C010",
+     "C020",
+     "dup"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "",
+     "AB  ",
+     "λ猫"
+    ]
+   }
+  ],
+  "X08": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "15"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "29"
+    ]
+   }
+  ],
+  "X09": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "2000-01-01"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "2000-02-29"
+    ]
+   }
+  ],
+  "X10": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "1000000000000000000000000.000000",
+     "-1000000000000000000000000.000000"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "0.000000",
+     "-0.000001"
+    ]
+   }
+  ],
+  "X11": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "k00"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     ""
+    ]
+   }
+  ],
+  "X12": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "2000-01-01"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "1970-01-01"
+    ]
+   }
+  ],
+  "X13": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-2147483648"
+    ]
+   }
+  ],
+  "X14": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "5"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9"
+    ]
+   }
+  ],
+  "X15": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0.0000",
+     "high",
+     "low"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "500000.0000",
+     "",
+     "λ"
+    ]
+   }
+  ],
+  "X16": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-2147483648"
+    ]
+   }
+  ],
+  "X17": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "999999.0000"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "0.0000"
+    ]
+   }
+  ],
+  "X18": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "1"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "450"
+    ]
+   }
+  ],
+  "X19": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "2010-01-01",
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "1970-01-01",
+     "-2147483648"
+    ]
+   }
+  ],
+  "X20": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "g1"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     ""
+    ]
+   }
+  ],
+  "X21": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "300"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9223372036854775807"
+    ]
+   }
+  ],
+  "X22": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "2025-01-01"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "1970-01-01"
+    ]
+   }
+  ],
+  "X23": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "A"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "é"
+    ]
+   }
+  ],
+  "X24": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "20"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9223372036854775807"
+    ]
+   }
+  ],
+  "X25": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "900000.0000",
+     "2000-01-01"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "-1000000.0000",
+     "2030-12-31"
+    ]
+   }
+  ],
+  "X26": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0.00",
+     "0.00"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9999999999999.99",
+     "-9999999999999.99"
+    ]
+   }
+  ],
+  "X27": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "0.5000"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "100000.0000"
+    ]
+   }
+  ],
+  "X28": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "g1",
+     "0.0000"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "",
+     "999999.0000"
+    ]
+   }
+  ],
+  "X29": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "3"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9"
+    ]
+   }
+  ],
+  "X30": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "2000-01-01"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "2030-01-01"
+    ]
+   }
+  ],
+  "X31": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "1",
+     "0"
+    ]
+   },
+   {
+    "binding_id": "v1",
+    "arguments": [
+     "9223372036854775807",
+     "2147483647"
+    ]
+   }
+  ]
+ }
+}

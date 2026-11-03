@@ -1,0 +1,154 @@
+{
+ "queries": {
+  "Q01": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DELTA": 90
+    },
+    "arguments": [
+     "1998-09-02"
+    ],
+    "params": {
+     "delta": "1998-09-02"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DELTA": 70
+    },
+    "arguments": [
+     "1998-09-22"
+    ],
+    "params": {
+     "delta": "1998-09-22"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DELTA": 103
+    },
+    "arguments": [
+     "1998-08-20"
+    ],
+    "params": {
+     "delta": "1998-08-20"
+    }
+   }
+  ],
+  "Q06": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "24"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "24"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 25
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "25"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "25"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1997-01-01",
+     "DISCOUNT": "0.03",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1997-01-01",
+     "0.03",
+     "24"
+    ],
+    "params": {
+     "date": "1997-01-01",
+     "discount": "0.03",
+     "quantity": "24"
+    }
+   }
+  ],
+  "Q11": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "GERMANY",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "GERMANY",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "GERMANY",
+     "fraction": "0.0000010000"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "PERU",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "PERU",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "PERU",
+     "fraction": "0.0000010000"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "VIETNAM",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "VIETNAM",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "VIETNAM",
+     "fraction": "0.0000010000"
+    }
+   }
+  ]
+ }
+}

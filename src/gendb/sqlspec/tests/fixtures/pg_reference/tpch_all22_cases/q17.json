@@ -1,0 +1,49 @@
+{
+ "fixture": "tpch_all22_q17",
+ "description": "TPC-H Q17 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 84.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [0, "AFRICA"],
+    [1, "AMERICA"],
+    [3, "EUROPE"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [6, "FRANCE", 3],
+    [7, "GERMANY", 3],
+    [14, "KENYA", 0],
+    [24, "UNITED STATES", 1]
+  ]},
+  {"name": "supplier", "columns": ["s_suppkey", "s_name", "s_address", "s_nationkey", "s_phone", "s_acctbal", "s_comment"], "rows": [
+    [1, "Supplier#000000001", "1 Rue de Lyon", 6, "16-200-200-2001", "5000.00", "fixture"],
+    [2, "Supplier#000000002", "2 Hauptstrasse", 7, "17-200-200-2002", "4000.00", "fixture"]
+  ]},
+  {"name": "part", "columns": ["p_partkey", "p_name", "p_mfgr", "p_brand", "p_type", "p_size", "p_container", "p_retailprice"], "defaults": {"p_comment": "fixture"}, "rows": [
+    [12, "violet wheat white yellow", "Manufacturer#2", "Brand#23", "LARGE PLATED NICKEL", 7, "MED BOX", "100.00"],
+    [14, "bisque black blanched blue", "Manufacturer#3", "Brand#34", "STANDARD BRUSHED TIN", 12, "LG BOX", "100.00"]
+  ]},
+  {"name": "partsupp", "columns": ["ps_partkey", "ps_suppkey", "ps_availqty", "ps_supplycost"], "defaults": {"ps_comment": "fixture"}, "rows": [
+    [12, 1, 500, "70.00"],
+    [14, 2, 20, "5.00"]
+  ]},
+  {"name": "customer", "columns": ["c_custkey", "c_name", "c_address", "c_nationkey", "c_phone", "c_acctbal", "c_mktsegment"], "defaults": {"c_comment": "fixture"}, "rows": [
+    [2, "Customer#000000002", "2 Main Street", 24, "34-100-100-1002", "121.65", "AUTOMOBILE"],
+    [9, "Customer#000000009", "9 Moi Avenue", 14, "24-100-100-1009", "8324.07", "FURNITURE"]
+  ]},
+  {"name": "orders", "columns": ["o_orderkey", "o_custkey", "o_orderstatus", "o_totalprice", "o_orderdate", "o_orderpriority", "o_comment"], "defaults": {"o_clerk": "Clerk#000000001", "o_shippriority": 0}, "rows": [
+    [170, 9, "O", "10100.00", "1997-02-01", "5-LOW", "quickly special packages requests sleep"],
+    [190, 2, "O", "6600.00", "1997-03-01", "5-LOW", "fixture"]
+  ]},
+  {"name": "lineitem", "columns": ["l_orderkey", "l_linenumber", "l_partkey", "l_suppkey", "l_quantity", "l_extendedprice", "l_discount", "l_tax", "l_returnflag", "l_linestatus", "l_shipdate", "l_commitdate", "l_receiptdate", "l_shipinstruct", "l_shipmode"], "defaults": {"l_comment": "fixture"}, "rows": [
+    [170, 1, 12, 1, "1.00", "100.00", "0.04", "0.00", "N", "O", "1997-02-10", "1997-02-20", "1997-02-15", "NONE", "TRUCK"],
+    [170, 2, 12, 1, "10.00", "1000.00", "0.05", "0.00", "N", "O", "1997-02-10", "1997-02-20", "1997-02-15", "DELIVER IN PERSON", "AIR"],
+    [170, 3, 12, 1, "20.00", "2000.00", "0.00", "0.00", "N", "O", "1997-02-10", "1997-02-20", "1997-02-15", "DELIVER IN PERSON", "AIR REG"],
+    [170, 4, 12, 1, "30.00", "3000.00", "0.00", "0.00", "N", "O", "1997-02-10", "1997-02-20", "1997-02-15", "NONE", "TRUCK"],
+    [170, 5, 12, 1, "40.00", "4000.00", "0.00", "0.00", "N", "O", "1997-02-10", "1997-02-20", "1997-02-15", "NONE", "TRUCK"],
+    [190, 3, 14, 2, "25.00", "2500.00", "0.00", "0.00", "N", "O", "1997-03-10", "1997-03-20", "1997-03-15", "DELIVER IN PERSON", "AIR REG"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q17", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q17"}, "note": "Correlated scalar AVG subquery and / 7.0. Part 12's quantities are 1, 10, 20, 30, 40 (average 20.2, threshold 4.04): only 170-1 qualifies, 100.00 / 7.0. Line 190-3 (part 14, Brand#34) is excluded by brand."}
+ ]
+}

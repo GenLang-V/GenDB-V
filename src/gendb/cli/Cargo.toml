@@ -1,0 +1,24 @@
+[package]
+name = "gendb"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "The gendb command: synthesize, preflight, serve, sql, worker and author tools"
+
+[[bin]]
+name = "gendb"
+path = "src/main.rs"
+
+# Each subcommand calls the crate that owns its work: synthesize/preflight/serve and author-tools -> gendb-synthesis
+# (the controller, the query role's local tools); sql -> gendb-verification (reference workflow) with the
+# gendb-frontend parser; worker -> gendb-runtime. tokio runs the asynchronous controller routes only.
+[dependencies]
+gendb-artifacts = { workspace = true }
+gendb-frontend = { workspace = true }
+gendb-runtime = { workspace = true }
+gendb-synthesis = { workspace = true }
+gendb-verification = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }

@@ -1,0 +1,19 @@
+# Storage `partsig`
+
+storage custpart (customer, part; its 50 parts linked unchanged) followed by part 50: U64 sig with one 64-bit signature per stored (= canonical) part row, sig[c] covering every byte trigram of p_name of row c (bit = top 6 bits of the 32-bit Knuth multiplicative hash of the 24-bit trigram value)
+
+Units: sig: bit set of trigram hash positions 0..64, one u64 per part row
+
+## Tables and columns
+
+- `customer`: c_custkey, c_name, c_address, c_nationkey, c_phone, c_acctbal, c_mktsegment, c_comment
+- `part`: p_partkey, p_name, p_mfgr, p_brand, p_type, p_size, p_container, p_retailprice, p_comment
+
+## Parts
+
+- part p_name trigram signatures: U64 sig, one per stored part row: bit tri_hash(a, b, c) is set for every three consecutive bytes a, b, c of the row's p_name; all ones when the name has a non-ASCII byte (otherwise the name is ASCII)
+
+## Code
+
+- [`interface/`](interface/): the storage's contract (`represents`) and readers, as admitted.
+- [`builder/`](builder/): the verified builder.

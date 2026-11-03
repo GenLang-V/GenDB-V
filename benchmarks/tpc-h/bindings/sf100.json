@@ -1,0 +1,1230 @@
+{
+ "schema": "gendb.tpch.bindings.v1",
+ "kind": "visible",
+ "seed": 20261002,
+ "scale_factor": 100,
+ "generator": "bindings/generate_bindings.py",
+ "templates": "queries/",
+ "queries": {
+  "Q01": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DELTA": 90
+    },
+    "arguments": [
+     "1998-09-02"
+    ],
+    "params": {
+     "delta": "1998-09-02"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DELTA": 70
+    },
+    "arguments": [
+     "1998-09-22"
+    ],
+    "params": {
+     "delta": "1998-09-22"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DELTA": 103
+    },
+    "arguments": [
+     "1998-08-20"
+    ],
+    "params": {
+     "delta": "1998-08-20"
+    }
+   }
+  ],
+  "Q02": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SIZE": 15,
+     "TYPE": "BRASS",
+     "REGION": "EUROPE"
+    },
+    "arguments": [
+     "15",
+     "%BRASS",
+     "EUROPE"
+    ],
+    "params": {
+     "size": "15",
+     "type": "%BRASS",
+     "region": "EUROPE"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "SIZE": 10,
+     "TYPE": "COPPER",
+     "REGION": "ASIA"
+    },
+    "arguments": [
+     "10",
+     "%COPPER",
+     "ASIA"
+    ],
+    "params": {
+     "size": "10",
+     "type": "%COPPER",
+     "region": "ASIA"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "SIZE": 26,
+     "TYPE": "BRASS",
+     "REGION": "AFRICA"
+    },
+    "arguments": [
+     "26",
+     "%BRASS",
+     "AFRICA"
+    ],
+    "params": {
+     "size": "26",
+     "type": "%BRASS",
+     "region": "AFRICA"
+    }
+   }
+  ],
+  "Q03": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SEGMENT": "BUILDING",
+     "DATE": "1995-03-15"
+    },
+    "arguments": [
+     "BUILDING",
+     "1995-03-15"
+    ],
+    "params": {
+     "segment": "BUILDING",
+     "date": "1995-03-15"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "SEGMENT": "MACHINERY",
+     "DATE": "1995-03-11"
+    },
+    "arguments": [
+     "MACHINERY",
+     "1995-03-11"
+    ],
+    "params": {
+     "segment": "MACHINERY",
+     "date": "1995-03-11"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "SEGMENT": "FURNITURE",
+     "DATE": "1995-03-16"
+    },
+    "arguments": [
+     "FURNITURE",
+     "1995-03-16"
+    ],
+    "params": {
+     "segment": "FURNITURE",
+     "date": "1995-03-16"
+    }
+   }
+  ],
+  "Q04": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1993-07-01"
+    },
+    "arguments": [
+     "1993-07-01"
+    ],
+    "params": {
+     "date": "1993-07-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1996-03-01"
+    },
+    "arguments": [
+     "1996-03-01"
+    ],
+    "params": {
+     "date": "1996-03-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1996-12-01"
+    },
+    "arguments": [
+     "1996-12-01"
+    ],
+    "params": {
+     "date": "1996-12-01"
+    }
+   }
+  ],
+  "Q05": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "REGION": "ASIA",
+     "DATE": "1994-01-01"
+    },
+    "arguments": [
+     "ASIA",
+     "1994-01-01"
+    ],
+    "params": {
+     "region": "ASIA",
+     "date": "1994-01-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "REGION": "MIDDLE EAST",
+     "DATE": "1995-01-01"
+    },
+    "arguments": [
+     "MIDDLE EAST",
+     "1995-01-01"
+    ],
+    "params": {
+     "region": "MIDDLE EAST",
+     "date": "1995-01-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "REGION": "AFRICA",
+     "DATE": "1996-01-01"
+    },
+    "arguments": [
+     "AFRICA",
+     "1996-01-01"
+    ],
+    "params": {
+     "region": "AFRICA",
+     "date": "1996-01-01"
+    }
+   }
+  ],
+  "Q06": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "24"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "24"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 25
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "25"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "25"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1997-01-01",
+     "DISCOUNT": "0.03",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1997-01-01",
+     "0.03",
+     "24"
+    ],
+    "params": {
+     "date": "1997-01-01",
+     "discount": "0.03",
+     "quantity": "24"
+    }
+   }
+  ],
+  "Q07": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION1": "FRANCE",
+     "NATION2": "GERMANY"
+    },
+    "arguments": [
+     "FRANCE",
+     "GERMANY"
+    ],
+    "params": {
+     "nation1": "FRANCE",
+     "nation2": "GERMANY"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION1": "ALGERIA",
+     "NATION2": "VIETNAM"
+    },
+    "arguments": [
+     "ALGERIA",
+     "VIETNAM"
+    ],
+    "params": {
+     "nation1": "ALGERIA",
+     "nation2": "VIETNAM"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION1": "ETHIOPIA",
+     "NATION2": "RUSSIA"
+    },
+    "arguments": [
+     "ETHIOPIA",
+     "RUSSIA"
+    ],
+    "params": {
+     "nation1": "ETHIOPIA",
+     "nation2": "RUSSIA"
+    }
+   }
+  ],
+  "Q08": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "BRAZIL",
+     "REGION": "AMERICA",
+     "TYPE": "ECONOMY ANODIZED STEEL"
+    },
+    "arguments": [
+     "BRAZIL",
+     "AMERICA",
+     "ECONOMY ANODIZED STEEL"
+    ],
+    "params": {
+     "nation": "BRAZIL",
+     "region": "AMERICA",
+     "type": "ECONOMY ANODIZED STEEL"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "CANADA",
+     "REGION": "AMERICA",
+     "TYPE": "SMALL PLATED TIN"
+    },
+    "arguments": [
+     "CANADA",
+     "AMERICA",
+     "SMALL PLATED TIN"
+    ],
+    "params": {
+     "nation": "CANADA",
+     "region": "AMERICA",
+     "type": "SMALL PLATED TIN"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "UNITED KINGDOM",
+     "REGION": "EUROPE",
+     "TYPE": "STANDARD BURNISHED COPPER"
+    },
+    "arguments": [
+     "UNITED KINGDOM",
+     "EUROPE",
+     "STANDARD BURNISHED COPPER"
+    ],
+    "params": {
+     "nation": "UNITED KINGDOM",
+     "region": "EUROPE",
+     "type": "STANDARD BURNISHED COPPER"
+    }
+   }
+  ],
+  "Q09": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "COLOR": "green"
+    },
+    "arguments": [
+     "%green%"
+    ],
+    "params": {
+     "color": "%green%"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "COLOR": "orange"
+    },
+    "arguments": [
+     "%orange%"
+    ],
+    "params": {
+     "color": "%orange%"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "COLOR": "moccasin"
+    },
+    "arguments": [
+     "%moccasin%"
+    ],
+    "params": {
+     "color": "%moccasin%"
+    }
+   }
+  ],
+  "Q10": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1993-10-01"
+    },
+    "arguments": [
+     "1993-10-01"
+    ],
+    "params": {
+     "date": "1993-10-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1993-12-01"
+    },
+    "arguments": [
+     "1993-12-01"
+    ],
+    "params": {
+     "date": "1993-12-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1994-05-01"
+    },
+    "arguments": [
+     "1994-05-01"
+    ],
+    "params": {
+     "date": "1994-05-01"
+    }
+   }
+  ],
+  "Q11": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "GERMANY",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "GERMANY",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "GERMANY",
+     "fraction": "0.0000010000"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "PERU",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "PERU",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "PERU",
+     "fraction": "0.0000010000"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "VIETNAM",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "VIETNAM",
+     "0.0000010000"
+    ],
+    "params": {
+     "nation": "VIETNAM",
+     "fraction": "0.0000010000"
+    }
+   }
+  ],
+  "Q12": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "SHIPMODE1": "MAIL",
+     "SHIPMODE2": "SHIP",
+     "DATE": "1994-01-01"
+    },
+    "arguments": [
+     "MAIL",
+     "SHIP",
+     "1994-01-01"
+    ],
+    "params": {
+     "shipmode1": "MAIL",
+     "shipmode2": "SHIP",
+     "date": "1994-01-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "SHIPMODE1": "AIR",
+     "SHIPMODE2": "SHIP",
+     "DATE": "1996-01-01"
+    },
+    "arguments": [
+     "AIR",
+     "SHIP",
+     "1996-01-01"
+    ],
+    "params": {
+     "shipmode1": "AIR",
+     "shipmode2": "SHIP",
+     "date": "1996-01-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "SHIPMODE1": "SHIP",
+     "SHIPMODE2": "AIR",
+     "DATE": "1996-01-01"
+    },
+    "arguments": [
+     "SHIP",
+     "AIR",
+     "1996-01-01"
+    ],
+    "params": {
+     "shipmode1": "SHIP",
+     "shipmode2": "AIR",
+     "date": "1996-01-01"
+    }
+   }
+  ],
+  "Q13": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "WORD1": "special",
+     "WORD2": "requests"
+    },
+    "arguments": [
+     "%special%requests%"
+    ],
+    "params": {
+     "words": "%special%requests%"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "WORD1": "pending",
+     "WORD2": "packages"
+    },
+    "arguments": [
+     "%pending%packages%"
+    ],
+    "params": {
+     "words": "%pending%packages%"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "WORD1": "pending",
+     "WORD2": "deposits"
+    },
+    "arguments": [
+     "%pending%deposits%"
+    ],
+    "params": {
+     "words": "%pending%deposits%"
+    }
+   }
+  ],
+  "Q14": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1995-09-01"
+    },
+    "arguments": [
+     "1995-09-01"
+    ],
+    "params": {
+     "date": "1995-09-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1994-11-01"
+    },
+    "arguments": [
+     "1994-11-01"
+    ],
+    "params": {
+     "date": "1994-11-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1993-01-01"
+    },
+    "arguments": [
+     "1993-01-01"
+    ],
+    "params": {
+     "date": "1993-01-01"
+    }
+   }
+  ],
+  "Q15": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1996-01-01"
+    },
+    "arguments": [
+     "1996-01-01"
+    ],
+    "params": {
+     "date": "1996-01-01"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1996-07-01"
+    },
+    "arguments": [
+     "1996-07-01"
+    ],
+    "params": {
+     "date": "1996-07-01"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "DATE": "1994-05-01"
+    },
+    "arguments": [
+     "1994-05-01"
+    ],
+    "params": {
+     "date": "1994-05-01"
+    }
+   }
+  ],
+  "Q16": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "BRAND": "Brand#45",
+     "TYPE": "MEDIUM POLISHED",
+     "SIZE1": 49,
+     "SIZE2": 14,
+     "SIZE3": 23,
+     "SIZE4": 45,
+     "SIZE5": 19,
+     "SIZE6": 3,
+     "SIZE7": 36,
+     "SIZE8": 9
+    },
+    "arguments": [
+     "Brand#45",
+     "MEDIUM POLISHED%",
+     "49",
+     "14",
+     "23",
+     "45",
+     "19",
+     "3",
+     "36",
+     "9"
+    ],
+    "params": {
+     "brand": "Brand#45",
+     "type": "MEDIUM POLISHED%",
+     "size1": "49",
+     "size2": "14",
+     "size3": "23",
+     "size4": "45",
+     "size5": "19",
+     "size6": "3",
+     "size7": "36",
+     "size8": "9"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "BRAND": "Brand#24",
+     "TYPE": "STANDARD PLATED",
+     "SIZE1": 37,
+     "SIZE2": 35,
+     "SIZE3": 13,
+     "SIZE4": 3,
+     "SIZE5": 16,
+     "SIZE6": 18,
+     "SIZE7": 22,
+     "SIZE8": 36
+    },
+    "arguments": [
+     "Brand#24",
+     "STANDARD PLATED%",
+     "37",
+     "35",
+     "13",
+     "3",
+     "16",
+     "18",
+     "22",
+     "36"
+    ],
+    "params": {
+     "brand": "Brand#24",
+     "type": "STANDARD PLATED%",
+     "size1": "37",
+     "size2": "35",
+     "size3": "13",
+     "size4": "3",
+     "size5": "16",
+     "size6": "18",
+     "size7": "22",
+     "size8": "36"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "BRAND": "Brand#34",
+     "TYPE": "LARGE BURNISHED",
+     "SIZE1": 42,
+     "SIZE2": 28,
+     "SIZE3": 31,
+     "SIZE4": 5,
+     "SIZE5": 9,
+     "SIZE6": 41,
+     "SIZE7": 47,
+     "SIZE8": 6
+    },
+    "arguments": [
+     "Brand#34",
+     "LARGE BURNISHED%",
+     "42",
+     "28",
+     "31",
+     "5",
+     "9",
+     "41",
+     "47",
+     "6"
+    ],
+    "params": {
+     "brand": "Brand#34",
+     "type": "LARGE BURNISHED%",
+     "size1": "42",
+     "size2": "28",
+     "size3": "31",
+     "size4": "5",
+     "size5": "9",
+     "size6": "41",
+     "size7": "47",
+     "size8": "6"
+    }
+   }
+  ],
+  "Q17": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "BRAND": "Brand#23",
+     "CONTAINER": "MED BOX"
+    },
+    "arguments": [
+     "Brand#23",
+     "MED BOX"
+    ],
+    "params": {
+     "brand": "Brand#23",
+     "container": "MED BOX"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "BRAND": "Brand#21",
+     "CONTAINER": "WRAP CASE"
+    },
+    "arguments": [
+     "Brand#21",
+     "WRAP CASE"
+    ],
+    "params": {
+     "brand": "Brand#21",
+     "container": "WRAP CASE"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "BRAND": "Brand#22",
+     "CONTAINER": "SM BOX"
+    },
+    "arguments": [
+     "Brand#22",
+     "SM BOX"
+    ],
+    "params": {
+     "brand": "Brand#22",
+     "container": "SM BOX"
+    }
+   }
+  ],
+  "Q18": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "QUANTITY": 300
+    },
+    "arguments": [
+     "300"
+    ],
+    "params": {
+     "quantity": "300"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "QUANTITY": 315
+    },
+    "arguments": [
+     "315"
+    ],
+    "params": {
+     "quantity": "315"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "QUANTITY": 313
+    },
+    "arguments": [
+     "313"
+    ],
+    "params": {
+     "quantity": "313"
+    }
+   }
+  ],
+  "Q19": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "QUANTITY1": 1,
+     "QUANTITY2": 10,
+     "QUANTITY3": 20,
+     "BRAND1": "Brand#12",
+     "BRAND2": "Brand#23",
+     "BRAND3": "Brand#34"
+    },
+    "arguments": [
+     "Brand#12",
+     "1",
+     "Brand#23",
+     "10",
+     "Brand#34",
+     "20"
+    ],
+    "params": {
+     "brand1": "Brand#12",
+     "quantity1": "1",
+     "brand2": "Brand#23",
+     "quantity2": "10",
+     "brand3": "Brand#34",
+     "quantity3": "20"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "QUANTITY1": 7,
+     "QUANTITY2": 11,
+     "QUANTITY3": 25,
+     "BRAND1": "Brand#44",
+     "BRAND2": "Brand#31",
+     "BRAND3": "Brand#44"
+    },
+    "arguments": [
+     "Brand#44",
+     "7",
+     "Brand#31",
+     "11",
+     "Brand#44",
+     "25"
+    ],
+    "params": {
+     "brand1": "Brand#44",
+     "quantity1": "7",
+     "brand2": "Brand#31",
+     "quantity2": "11",
+     "brand3": "Brand#44",
+     "quantity3": "25"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "QUANTITY1": 3,
+     "QUANTITY2": 19,
+     "QUANTITY3": 29,
+     "BRAND1": "Brand#52",
+     "BRAND2": "Brand#44",
+     "BRAND3": "Brand#34"
+    },
+    "arguments": [
+     "Brand#52",
+     "3",
+     "Brand#44",
+     "19",
+     "Brand#34",
+     "29"
+    ],
+    "params": {
+     "brand1": "Brand#52",
+     "quantity1": "3",
+     "brand2": "Brand#44",
+     "quantity2": "19",
+     "brand3": "Brand#34",
+     "quantity3": "29"
+    }
+   }
+  ],
+  "Q20": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "COLOR": "forest",
+     "DATE": "1994-01-01",
+     "NATION": "CANADA"
+    },
+    "arguments": [
+     "forest%",
+     "1994-01-01",
+     "CANADA"
+    ],
+    "params": {
+     "color": "forest%",
+     "date": "1994-01-01",
+     "nation": "CANADA"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "COLOR": "green",
+     "DATE": "1996-01-01",
+     "NATION": "UNITED STATES"
+    },
+    "arguments": [
+     "green%",
+     "1996-01-01",
+     "UNITED STATES"
+    ],
+    "params": {
+     "color": "green%",
+     "date": "1996-01-01",
+     "nation": "UNITED STATES"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "COLOR": "papaya",
+     "DATE": "1996-01-01",
+     "NATION": "MOROCCO"
+    },
+    "arguments": [
+     "papaya%",
+     "1996-01-01",
+     "MOROCCO"
+    ],
+    "params": {
+     "color": "papaya%",
+     "date": "1996-01-01",
+     "nation": "MOROCCO"
+    }
+   }
+  ],
+  "Q21": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "SAUDI ARABIA"
+    },
+    "arguments": [
+     "SAUDI ARABIA"
+    ],
+    "params": {
+     "nation": "SAUDI ARABIA"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "IRAN"
+    },
+    "arguments": [
+     "IRAN"
+    ],
+    "params": {
+     "nation": "IRAN"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "NATION": "IRAQ"
+    },
+    "arguments": [
+     "IRAQ"
+    ],
+    "params": {
+     "nation": "IRAQ"
+    }
+   }
+  ],
+  "Q22": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "I1": "13",
+     "I2": "31",
+     "I3": "23",
+     "I4": "29",
+     "I5": "30",
+     "I6": "18",
+     "I7": "17"
+    },
+    "arguments": [
+     "13",
+     "31",
+     "23",
+     "29",
+     "30",
+     "18",
+     "17"
+    ],
+    "params": {
+     "i1": "13",
+     "i2": "31",
+     "i3": "23",
+     "i4": "29",
+     "i5": "30",
+     "i6": "18",
+     "i7": "17"
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "qgen-random",
+    "spec_params": {
+     "I1": "31",
+     "I2": "10",
+     "I3": "26",
+     "I4": "15",
+     "I5": "32",
+     "I6": "25",
+     "I7": "24"
+    },
+    "arguments": [
+     "31",
+     "10",
+     "26",
+     "15",
+     "32",
+     "25",
+     "24"
+    ],
+    "params": {
+     "i1": "31",
+     "i2": "10",
+     "i3": "26",
+     "i4": "15",
+     "i5": "32",
+     "i6": "25",
+     "i7": "24"
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "qgen-random",
+    "spec_params": {
+     "I1": "10",
+     "I2": "18",
+     "I3": "17",
+     "I4": "23",
+     "I5": "28",
+     "I6": "16",
+     "I7": "13"
+    },
+    "arguments": [
+     "10",
+     "18",
+     "17",
+     "23",
+     "28",
+     "16",
+     "13"
+    ],
+    "params": {
+     "i1": "10",
+     "i2": "18",
+     "i3": "17",
+     "i4": "23",
+     "i5": "28",
+     "i6": "16",
+     "i7": "13"
+    }
+   }
+  ]
+ }
+}

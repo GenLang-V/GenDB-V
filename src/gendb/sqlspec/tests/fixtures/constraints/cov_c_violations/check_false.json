@@ -1,0 +1,321 @@
+{
+ "fixture": "cov_c_violation_check_false",
+ "description": "Constraint-violating variant of pg_reference/cov_c.json: CHECK (a > 0) is False. Not loadable by PostgreSQL; run through the verified evaluator only (gendb sql run).",
+ "ddl": [
+  {
+   "path": "src/gendb/sqlspec/tests/fixtures/constraints/cov_c_schema.sql"
+  }
+ ],
+ "tables": [
+  {
+   "name": "pk2",
+   "columns": [
+    "a",
+    "b",
+    "v"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     10
+    ],
+    [
+     1,
+     2,
+     20
+    ],
+    [
+     2,
+     1,
+     30
+    ]
+   ]
+  },
+  {
+   "name": "uq",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     null
+    ],
+    [
+     2,
+     1,
+     null
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     4,
+     null,
+     null
+    ],
+    [
+     5,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "uqn",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     null
+    ],
+    [
+     2,
+     2,
+     null
+    ],
+    [
+     3,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "fks",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     2,
+     9,
+     null
+    ],
+    [
+     3,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "fkf",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     null,
+     null
+    ],
+    [
+     3,
+     2,
+     1
+    ]
+   ]
+  },
+  {
+   "name": "ck",
+   "columns": [
+    "id",
+    "a",
+    "b",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     5,
+     2,
+     "1.00"
+    ],
+    [
+     2,
+     null,
+     null,
+     null
+    ],
+    [
+     3,
+     1,
+     5,
+     "99.99"
+    ],
+    [
+     4,
+     0,
+     2,
+     "1.00"
+    ]
+   ]
+  },
+  {
+   "name": "emp",
+   "columns": [
+    "id",
+    "boss"
+   ],
+   "rows": [
+    [
+     1,
+     null
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "name": "pkn",
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     "1.00"
+    ],
+    [
+     "2.50"
+    ]
+   ]
+  },
+  {
+   "name": "fkn",
+   "columns": [
+    "id",
+    "k"
+   ],
+   "rows": [
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "pkv",
+   "columns": [
+    "s"
+   ],
+   "rows": [
+    [
+     "ab"
+    ],
+    [
+     "cd  "
+    ]
+   ]
+  },
+  {
+   "name": "fkb",
+   "columns": [
+    "id",
+    "s"
+   ],
+   "rows": [
+    [
+     1,
+     "ab"
+    ],
+    [
+     2,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "pkd",
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     "2020-01-01"
+    ]
+   ]
+  },
+  {
+   "name": "fkt",
+   "columns": [
+    "id",
+    "t"
+   ],
+   "rows": [
+    [
+     1,
+     "2020-01-01 00:00:00"
+    ]
+   ]
+  },
+  {
+   "name": "cap",
+   "columns": [
+    "id",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     "1.00"
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "count_pk2",
+   "sql": "SELECT count(*) AS n FROM pk2",
+   "note": "Any query: the constraint check precedes evaluation."
+  }
+ ],
+ "expect_evaluator": "constraint_violation",
+ "postgres_insert": {
+  "table": "ck",
+  "rows": [
+   [
+    4,
+    0,
+    2,
+    "1.00"
+   ]
+  ],
+  "outcome": "23514"
+ }
+}

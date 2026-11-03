@@ -1,0 +1,5 @@
+[
+  {"index": 1, "type": "numeric(10,2)", "binding": {"free": {"min": "-500.00", "max": "999.99"}}},
+  {"index": 2, "type": "date", "binding": {"fixed": "2020-06-30"}},
+  {"index": 3, "type": "integer", "binding": {"free": {"min": "-2147483648", "max": "2147483647"}}}
+]

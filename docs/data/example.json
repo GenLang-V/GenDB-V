@@ -1,0 +1,862 @@
+{
+ "answer": {
+  "binding": "$1 = 4",
+  "count": "916 verified, 0 errors",
+  "formula": "[[3]] ∈ ⟦Q⟧(db)",
+  "rows": [
+   [
+    3
+   ]
+  ],
+  "scope": "for every valid {db} and every value of $1",
+  "verified": "Verified by Verus"
+ },
+ "chain": [
+  {
+   "formula": [
+    "xs[j][0] = values[j]"
+   ],
+   "id": "reader",
+   "kind": "exec",
+   "name": "read_value",
+   "role": "Reader"
+  },
+  {
+   "formula": [
+    "gcount(g, xs[..i]) + 𝟙[values[i] > p]",
+    "= gcount(g, xs[..i+1])"
+   ],
+   "id": "step",
+   "kind": "proof",
+   "name": "lemma_range_step",
+   "role": "Step lemma"
+  },
+  {
+   "edge": "i = n",
+   "extra": {
+    "formula": "n − i",
+    "kw": "decreases"
+   },
+   "formula": [
+    "count = gcount(g, xs[..i])"
+   ],
+   "id": "invariant",
+   "kind": "proof",
+   "role": "Invariant"
+  },
+  {
+   "formula": [
+    "count = gcount(g, xs) = |F|",
+    "⟹ r ∈ ⟦Q⟧(db)"
+   ],
+   "id": "bridge",
+   "kind": "proof",
+   "name": "lemma_body",
+   "role": "Bridge"
+  },
+  {
+   "formula": [
+    "∀db: bound_db(db) ⟹ r ∈ ⟦Q⟧(db)"
+   ],
+   "id": "target",
+   "kind": "fixed",
+   "name": "answer_meets",
+   "role": "Fixed target"
+  }
+ ],
+ "code": {
+  "file": "code/mod.rs",
+  "key": [
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   43,
+   44,
+   45,
+   47,
+   48,
+   51,
+   52,
+   53,
+   54,
+   55,
+   62,
+   63,
+   64,
+   65,
+   66,
+   73,
+   74,
+   75,
+   76,
+   77,
+   78,
+   79,
+   95,
+   97,
+   98,
+   99,
+   100,
+   108,
+   109,
+   110,
+   111
+  ],
+  "lines": [
+   {
+    "kind": "comment",
+    "n": 1,
+    "text": "// AUTHOR MODULE ROOT (crate::agent): `SELECT COUNT(*) AS n FROM readings WHERE value > $1`."
+   },
+   {
+    "kind": "comment",
+    "n": 2,
+    "text": "//"
+   },
+   {
+    "kind": "comment",
+    "n": 3,
+    "text": "// Plan: read the whole `value` column of the flat storage `flat_readings` (one extent of `n` i64 values, row `i` at"
+   },
+   {
+    "kind": "comment",
+    "n": 4,
+    "text": "// position `i`) and count, in one serial pass, the values greater than `$1`. The answer is one row `[count]`, or the"
+   },
+   {
+    "kind": "comment",
+    "n": 5,
+    "text": "// SQL error 22003 when the count exceeds int8 (only possible beyond 2^63 rows). No structure is built."
+   },
+   {
+    "kind": "comment",
+    "n": 6,
+    "text": "//"
+   },
+   {
+    "kind": "comment",
+    "n": 7,
+    "text": "// Proof: the loop keeps `count == gcount(count_spec(p), rels[0][0..i], [])` (the normal form's count over the"
+   },
+   {
+    "kind": "comment",
+    "n": 8,
+    "text": "// first `i` stored rows); `normal_form::lemma_body` turns the final count into the statement's meaning for every"
+   },
+   {
+    "kind": "comment",
+    "n": 9,
+    "text": "// database bound to the stored parts."
+   },
+   {
+    "kind": "exec",
+    "n": 10,
+    "text": "use vstd::prelude::*;"
+   },
+   {
+    "kind": "exec",
+    "n": 11,
+    "text": "use crate::spec::value::*;"
+   },
+   {
+    "kind": "exec",
+    "n": 12,
+    "text": "use crate::spec::order::denote_body;"
+   },
+   {
+    "kind": "exec",
+    "n": 13,
+    "text": "use crate::exec::value::EVal;"
+   },
+   {
+    "kind": "exec",
+    "n": 14,
+    "text": "use crate::query::query_spec_at;"
+   },
+   {
+    "kind": "exec",
+    "n": 15,
+    "text": "use crate::gendb_params::Params;"
+   },
+   {
+    "kind": "exec",
+    "n": 16,
+    "text": "use crate::gendb_entry::{Answer, answer_meets, bound_db, stores_ready};"
+   },
+   {
+    "kind": "exec",
+    "n": 17,
+    "text": "use crate::gendb_entry::parallel::{Dispatch, MAX_WORKERS};"
+   },
+   {
+    "kind": "exec",
+    "n": 18,
+    "text": "use crate::gendb_entry::runtime::QueryError;"
+   },
+   {
+    "kind": "exec",
+    "n": 19,
+    "text": "use crate::gendb_entry::stores::Stores;"
+   },
+   {
+    "kind": "exec",
+    "n": 20,
+    "text": "use crate::link::query::{gcount, hit, lemma_range_step, lemma_empty, lemma_full_range, view_rows};"
+   },
+   {
+    "kind": "exec",
+    "n": 21,
+    "text": "use crate::link::outcome::{lemma_outcome_rows, lemma_outcome_err};"
+   },
+   {
+    "kind": "exec",
+    "n": 22,
+    "text": "use crate::stores::flat_readings::interface::{represents, lemma_represents_determines, read_value, stored_rows};"
+   },
+   {
+    "kind": "exec",
+    "n": 23,
+    "text": "use crate::stores::flat_readings::declaration::stored_relations;"
+   },
+   {
+    "kind": "blank",
+    "n": 24,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 25,
+    "text": "pub mod normal_form;"
+   },
+   {
+    "kind": "blank",
+    "n": 26,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 27,
+    "text": "use normal_form::{count_spec, binding, lemma_body};"
+   },
+   {
+    "kind": "blank",
+    "n": 28,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 29,
+    "text": "verus! {"
+   },
+   {
+    "kind": "blank",
+    "n": 30,
+    "text": ""
+   },
+   {
+    "kind": "fixed",
+    "n": 31,
+    "text": "pub fn query(stores: &mut Stores, params: &Params, workers: usize, dispatch: &mut Dispatch) -> (r: Result<Answer, QueryError>)"
+   },
+   {
+    "kind": "fixed",
+    "n": 32,
+    "text": "    requires"
+   },
+   {
+    "kind": "fixed",
+    "n": 33,
+    "text": "        stores_ready(old(stores)@),"
+   },
+   {
+    "kind": "fixed",
+    "n": 34,
+    "text": "        crate::query::param_domain(params@),"
+   },
+   {
+    "kind": "fixed",
+    "n": 35,
+    "text": "        1 <= workers <= MAX_WORKERS,"
+   },
+   {
+    "kind": "fixed",
+    "n": 36,
+    "text": "    ensures"
+   },
+   {
+    "kind": "fixed",
+    "n": 37,
+    "text": "        answer_meets(old(stores)@, params@, r),"
+   },
+   {
+    "kind": "exec",
+    "n": 38,
+    "text": "{"
+   },
+   {
+    "kind": "comment",
+    "n": 39,
+    "text": "    // The stored relations: those of any bound database (the parts determine them)."
+   },
+   {
+    "kind": "proof",
+    "n": 40,
+    "text": "    let ghost db0 = choose|db: Database| bound_db(old(stores)@, db);"
+   },
+   {
+    "kind": "proof",
+    "n": 41,
+    "text": "    let ghost rels = stored_relations(db0);"
+   },
+   {
+    "kind": "proof",
+    "n": 42,
+    "text": "    let ghost parts = old(stores)@.flat_readings;"
+   },
+   {
+    "kind": "exec",
+    "n": 43,
+    "text": "    let p = params.p0;"
+   },
+   {
+    "kind": "proof",
+    "n": 44,
+    "text": "    let ghost g = count_spec(p as int);"
+   },
+   {
+    "kind": "proof",
+    "n": 45,
+    "text": "    let ghost xs = rels[0];"
+   },
+   {
+    "kind": "blank",
+    "n": 46,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 47,
+    "text": "    let n = stored_rows(&stores.flat_readings, Ghost(rels));"
+   },
+   {
+    "kind": "exec",
+    "n": 48,
+    "text": "    let values = read_value(&mut stores.flat_readings, 0, n, Ghost(rels));"
+   },
+   {
+    "kind": "blank",
+    "n": 49,
+    "text": ""
+   },
+   {
+    "kind": "comment",
+    "n": 50,
+    "text": "    // Count the stored rows `i < n` with `values[i] > p`."
+   },
+   {
+    "kind": "exec",
+    "n": 51,
+    "text": "    let mut count: usize = 0;"
+   },
+   {
+    "kind": "exec",
+    "n": 52,
+    "text": "    let mut i: usize = 0;"
+   },
+   {
+    "kind": "proof",
+    "n": 53,
+    "text": "    proof { lemma_empty(g, xs, 0, Seq::<Val>::empty(), 0); }"
+   },
+   {
+    "kind": "exec",
+    "n": 54,
+    "text": "    while i < n"
+   },
+   {
+    "kind": "proof",
+    "n": 55,
+    "text": "        invariant"
+   },
+   {
+    "kind": "proof",
+    "n": 56,
+    "text": "            g == count_spec(p as int),"
+   },
+   {
+    "kind": "proof",
+    "n": 57,
+    "text": "            n == xs.len(),"
+   },
+   {
+    "kind": "proof",
+    "n": 58,
+    "text": "            values@.len() == n,"
+   },
+   {
+    "kind": "proof",
+    "n": 59,
+    "text": "            forall|j: int| 0 <= j < n ==> #[trigger] xs[0 + j][0] == (Val::Int(values@[j] as int)),"
+   },
+   {
+    "kind": "proof",
+    "n": 60,
+    "text": "            i <= n,"
+   },
+   {
+    "kind": "proof",
+    "n": 61,
+    "text": "            count <= i,"
+   },
+   {
+    "kind": "proof",
+    "n": 62,
+    "text": "            count == gcount(g, xs.subrange(0, i as int), Seq::<Val>::empty()),"
+   },
+   {
+    "kind": "proof",
+    "n": 63,
+    "text": "        decreases n - i,"
+   },
+   {
+    "kind": "exec",
+    "n": 64,
+    "text": "    {"
+   },
+   {
+    "kind": "proof",
+    "n": 65,
+    "text": "        proof {"
+   },
+   {
+    "kind": "proof",
+    "n": 66,
+    "text": "            lemma_range_step(g, xs, 0, i as int, Seq::<Val>::empty(), 0);"
+   },
+   {
+    "kind": "comment",
+    "n": 67,
+    "text": "            // Row `i` qualifies exactly when its value exceeds `p` (the key is always the empty row)."
+   },
+   {
+    "kind": "proof",
+    "n": 68,
+    "text": "            assert(xs[0 + i as int][0] == Val::Int(values@[i as int] as int));"
+   },
+   {
+    "kind": "proof",
+    "n": 69,
+    "text": "            assert(hit(g, xs[i as int], Seq::<Val>::empty()) == (values@[i as int] > p)) by {"
+   },
+   {
+    "kind": "proof",
+    "n": 70,
+    "text": "                assert(0 + i as int == i as int);"
+   },
+   {
+    "kind": "proof",
+    "n": 71,
+    "text": "                assert(normal_form::above(xs[i as int], p as int) == (values@[i as int] > p));"
+   },
+   {
+    "kind": "proof",
+    "n": 72,
+    "text": "            }"
+   },
+   {
+    "kind": "proof",
+    "n": 73,
+    "text": "        }"
+   },
+   {
+    "kind": "exec",
+    "n": 74,
+    "text": "        if values[i] > p {"
+   },
+   {
+    "kind": "exec",
+    "n": 75,
+    "text": "            count = count + 1;"
+   },
+   {
+    "kind": "exec",
+    "n": 76,
+    "text": "        }"
+   },
+   {
+    "kind": "exec",
+    "n": 77,
+    "text": "        i = i + 1;"
+   },
+   {
+    "kind": "exec",
+    "n": 78,
+    "text": "    }"
+   },
+   {
+    "kind": "proof",
+    "n": 79,
+    "text": "    proof { lemma_full_range(xs); }"
+   },
+   {
+    "kind": "blank",
+    "n": 80,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 81,
+    "text": "    let c = count as u64;"
+   },
+   {
+    "kind": "exec",
+    "n": 82,
+    "text": "    let r = if c > 0x7fff_ffff_ffff_ffffu64 {"
+   },
+   {
+    "kind": "exec",
+    "n": 83,
+    "text": "        Ok(Answer::SqlError(SqlError::NumericValueOutOfRange))"
+   },
+   {
+    "kind": "exec",
+    "n": 84,
+    "text": "    } else {"
+   },
+   {
+    "kind": "exec",
+    "n": 85,
+    "text": "        let out = vec![vec![EVal::Int(c as i64)]];"
+   },
+   {
+    "kind": "proof",
+    "n": 86,
+    "text": "        proof {"
+   },
+   {
+    "kind": "proof",
+    "n": 87,
+    "text": "            assert(view_rows(out@) =~= seq![seq![Val::Int(count as int)]]) by {"
+   },
+   {
+    "kind": "proof",
+    "n": 88,
+    "text": "                assert(out@[0]@.map_values(|v: EVal| v@) =~= seq![Val::Int(count as int)]);"
+   },
+   {
+    "kind": "proof",
+    "n": 89,
+    "text": "            }"
+   },
+   {
+    "kind": "proof",
+    "n": 90,
+    "text": "        }"
+   },
+   {
+    "kind": "exec",
+    "n": 91,
+    "text": "        Ok(Answer::Rows(out))"
+   },
+   {
+    "kind": "exec",
+    "n": 92,
+    "text": "    };"
+   },
+   {
+    "kind": "blank",
+    "n": 93,
+    "text": ""
+   },
+   {
+    "kind": "comment",
+    "n": 94,
+    "text": "    // The answer meets the claim for every bound database."
+   },
+   {
+    "kind": "proof",
+    "n": 95,
+    "text": "    proof {"
+   },
+   {
+    "kind": "proof",
+    "n": 96,
+    "text": "        assert(params@ == binding(p as int));"
+   },
+   {
+    "kind": "proof",
+    "n": 97,
+    "text": "        assert forall|db: Database| #[trigger] bound_db(old(stores)@, db) implies"
+   },
+   {
+    "kind": "proof",
+    "n": 98,
+    "text": "            crate::gendb_entry::outcome_ok(db, query_spec_at(params@), r) by {"
+   },
+   {
+    "kind": "proof",
+    "n": 99,
+    "text": "            lemma_represents_determines(parts, stored_relations(db), rels);"
+   },
+   {
+    "kind": "proof",
+    "n": 100,
+    "text": "            lemma_body(db, parts, rels, p as int);"
+   },
+   {
+    "kind": "proof",
+    "n": 101,
+    "text": "            let oq = query_spec_at(params@);"
+   },
+   {
+    "kind": "proof",
+    "n": 102,
+    "text": "            assert(denote_body(db, oq) == crate::spec::eval::eval_query(db, Seq::empty(), oq.body));"
+   },
+   {
+    "kind": "proof",
+    "n": 103,
+    "text": "            if c > 0x7fff_ffff_ffff_ffffu64 {"
+   },
+   {
+    "kind": "proof",
+    "n": 104,
+    "text": "                lemma_outcome_err(db, oq, SqlError::NumericValueOutOfRange);"
+   },
+   {
+    "kind": "proof",
+    "n": 105,
+    "text": "            } else {"
+   },
+   {
+    "kind": "proof",
+    "n": 106,
+    "text": "                lemma_outcome_rows(db, oq, seq![seq![Val::Int(count as int)]]);"
+   },
+   {
+    "kind": "proof",
+    "n": 107,
+    "text": "            }"
+   },
+   {
+    "kind": "proof",
+    "n": 108,
+    "text": "        }"
+   },
+   {
+    "kind": "proof",
+    "n": 109,
+    "text": "    }"
+   },
+   {
+    "kind": "exec",
+    "n": 110,
+    "text": "    r"
+   },
+   {
+    "kind": "exec",
+    "n": 111,
+    "text": "}"
+   },
+   {
+    "kind": "blank",
+    "n": 112,
+    "text": ""
+   },
+   {
+    "kind": "exec",
+    "n": 113,
+    "text": "} // verus!"
+   }
+  ],
+  "regions": [
+   {
+    "from": 31,
+    "id": "target",
+    "node": "target",
+    "tag": "Fixed target",
+    "to": 37
+   },
+   {
+    "from": 47,
+    "id": "reader",
+    "node": "reader",
+    "tag": "Reader",
+    "to": 48
+   },
+   {
+    "from": 53,
+    "id": "start",
+    "node": "invariant",
+    "to": 53
+   },
+   {
+    "from": 55,
+    "id": "invariant",
+    "node": "invariant",
+    "tag": "Invariant",
+    "to": 62
+   },
+   {
+    "from": 63,
+    "id": "decreases",
+    "node": "invariant",
+    "tag": "Termination",
+    "to": 63
+   },
+   {
+    "from": 65,
+    "id": "step",
+    "node": "step",
+    "tag": "Step lemma",
+    "to": 73
+   },
+   {
+    "from": 74,
+    "id": "loop",
+    "node": "step",
+    "tag": "Loop",
+    "to": 77
+   },
+   {
+    "from": 79,
+    "id": "exit",
+    "node": "invariant",
+    "to": 79
+   },
+   {
+    "from": 95,
+    "id": "bridge",
+    "node": "bridge",
+    "tag": "Bridge",
+    "to": 109
+   }
+  ]
+ },
+ "foot": {
+  "domain": "$1 = p ∈ [−2^{63}, 2^{63} − 1]",
+  "result": "p = 4:  ⟦Q⟧(db) = {[[3]]}",
+  "types": [
+   "value: bigint NOT NULL",
+   "$1: bigint"
+  ]
+ },
+ "lead": "One query, from SQL to a verified answer.",
+ "levels": [
+  {
+   "ast": {
+    "arg": "COUNT(*)",
+    "op": "Aggregate"
+   },
+   "id": "agg",
+   "rows": [
+    3
+   ],
+   "sem": "[[|F|]]",
+   "spec": {
+    "arg": "aggs: [Agg::CountStar]",
+    "ctor": "Query::Aggregate"
+   }
+  },
+  {
+   "ast": {
+    "arg": "value > $1",
+    "op": "Filter"
+   },
+   "dropped": [
+    0
+   ],
+   "id": "filter",
+   "rows": [
+    5,
+    5,
+    9
+   ],
+   "sem": "F = [r ∈ R | value(r) > p]",
+   "spec": {
+    "arg": "Cmp(Gt, Col(0), Lit(p))",
+    "ctor": "Query::Filter"
+   }
+  },
+  {
+   "ast": {
+    "arg": "readings",
+    "op": "Table"
+   },
+   "id": "table",
+   "rows": [
+    5,
+    5,
+    9,
+    0
+   ],
+   "sem": "R = db[0]",
+   "spec": {
+    "ctor": "Query::Table(0)"
+   }
+  }
+ ],
+ "param": {
+  "name": "$1",
+  "value": 4
+ },
+ "parts": {
+  "answer": {
+   "title": "The answer"
+  },
+  "meaning": {
+   "heads": [
+    "SQL template",
+    "Typed AST",
+    "SQLSpec",
+    "Semantics"
+   ],
+   "line": "GenDB-V translates the SQL into SQLSpec, a formal meaning of SQL.",
+   "title": "The meaning"
+  },
+  "proof": {
+   "chainHead": "Proof chain",
+   "legend": {
+    "exec": "Code",
+    "fixed": "Fixed target",
+    "proof": "Proof"
+   },
+   "line": "The AI agent writes the code and the proof. GenDB-V fixes the target.",
+   "title": "Code and proof"
+  }
+ },
+ "sql": {
+  "clauses": [
+   {
+    "level": "agg",
+    "text": "SELECT COUNT(*) AS n"
+   },
+   {
+    "level": "table",
+    "text": "FROM readings"
+   },
+   {
+    "level": "filter",
+    "text": "WHERE value > $1;"
+   }
+  ]
+ },
+ "table": {
+  "check": "CHECK (value >= 0)",
+  "column": "value",
+  "name": "readings",
+  "rows": [
+   5,
+   5,
+   9,
+   0
+  ],
+  "type": "bigint NOT NULL"
+ },
+ "title": "Example"
+}

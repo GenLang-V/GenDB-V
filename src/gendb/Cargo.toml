@@ -1,0 +1,45 @@
+# The GenDB-V workspace. Build with `cargo build --release -p gendb` (binary: target/release/gendb).
+[workspace]
+resolver = "2"
+members = [
+    "frontend",
+    "sqlspec",
+    "registry",
+    "artifacts",
+    "storage",
+    "runtime",
+    "verification",
+    "synthesis",
+    "cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0"
+
+# External versions carried unchanged from the earlier GenDB version (Cargo.lock pins the exact releases).
+# async-trait was a direct requirement of that version's query planning.
+[workspace.dependencies]
+arrow = "=58.1.0"
+async-trait = "0.1"
+chrono = "0.4"
+datafusion = "=53.1.0"
+libc = "=0.2.189"
+num-bigint = "0.4"
+num-traits = "0.2"
+parquet = "=58.1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
+
+gendb-frontend = { path = "frontend" }
+gendb-sqlspec = { path = "sqlspec" }
+gendb-registry = { path = "registry" }
+gendb-artifacts = { path = "artifacts" }
+gendb-storage = { path = "storage" }
+gendb-runtime = { path = "runtime" }
+gendb-verification = { path = "verification" }
+gendb-synthesis = { path = "synthesis" }

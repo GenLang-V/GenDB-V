@@ -1,0 +1,122 @@
+{
+ "name": "factext",
+ "tables": [
+  {
+   "columns": [
+    "l_comment"
+   ],
+   "table": "lineitem"
+  },
+  {
+   "columns": [
+    "o_clerk",
+    "o_comment"
+   ],
+   "table": "orders"
+  }
+ ],
+ "parts": [
+  "lineitem.layout: U64 [rows, block rows]",
+  "lineitem.groups: U64 group starts",
+  "lineitem.l_comment: U64 offsets",
+  "lineitem.l_comment: U8 bytes",
+  "orders.layout: U64 [rows, block rows]",
+  "orders.groups: U64 group starts",
+  "orders.o_clerk: U32 codes of dictionary indices",
+  "orders.o_clerk: U64 group bases of dictionary indices",
+  "orders.o_clerk: U64 dictionary offsets",
+  "orders.o_clerk: U8 dictionary bytes",
+  "orders.o_comment: U64 offsets",
+  "orders.o_comment: U8 bytes"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "lineitem",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 1,
+   "table": "lineitem",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 2,
+   "table": "lineitem",
+   "kind": "base_payload",
+   "columns": [
+    "l_comment"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "lineitem",
+   "kind": "base_payload",
+   "columns": [
+    "l_comment"
+   ]
+  },
+  {
+   "part": 4,
+   "table": "orders",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 5,
+   "table": "orders",
+   "kind": "layout_offsets_counts"
+  },
+  {
+   "part": 6,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_clerk"
+   ]
+  },
+  {
+   "part": 7,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_clerk"
+   ]
+  },
+  {
+   "part": 8,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_clerk"
+   ]
+  },
+  {
+   "part": 9,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_clerk"
+   ]
+  },
+  {
+   "part": 10,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_comment"
+   ]
+  },
+  {
+   "part": 11,
+   "table": "orders",
+   "kind": "base_payload",
+   "columns": [
+    "o_comment"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "The long, rarely used text columns of lineitem (l_comment) and orders (o_clerk as a sorted dictionary of 100000 entries with U32 codes, o_comment as text), in canonical row order (stored row j = source row j), with uniform 65536-row groups.",
+  "units": "Integers exact: bigint as integers, numeric(15,2) as coefficients of scale 2 (value = coefficient / 100), dates as days since 2000-01-01 (Val::Date); frame-of-reference value = group base (I64, or U64 for dictionary indices and row positions) + unsigned code (U8/U16/U32) of the row; text offsets are byte offsets (U64, from 0) into the U8 byte part; group starts and row positions are stored-row indices; block size 65536 rows."
+ }
+}

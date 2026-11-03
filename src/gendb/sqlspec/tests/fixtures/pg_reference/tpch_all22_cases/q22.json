@@ -1,0 +1,32 @@
+{
+ "fixture": "tpch_all22_q22",
+ "description": "TPC-H Q22 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 48.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [1, "AMERICA"],
+    [2, "ASIA"],
+    [4, "MIDDLE EAST"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [3, "CANADA", 1],
+    [8, "INDIA", 2],
+    [13, "JORDAN", 4],
+    [20, "SAUDI ARABIA", 4]
+  ]},
+  {"name": "customer", "columns": ["c_custkey", "c_name", "c_address", "c_nationkey", "c_phone", "c_acctbal", "c_mktsegment"], "defaults": {"c_comment": "fixture"}, "rows": [
+    [3, "Customer#000000003", "3 Park Road", 8, "18-100-100-1003", "3000.00", "MACHINERY"],
+    [10, "Customer#000000010", "10 Bay Street", 3, "13-100-100-1010", "9000.00", "BUILDING"],
+    [11, "Customer#000000011", "11 Bay Street", 3, "13-100-100-1011", "8000.00", "HOUSEHOLD"],
+    [12, "Customer#000000012", "12 Tahlia Street", 20, "30-100-100-1012", "7000.00", "MACHINERY"],
+    [13, "Customer#000000013", "13 Rainbow Street", 13, "23-100-100-1013", "100.00", "FURNITURE"],
+    [14, "Customer#000000014", "14 Bay Street", 3, "13-100-100-1014", "-500.00", "AUTOMOBILE"]
+  ]},
+  {"name": "orders", "columns": ["o_orderkey", "o_custkey", "o_orderstatus", "o_totalprice", "o_orderdate", "o_orderpriority", "o_comment"], "defaults": {"o_clerk": "Clerk#000000001", "o_shippriority": 0}, "rows": [
+    [50, 3, "F", "4000.00", "1994-03-01", "2-HIGH", "fixture"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q22", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q22"}, "order_keys": [{"column": "cntrycode"}], "note": "SUBSTRING of char(15), IN list, uncorrelated scalar AVG, NOT EXISTS. Average positive balance over the listed codes = 27100 / 5 = 5420 (customers 3, 10, 11, 12, 13). Code 13: customers 10 and 11; code 30: customer 12. Excluded: 13 (100.00), 14 (negative), 3 (has order 50)."}
+ ]
+}

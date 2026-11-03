@@ -1,0 +1,352 @@
+{
+ "fixture": "cov_c",
+ "description": "VERUS_SQL_COVERAGE task C: integrity constraints. A constraint-valid instance of constraints/cov_c_schema.sql (composite PRIMARY KEY, UNIQUE with NULLs and NULLS NOT DISTINCT, composite FKs MATCH SIMPLE / FULL with a permuted mapping, self FK, cross-type FKs, CHECK True/Unknown incl. integer division and CASE). Violating instances are in ../constraints/cov_c_violations/ (PostgreSQL cannot load them).",
+ "ddl": [
+  {
+   "path": "src/gendb/sqlspec/tests/fixtures/constraints/cov_c_schema.sql"
+  }
+ ],
+ "tables": [
+  {
+   "name": "pk2",
+   "columns": [
+    "a",
+    "b",
+    "v"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     10
+    ],
+    [
+     1,
+     2,
+     20
+    ],
+    [
+     2,
+     1,
+     30
+    ]
+   ]
+  },
+  {
+   "name": "uq",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     null
+    ],
+    [
+     2,
+     1,
+     null
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     4,
+     null,
+     null
+    ],
+    [
+     5,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "uqn",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     null
+    ],
+    [
+     2,
+     2,
+     null
+    ],
+    [
+     3,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "fks",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     2,
+     9,
+     null
+    ],
+    [
+     3,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "fkf",
+   "columns": [
+    "id",
+    "x",
+    "y"
+   ],
+   "rows": [
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     null,
+     null
+    ],
+    [
+     3,
+     2,
+     1
+    ]
+   ]
+  },
+  {
+   "name": "ck",
+   "columns": [
+    "id",
+    "a",
+    "b",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     5,
+     2,
+     "1.00"
+    ],
+    [
+     2,
+     null,
+     null,
+     null
+    ],
+    [
+     3,
+     1,
+     5,
+     "99.99"
+    ]
+   ]
+  },
+  {
+   "name": "emp",
+   "columns": [
+    "id",
+    "boss"
+   ],
+   "rows": [
+    [
+     1,
+     null
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "name": "pkn",
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     "1.00"
+    ],
+    [
+     "2.50"
+    ]
+   ]
+  },
+  {
+   "name": "fkn",
+   "columns": [
+    "id",
+    "k"
+   ],
+   "rows": [
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "pkv",
+   "columns": [
+    "s"
+   ],
+   "rows": [
+    [
+     "ab"
+    ],
+    [
+     "cd  "
+    ]
+   ]
+  },
+  {
+   "name": "fkb",
+   "columns": [
+    "id",
+    "s"
+   ],
+   "rows": [
+    [
+     1,
+     "ab"
+    ],
+    [
+     2,
+     null
+    ]
+   ]
+  },
+  {
+   "name": "pkd",
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     "2020-01-01"
+    ]
+   ]
+  },
+  {
+   "name": "fkt",
+   "columns": [
+    "id",
+    "t"
+   ],
+   "rows": [
+    [
+     1,
+     "2020-01-01 00:00:00"
+    ]
+   ]
+  },
+  {
+   "name": "cap",
+   "columns": [
+    "id",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     "1.00"
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "c_pk2",
+   "sql": "SELECT a, b, v FROM pk2",
+   "note": "Composite PRIMARY KEY (a, b): distinct pairs, a repeated alone."
+  },
+  {
+   "name": "c_uq_nulls",
+   "sql": "SELECT id, x, y FROM uq",
+   "note": "UNIQUE (x, y) NULLS DISTINCT: (1, NULL) twice and (NULL, NULL) twice are accepted."
+  },
+  {
+   "name": "c_uqn",
+   "sql": "SELECT id, x, y FROM uqn",
+   "note": "UNIQUE NULLS NOT DISTINCT: (1, NULL), (2, NULL), (NULL, NULL) are distinct tuples."
+  },
+  {
+   "name": "c_fk_simple_join",
+   "sql": "SELECT f.id, p.v FROM fks f JOIN pk2 p ON f.x = p.a AND f.y = p.b",
+   "note": "Composite FK MATCH SIMPLE: (9, NULL) and (NULL, NULL) are exempt and join nothing."
+  },
+  {
+   "name": "c_fk_full_permuted",
+   "sql": "SELECT f.id, p.v FROM fkf f JOIN pk2 p ON f.y = p.b AND f.x = p.a",
+   "note": "MATCH FULL FK (y, x) -> pk2 (b, a) (column mapping permuted); all-NULL row exempt."
+  },
+  {
+   "name": "c_check_rows",
+   "sql": "SELECT id, a, b, c FROM ck",
+   "note": "CHECK True everywhere or Unknown (row 2: a, b, c NULL): accepted."
+  },
+  {
+   "name": "c_self_fk",
+   "sql": "SELECT e.id, b.id AS boss FROM emp e LEFT JOIN emp b ON e.boss = b.id",
+   "note": "Self-referencing FK (DEFERRABLE INITIALLY DEFERRED metadata); row 3 references itself."
+  },
+  {
+   "name": "c_fk_int8_numeric",
+   "sql": "SELECT n.id, p.k FROM fkn n JOIN pkn p ON n.k = p.k",
+   "note": "bigint FK referencing numeric(6,2) key: value equality 1 = 1.00."
+  },
+  {
+   "name": "c_fk_bpchar_varchar",
+   "sql": "SELECT id, s FROM fkb",
+   "note": "char(5) FK referencing varchar(5): PostgreSQL casts with rtrim, i.e. the canonical stored char value."
+  },
+  {
+   "name": "c_fk_timestamp_date",
+   "sql": "SELECT id, t FROM fkt",
+   "note": "timestamp FK referencing a date key: midnight equals the date."
+  },
+  {
+   "name": "c_check_capacity_row",
+   "sql": "SELECT id, c FROM cap",
+   "note": "CHECK with a 10-fold product; 1.00 stays in the executable domain."
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "fixture": "tpch_all22_q16",
+ "description": "TPC-H Q16 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 280.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [1, "AMERICA"],
+    [2, "ASIA"],
+    [3, "EUROPE"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [6, "FRANCE", 3],
+    [7, "GERMANY", 3],
+    [8, "INDIA", 2],
+    [12, "JAPAN", 2],
+    [17, "PERU", 1],
+    [23, "UNITED KINGDOM", 3]
+  ]},
+  {"name": "supplier", "columns": ["s_suppkey", "s_name", "s_address", "s_nationkey", "s_phone", "s_acctbal", "s_comment"], "rows": [
+    [1, "Supplier#000000001", "1 Rue de Lyon", 6, "16-200-200-2001", "5000.00", "fixture"],
+    [2, "Supplier#000000002", "2 Hauptstrasse", 7, "17-200-200-2002", "4000.00", "fixture"],
+    [3, "Supplier#000000003", "3 High Street", 23, "33-200-200-2003", "5000.00", "fixture"],
+    [4, "Supplier#000000004", "4 MG Road", 8, "18-200-200-2004", "1500.00", "fixture"],
+    [5, "Supplier#000000005", "5 Ginza", 12, "22-200-200-2005", "2500.00", "fixture"],
+    [11, "Supplier#000000011", "11 Avenida Arequipa", 17, "27-200-200-2011", "100.00", "blithely Customer ideas Complaints nag"]
+  ]},
+  {"name": "part", "columns": ["p_partkey", "p_name", "p_mfgr", "p_brand", "p_type", "p_size", "p_container", "p_retailprice"], "defaults": {"p_comment": "fixture"}, "rows": [
+    [7, "navy orchid peach smoke", "Manufacturer#2", "Brand#52", "PROMO BURNISHED COPPER", 9, "LG PACK", "100.00"],
+    [8, "rose salmon sienna tan", "Manufacturer#4", "Brand#41", "MEDIUM BRUSHED TIN", 49, "JUMBO BOX", "100.00"],
+    [9, "saddle seashell sky slate", "Manufacturer#4", "Brand#45", "SMALL BRUSHED TIN", 49, "JUMBO BAG", "100.00"],
+    [10, "smoke snow spring steel", "Manufacturer#1", "Brand#13", "MEDIUM POLISHED NICKEL", 14, "WRAP BOX", "100.00"],
+    [11, "tan thistle tomato turquoise", "Manufacturer#1", "Brand#13", "SMALL ANODIZED BRASS", 3, "WRAP PACK", "100.00"]
+  ]},
+  {"name": "partsupp", "columns": ["ps_partkey", "ps_suppkey", "ps_availqty", "ps_supplycost"], "defaults": {"ps_comment": "fixture"}, "rows": [
+    [7, 5, 500, "40.00"],
+    [8, 1, 500, "5.00"],
+    [8, 2, 1, "1.00"],
+    [8, 11, 500, "5.00"],
+    [9, 1, 500, "5.00"],
+    [10, 1, 500, "5.00"],
+    [11, 3, 500, "5.00"],
+    [11, 4, 500, "5.00"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q16", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q16"}, "order_keys": [{"column": "supplier_cnt", "descending": true}, {"column": "p_brand"}, {"column": "p_type"}, {"column": "p_size"}], "note": "COUNT(DISTINCT), NOT LIKE, IN list, NOT IN subquery. Part 8 counts 2 (supplier 11 has the 'Customer...Complaints' comment), part 11 counts 2, part 7 counts 1. Excluded: part 9 (Brand#45), part 10 (MEDIUM POLISHED)."}
+ ]
+}

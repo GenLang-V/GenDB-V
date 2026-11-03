@@ -1,0 +1,286 @@
+{
+ "format": "gendb.sec-edgar.canonical.v1",
+ "scale": "SF3 (2022q1-2024q4)",
+ "original_data_bytes": 5439582957,
+ "note": "The manifest of the canonical data, as make_canonical.py writes it beside the Parquet files. rows, row_groups and arrow_schema describe the data; bytes and created_by come from the Parquet writer (pyarrow 20.0.0 here) and can differ with another pyarrow version. setup_data.sh compares a new MANIFEST.json with this one. original_data_bytes is the size of the data as '|'-delimited text (sub 14,419,907, num 4,033,305,276, tag 217,981,001 and pre 1,173,876,773 bytes); GenDB takes it as the default storage budget, and setup_data.sh copies it into the new MANIFEST.json when rows and schema are equal.",
+ "tables": {
+  "sub": {
+   "file": "sub.parquet",
+   "rows": 86135,
+   "bytes": 4640186,
+   "row_groups": 12,
+   "created_by": "parquet-cpp-arrow version 20.0.0",
+   "arrow_schema": [
+    [
+     "adsh",
+     "string",
+     false
+    ],
+    [
+     "cik",
+     "int32",
+     false
+    ],
+    [
+     "name",
+     "string",
+     false
+    ],
+    [
+     "sic",
+     "int32",
+     true
+    ],
+    [
+     "countryba",
+     "string",
+     true
+    ],
+    [
+     "stprba",
+     "string",
+     true
+    ],
+    [
+     "cityba",
+     "string",
+     true
+    ],
+    [
+     "countryinc",
+     "string",
+     true
+    ],
+    [
+     "form",
+     "string",
+     false
+    ],
+    [
+     "period",
+     "int32",
+     true
+    ],
+    [
+     "fy",
+     "int32",
+     true
+    ],
+    [
+     "fp",
+     "string",
+     true
+    ],
+    [
+     "filed",
+     "int32",
+     false
+    ],
+    [
+     "accepted",
+     "string",
+     false
+    ],
+    [
+     "prevrpt",
+     "int32",
+     false
+    ],
+    [
+     "nciks",
+     "int32",
+     false
+    ],
+    [
+     "afs",
+     "string",
+     true
+    ],
+    [
+     "wksi",
+     "int32",
+     false
+    ],
+    [
+     "fye",
+     "string",
+     true
+    ],
+    [
+     "instance",
+     "string",
+     false
+    ]
+   ]
+  },
+  "tag": {
+   "file": "tag.parquet",
+   "rows": 1070662,
+   "bytes": 74749985,
+   "row_groups": 2,
+   "created_by": "parquet-cpp-arrow version 20.0.0",
+   "arrow_schema": [
+    [
+     "tag",
+     "string",
+     false
+    ],
+    [
+     "version",
+     "string",
+     false
+    ],
+    [
+     "custom",
+     "int32",
+     false
+    ],
+    [
+     "abstract",
+     "int32",
+     false
+    ],
+    [
+     "datatype",
+     "string",
+     true
+    ],
+    [
+     "iord",
+     "string",
+     false
+    ],
+    [
+     "crdr",
+     "string",
+     true
+    ],
+    [
+     "tlabel",
+     "string",
+     true
+    ],
+    [
+     "doc",
+     "string",
+     true
+    ]
+   ]
+  },
+  "num": {
+   "file": "num.parquet",
+   "rows": 39401761,
+   "bytes": 754125661,
+   "row_groups": 47,
+   "created_by": "parquet-cpp-arrow version 20.0.0",
+   "arrow_schema": [
+    [
+     "adsh",
+     "string",
+     false
+    ],
+    [
+     "tag",
+     "string",
+     false
+    ],
+    [
+     "version",
+     "string",
+     false
+    ],
+    [
+     "ddate",
+     "int32",
+     false
+    ],
+    [
+     "qtrs",
+     "int32",
+     false
+    ],
+    [
+     "uom",
+     "string",
+     false
+    ],
+    [
+     "coreg",
+     "string",
+     true
+    ],
+    [
+     "value",
+     "decimal128(28, 4)",
+     false
+    ],
+    [
+     "footnote",
+     "string",
+     true
+    ]
+   ]
+  },
+  "pre": {
+   "file": "pre.parquet",
+   "rows": 9600799,
+   "bytes": 220730835,
+   "row_groups": 12,
+   "created_by": "parquet-cpp-arrow version 20.0.0",
+   "arrow_schema": [
+    [
+     "adsh",
+     "string",
+     false
+    ],
+    [
+     "report",
+     "int32",
+     false
+    ],
+    [
+     "line",
+     "int32",
+     false
+    ],
+    [
+     "stmt",
+     "string",
+     true
+    ],
+    [
+     "inpth",
+     "int32",
+     false
+    ],
+    [
+     "rfile",
+     "string",
+     false
+    ],
+    [
+     "tag",
+     "string",
+     false
+    ],
+    [
+     "version",
+     "string",
+     false
+    ],
+    [
+     "plabel",
+     "string",
+     true
+    ],
+    [
+     "negating",
+     "int32",
+     false
+    ]
+   ]
+  }
+ },
+ "generation": "data/sf3/generation.json, the cleaning record make_canonical.py writes",
+ "schema": "sec_schema.py (columns, types, nullability, keys); schema.sql"
+}

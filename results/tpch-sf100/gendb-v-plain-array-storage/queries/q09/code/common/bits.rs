@@ -1,0 +1,189 @@
+//! Bit-level facts about 64-bit masks (one bit per row of a 64-row block): setting a bit, clearing the lowest set
+//! bit, the first set bit (`trailing_zeros`), prefix XOR, and the number of set bits below a position.
+//! Each fact is one small `bit_vector` lemma, stated for a single bit position.
+use vstd::prelude::*;
+use vstd::std_specs::bits::{u64_trailing_zeros, axiom_u64_trailing_zeros};
+
+verus! {
+
+/// Bit `u` of `m` (positions `0..64`).
+pub open spec fn bit(m: u64, u: u64) -> bool { (m >> u) & 1u64 == 1u64 }
+
+/// Number of set bits of `m` at positions `0..n`.
+pub open spec fn count_below(m: u64, n: int) -> int
+    decreases n,
+{
+    if n <= 0 { 0 } else { count_below(m, n - 1) + if n <= 64 && bit(m, (n - 1) as u64) { 1int } else { 0int } }
+}
+
+/// `m` with bit `t` set to `x` (`m` has bit `t` clear).
+pub proof fn lemma_bit_set(m: u64, x: u64, t: u64, u: u64)
+    requires t < 64, u < 64, x <= 1, !bit(m, t),
+    ensures bit(m | (x << t), u) == if u == t { x == 1 } else { bit(m, u) },
+{
+    assert(((m >> t) & 1u64 != 1u64 && t < 64 && u < 64 && x <= 1) ==>
+        ((((m | (x << t)) >> u) & 1u64 == 1u64) == if u == t { x == 1 } else { (m >> u) & 1u64 == 1u64 })) by (bit_vector);
+}
+
+/// The empty mask.
+pub proof fn lemma_bit_zero(u: u64)
+    ensures !bit(0, u),
+{
+    assert((0u64 >> u) & 1u64 != 1u64) by (bit_vector);
+}
+
+/// Bits of a conjunction.
+pub proof fn lemma_bit_and(a: u64, b: u64, u: u64)
+    ensures bit(a & b, u) == (bit(a, u) && bit(b, u)),
+{
+    assert((((a & b) >> u) & 1u64 == 1u64) == (((a >> u) & 1u64 == 1u64) && ((b >> u) & 1u64 == 1u64))) by (bit_vector);
+}
+
+/// XOR with all ones (`d == 1`) or none (`d == 0`) flips every bit or none.
+pub proof fn lemma_bit_flip(p: u64, d: u64, u: u64)
+    requires d <= 1, u < 64,
+    ensures bit(p ^ (0u64.wrapping_sub(d)), u) == (bit(p, u) != (d == 1)),
+{
+    assert(0u64.wrapping_sub(d) == if d == 1 { 0xffff_ffff_ffff_ffffu64 } else { 0u64 }) by {
+        assert(0u64.wrapping_sub(0) == 0u64);
+    }
+    assert((d <= 1 && u < 64) ==> ((((p ^ (if d == 1 { 0xffff_ffff_ffff_ffffu64 } else { 0u64 })) >> u) & 1u64 == 1u64)
+        == (((p >> u) & 1u64 == 1u64) != (d == 1)))) by (bit_vector);
+}
+
+/// The first set bit of a non-zero mask: set, and every bit below it clear.
+pub proof fn lemma_first_bit(c: u64)
+    requires c != 0,
+    ensures
+        c.trailing_zeros() < 64,
+        bit(c, c.trailing_zeros() as u64),
+        forall|u: u64| u < c.trailing_zeros() ==> !#[trigger] bit(c, u),
+{
+    axiom_u64_trailing_zeros(c);
+}
+
+/// Clearing the lowest set bit `s` of `c` keeps every other bit.
+pub proof fn lemma_clear_lowest(c: u64, s: u64, u: u64)
+    requires
+        c != 0, s < 64, u < 64, bit(c, s),
+        forall|v: u64| v < s ==> !#[trigger] bit(c, v),
+    ensures bit(c & sub(c, 1), u) == (bit(c, u) && u != s),
+{
+    if u < s {
+        assert(!bit(c, u));
+        assert(((c >> u) & 1u64 != 1u64 && u < s && s < 64) ==> (((c & sub(c, 1)) >> u) & 1u64 != 1u64)) by (bit_vector);
+    } else if u == s {
+        assert(!bit(c, 0) || s == 0);
+        // the bits below s are zero, so c - 1 clears bit s and sets the bits below it
+        lemma_low_bits_zero(c, s);
+        assert((c & sub(sub(1u64 << s, 1), 0) == 0u64 && ((c >> s) & 1u64 == 1u64) && s < 64) ==>
+            (((c & sub(c, 1)) >> s) & 1u64 != 1u64)) by (bit_vector);
+    } else {
+        lemma_low_bits_zero(c, s);
+        assert((c & sub(sub(1u64 << s, 1), 0) == 0u64 && ((c >> s) & 1u64 == 1u64) && s < u && u < 64) ==>
+            ((((c & sub(c, 1)) >> u) & 1u64 == 1u64) == ((c >> u) & 1u64 == 1u64))) by (bit_vector);
+    }
+}
+
+/// The bits of `c` below `s` are clear exactly when `c & (2^s - 1) == 0`.
+pub proof fn lemma_low_bits_zero(c: u64, s: u64)
+    requires s < 64, forall|v: u64| v < s ==> !#[trigger] bit(c, v),
+    ensures c & sub(sub(1u64 << s, 1), 0) == 0u64,
+    decreases s,
+{
+    if s > 0 {
+        assert(!bit(c, (s - 1) as u64));
+        lemma_low_bits_zero(c, (s - 1) as u64);
+        let t = (s - 1) as u64;
+        assert((c & sub(sub(1u64 << t, 1), 0) == 0u64 && ((c >> t) & 1u64 != 1u64) && t < 63 && s == t + 1) ==>
+            c & sub(sub(1u64 << s, 1), 0) == 0u64) by (bit_vector);
+    } else {
+        assert(c & sub(sub(1u64 << 0u64, 1), 0) == 0u64) by (bit_vector);
+    }
+}
+
+/// Prefix XOR: bit `t` of the result is the XOR of bits `0..=t` of `x`.
+pub open spec fn prefix_xor(x: u64) -> u64 {
+    let a = x ^ (x << 1u64);
+    let b = a ^ (a << 2u64);
+    let c = b ^ (b << 4u64);
+    let d = c ^ (c << 8u64);
+    let e = d ^ (d << 16u64);
+    e ^ (e << 32u64)
+}
+
+/// `prefix_xor(x)` is the `p` with `p ^ (p << 1) == x`: bit 0 is `x`'s, and bit `t` toggles bit `t - 1` by `x`'s.
+pub proof fn lemma_prefix_xor(x: u64, t: u64)
+    requires t < 64,
+    ensures
+        t == 0 ==> bit(prefix_xor(x), 0) == bit(x, 0),
+        t > 0 ==> bit(prefix_xor(x), t) == (bit(prefix_xor(x), (t - 1) as u64) != bit(x, t)),
+{
+    let p = prefix_xor(x);
+    assert({
+        let a = x ^ (x << 1u64);
+        let b = a ^ (a << 2u64);
+        let c = b ^ (b << 4u64);
+        let d = c ^ (c << 8u64);
+        let e = d ^ (d << 16u64);
+        let p = e ^ (e << 32u64);
+        p ^ (p << 1u64) == x
+    }) by (bit_vector);
+    assert(p ^ (p << 1u64) == x);
+    if t == 0 {
+        assert((p ^ (p << 1u64) == x) ==> (((p >> 0u64) & 1u64 == 1u64) == ((x >> 0u64) & 1u64 == 1u64))) by (bit_vector);
+    } else {
+        let s = (t - 1) as u64;
+        assert((p ^ (p << 1u64) == x && 0 < t && t < 64 && s == t - 1) ==>
+            (((p >> t) & 1u64 == 1u64) == (((p >> s) & 1u64 == 1u64) != ((x >> t) & 1u64 == 1u64)))) by (bit_vector);
+    }
+}
+
+/// Bit `u % 64` of word `u / 64`, for row `u` of a bitmap stored as 64-bit words.
+pub open spec fn word_bit(words: Seq<u64>, u: int) -> bool {
+    0 <= u && u / 64 < words.len() && bit(words[u / 64], (u % 64) as u64)
+}
+
+/// `count_below` steps.
+pub proof fn lemma_count_step(m: u64, n: int)
+    requires 0 <= n < 64,
+    ensures count_below(m, n + 1) == count_below(m, n) + if bit(m, n as u64) { 1int } else { 0int },
+{
+}
+
+/// No set bit in `p..q`: equal counts.
+pub proof fn lemma_count_flat(m: u64, p: int, q: int)
+    requires 0 <= p <= q <= 64, forall|u: u64| p <= u < q ==> !#[trigger] bit(m, u),
+    ensures count_below(m, q) == count_below(m, p),
+    decreases q - p,
+{
+    if q > p {
+        assert(!bit(m, (q - 1) as u64));
+        lemma_count_flat(m, p, q - 1);
+    }
+}
+
+/// Counts are monotone and bounded by the position.
+pub proof fn lemma_count_bounds(m: u64, p: int, q: int)
+    requires 0 <= p <= q <= 64,
+    ensures 0 <= count_below(m, p) <= count_below(m, q) <= count_below(m, p) + (q - p), count_below(m, q) <= q,
+    decreases q - p,
+{
+    if q > p {
+        lemma_count_bounds(m, p, q - 1);
+    } else {
+        lemma_count_nonneg(m, p);
+    }
+}
+
+pub proof fn lemma_count_nonneg(m: u64, n: int)
+    requires 0 <= n <= 64,
+    ensures 0 <= count_below(m, n) <= n,
+    decreases n,
+{
+    if n > 0 {
+        lemma_count_nonneg(m, n - 1);
+    }
+}
+
+} // verus!

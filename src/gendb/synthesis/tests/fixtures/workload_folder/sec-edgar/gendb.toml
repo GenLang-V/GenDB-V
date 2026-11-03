@@ -1,0 +1,6 @@
+name = "sec"
+mode = "templates"
+storage = "designed"
+threads = [1, 32, 64]
+compare_with = "duckdb"
+storage_budget_bytes = 5439582957

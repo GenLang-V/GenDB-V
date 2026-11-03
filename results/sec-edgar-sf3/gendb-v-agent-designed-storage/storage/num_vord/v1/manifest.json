@@ -1,0 +1,43 @@
+{
+ "name": "num_vord",
+ "tables": [
+  {
+   "columns": [
+    "adsh",
+    "tag",
+    "version",
+    "ddate",
+    "qtrs",
+    "uom",
+    "coreg",
+    "value",
+    "footnote"
+   ],
+   "table": "num"
+  }
+ ],
+ "parts": [
+  "vorder: U64, n entries; for every uom code u, positions [unit_row(u), unit_row(u + 1)) hold the stored rows of that same range ordered by value descending, ties by stored row (row positions only)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "num",
+   "kind": "permutation",
+   "columns": [
+    "uom",
+    "value"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "the 27 parts of storage num unchanged, then vorder: per unit (uom code), the unit's stored row positions sorted by value descending (ties by row), at the unit's own positions.",
+  "units": "vorder: stored row positions of num"
+ },
+ "built_from": {
+  "sources": [
+   "num"
+  ],
+  "extends": "num"
+ }
+}

@@ -1,0 +1,507 @@
+{
+ "format": "gendb.tpch.param_forms.v1",
+ "meaning": "How each GenDB template parameter's value is formed from the TPC-H specification's substitution parameters (spec 2.4). `value` is the expression; GenDB argument texts: dates YYYY-MM-DD, numerics as decimal text at the declared scale, integers and text as is.",
+ "queries": {
+  "Q01": {
+   "delta": {
+    "type": "date",
+    "spec_parameters": [
+     "DELTA"
+    ],
+    "value": "DATE '1998-12-01' - DELTA days (DELTA in 60..120)",
+    "validation": "1998-09-02"
+   }
+  },
+  "Q02": {
+   "size": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE"
+    ],
+    "value": "SIZE",
+    "validation": "15"
+   },
+   "type": {
+    "type": "text",
+    "spec_parameters": [
+     "TYPE"
+    ],
+    "value": "'%' || TYPE",
+    "validation": "%BRASS"
+   },
+   "region": {
+    "type": "text",
+    "spec_parameters": [
+     "REGION"
+    ],
+    "value": "REGION",
+    "validation": "EUROPE"
+   }
+  },
+  "Q03": {
+   "segment": {
+    "type": "text",
+    "spec_parameters": [
+     "SEGMENT"
+    ],
+    "value": "SEGMENT",
+    "validation": "BUILDING"
+   },
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1995-03-15"
+   }
+  },
+  "Q04": {
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1993-07-01"
+   }
+  },
+  "Q05": {
+   "region": {
+    "type": "text",
+    "spec_parameters": [
+     "REGION"
+    ],
+    "value": "REGION",
+    "validation": "ASIA"
+   },
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1994-01-01"
+   }
+  },
+  "Q06": {
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1994-01-01"
+   },
+   "discount": {
+    "type": "numeric(15,2)",
+    "spec_parameters": [
+     "DISCOUNT"
+    ],
+    "value": "DISCOUNT",
+    "validation": "0.06"
+   },
+   "quantity": {
+    "type": "integer",
+    "spec_parameters": [
+     "QUANTITY"
+    ],
+    "value": "QUANTITY",
+    "validation": "24"
+   }
+  },
+  "Q07": {
+   "nation1": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION1"
+    ],
+    "value": "NATION1",
+    "validation": "FRANCE"
+   },
+   "nation2": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION2"
+    ],
+    "value": "NATION2",
+    "validation": "GERMANY"
+   }
+  },
+  "Q08": {
+   "nation": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION"
+    ],
+    "value": "NATION",
+    "validation": "BRAZIL"
+   },
+   "region": {
+    "type": "text",
+    "spec_parameters": [
+     "REGION"
+    ],
+    "value": "REGION",
+    "validation": "AMERICA"
+   },
+   "type": {
+    "type": "text",
+    "spec_parameters": [
+     "TYPE"
+    ],
+    "value": "TYPE",
+    "validation": "ECONOMY ANODIZED STEEL"
+   }
+  },
+  "Q09": {
+   "color": {
+    "type": "text",
+    "spec_parameters": [
+     "COLOR"
+    ],
+    "value": "'%' || COLOR || '%'",
+    "validation": "%green%"
+   }
+  },
+  "Q10": {
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1993-10-01"
+   }
+  },
+  "Q11": {
+   "nation": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION"
+    ],
+    "value": "NATION",
+    "validation": "GERMANY"
+   },
+   "fraction": {
+    "type": "numeric(38,10)",
+    "spec_parameters": [
+     "FRACTION"
+    ],
+    "value": "FRACTION / SF (SF = 100), at scale 10",
+    "validation": "0.0000010000"
+   }
+  },
+  "Q12": {
+   "shipmode1": {
+    "type": "text",
+    "spec_parameters": [
+     "SHIPMODE1"
+    ],
+    "value": "SHIPMODE1",
+    "validation": "MAIL"
+   },
+   "shipmode2": {
+    "type": "text",
+    "spec_parameters": [
+     "SHIPMODE2"
+    ],
+    "value": "SHIPMODE2",
+    "validation": "SHIP"
+   },
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1994-01-01"
+   }
+  },
+  "Q13": {
+   "words": {
+    "type": "text",
+    "spec_parameters": [
+     "WORD1",
+     "WORD2"
+    ],
+    "value": "'%' || WORD1 || '%' || WORD2 || '%'",
+    "validation": "%special%requests%"
+   }
+  },
+  "Q14": {
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1995-09-01"
+   }
+  },
+  "Q15": {
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1996-01-01"
+   }
+  },
+  "Q16": {
+   "brand": {
+    "type": "text",
+    "spec_parameters": [
+     "BRAND"
+    ],
+    "value": "BRAND",
+    "validation": "Brand#45"
+   },
+   "type": {
+    "type": "text",
+    "spec_parameters": [
+     "TYPE"
+    ],
+    "value": "TYPE || '%'",
+    "validation": "MEDIUM POLISHED%"
+   },
+   "size1": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE1"
+    ],
+    "value": "SIZE1",
+    "validation": "49"
+   },
+   "size2": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE2"
+    ],
+    "value": "SIZE2",
+    "validation": "14"
+   },
+   "size3": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE3"
+    ],
+    "value": "SIZE3",
+    "validation": "23"
+   },
+   "size4": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE4"
+    ],
+    "value": "SIZE4",
+    "validation": "45"
+   },
+   "size5": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE5"
+    ],
+    "value": "SIZE5",
+    "validation": "19"
+   },
+   "size6": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE6"
+    ],
+    "value": "SIZE6",
+    "validation": "3"
+   },
+   "size7": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE7"
+    ],
+    "value": "SIZE7",
+    "validation": "36"
+   },
+   "size8": {
+    "type": "integer",
+    "spec_parameters": [
+     "SIZE8"
+    ],
+    "value": "SIZE8",
+    "validation": "9"
+   }
+  },
+  "Q17": {
+   "brand": {
+    "type": "text",
+    "spec_parameters": [
+     "BRAND"
+    ],
+    "value": "BRAND",
+    "validation": "Brand#23"
+   },
+   "container": {
+    "type": "text",
+    "spec_parameters": [
+     "CONTAINER"
+    ],
+    "value": "CONTAINER",
+    "validation": "MED BOX"
+   }
+  },
+  "Q18": {
+   "quantity": {
+    "type": "integer",
+    "spec_parameters": [
+     "QUANTITY"
+    ],
+    "value": "QUANTITY",
+    "validation": "300"
+   }
+  },
+  "Q19": {
+   "brand1": {
+    "type": "text",
+    "spec_parameters": [
+     "BRAND1"
+    ],
+    "value": "BRAND1",
+    "validation": "Brand#12"
+   },
+   "quantity1": {
+    "type": "integer",
+    "spec_parameters": [
+     "QUANTITY1"
+    ],
+    "value": "QUANTITY1",
+    "validation": "1"
+   },
+   "brand2": {
+    "type": "text",
+    "spec_parameters": [
+     "BRAND2"
+    ],
+    "value": "BRAND2",
+    "validation": "Brand#23"
+   },
+   "quantity2": {
+    "type": "integer",
+    "spec_parameters": [
+     "QUANTITY2"
+    ],
+    "value": "QUANTITY2",
+    "validation": "10"
+   },
+   "brand3": {
+    "type": "text",
+    "spec_parameters": [
+     "BRAND3"
+    ],
+    "value": "BRAND3",
+    "validation": "Brand#34"
+   },
+   "quantity3": {
+    "type": "integer",
+    "spec_parameters": [
+     "QUANTITY3"
+    ],
+    "value": "QUANTITY3",
+    "validation": "20"
+   }
+  },
+  "Q20": {
+   "color": {
+    "type": "text",
+    "spec_parameters": [
+     "COLOR"
+    ],
+    "value": "COLOR || '%'",
+    "validation": "forest%"
+   },
+   "date": {
+    "type": "date",
+    "spec_parameters": [
+     "DATE"
+    ],
+    "value": "DATE",
+    "validation": "1994-01-01"
+   },
+   "nation": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION"
+    ],
+    "value": "NATION",
+    "validation": "CANADA"
+   }
+  },
+  "Q21": {
+   "nation": {
+    "type": "text",
+    "spec_parameters": [
+     "NATION"
+    ],
+    "value": "NATION",
+    "validation": "SAUDI ARABIA"
+   }
+  },
+  "Q22": {
+   "i1": {
+    "type": "text",
+    "spec_parameters": [
+     "I1"
+    ],
+    "value": "I1",
+    "validation": "13"
+   },
+   "i2": {
+    "type": "text",
+    "spec_parameters": [
+     "I2"
+    ],
+    "value": "I2",
+    "validation": "31"
+   },
+   "i3": {
+    "type": "text",
+    "spec_parameters": [
+     "I3"
+    ],
+    "value": "I3",
+    "validation": "23"
+   },
+   "i4": {
+    "type": "text",
+    "spec_parameters": [
+     "I4"
+    ],
+    "value": "I4",
+    "validation": "29"
+   },
+   "i5": {
+    "type": "text",
+    "spec_parameters": [
+     "I5"
+    ],
+    "value": "I5",
+    "validation": "30"
+   },
+   "i6": {
+    "type": "text",
+    "spec_parameters": [
+     "I6"
+    ],
+    "value": "I6",
+    "validation": "18"
+   },
+   "i7": {
+    "type": "text",
+    "spec_parameters": [
+     "I7"
+    ],
+    "value": "I7",
+    "validation": "17"
+   }
+  }
+ }
+}

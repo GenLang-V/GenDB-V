@@ -1,0 +1,25 @@
+{
+  "format_version": 1,
+  "verus": {
+    "release_tag": "release/0.2026.09.13.671956e",
+    "version": "0.2026.09.13.671956e",
+    "commit": "671956ec527d3b7164779f767bdbfe769bedce6c",
+    "asset": "verus-0.2026.09.13.671956e-x86-linux.zip",
+    "url": "https://github.com/verus-lang/verus/releases/download/release/0.2026.09.13.671956e/verus-0.2026.09.13.671956e-x86-linux.zip",
+    "install_dir": "verus/0.2026.09.13.671956e/verus-x86-linux"
+  },
+  "rust": {
+    "toolchain": "1.98.1-x86_64-unknown-linux-gnu",
+    "components": ["rustc", "rust-std", "cargo", "rustfmt", "rustc-dev", "llvm-tools"],
+    "rustup_home": "rustup",
+    "cargo_home": "cargo"
+  },
+  "z3": {
+    "version": "4.16.0",
+    "source": "https://github.com/Z3Prover/z3/releases/download/z3-4.16.0/z3_solver-4.16.0.0-py3-none-manylinux_2_27_x86_64.whl",
+    "path": "z3/4.16.0-manylinux_2_27/z3_solver-4.16.0.0.data/data/bin/z3"
+  },
+  "launcher": "rust_verify is started directly (what the release `verus` launcher does after its checks): LD_LIBRARY_PATH=<rust toolchain>/lib, VSTD_KIND=Imported, VERUS_Z3_PATH=<z3>. The release's own `verus` launcher and bundled z3 require glibc 2.39/2.38; the measurement host had 2.35, so the same Z3 version is taken from the official manylinux_2_27 build.",
+  "home_env": "GENDB_VERUS_HOME",
+  "default_home": "<repository>/toolchains"
+}

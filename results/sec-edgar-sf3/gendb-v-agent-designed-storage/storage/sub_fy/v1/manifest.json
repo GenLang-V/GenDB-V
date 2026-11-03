@@ -1,0 +1,64 @@
+{
+ "name": "sub_fy",
+ "tables": [
+  {
+   "columns": [
+    "adsh",
+    "cik",
+    "name",
+    "sic",
+    "countryba",
+    "stprba",
+    "cityba",
+    "countryinc",
+    "form",
+    "period",
+    "fy",
+    "fp",
+    "filed",
+    "accepted",
+    "prevrpt",
+    "nciks",
+    "afs",
+    "wksi",
+    "fye",
+    "instance"
+   ],
+   "table": "sub"
+  }
+ ],
+ "parts": [
+  "fy_order: U64 row positions, a permutation of 0..n sorted by (fy (NULL first), cik, name code, row)",
+  "adsh_rank: U64, the position of each row in adsh_order (inverse permutation)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "sub",
+   "kind": "permutation",
+   "columns": [
+    "fy",
+    "cik",
+    "name"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "sub",
+   "kind": "permutation",
+   "columns": [
+    "adsh"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "the 44 parts of storage sub unchanged (sub in canonical row order, adsh_order), then fy_order: the row positions sorted by (fy with NULL first, cik, name code, row), then adsh_rank: the inverse of adsh_order.",
+  "units": "rows: canonical sub rows; fy_order: row positions; offsets: bytes; codes: dictionary positions"
+ },
+ "built_from": {
+  "sources": [
+   "sub"
+  ],
+  "extends": "sub"
+ }
+}

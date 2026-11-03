@@ -1,0 +1,111 @@
+/* GenDB-V site: design tokens. Fonts, type and space scales, and the palette in light and dark. Every page uses only
+   these custom properties. Text colours meet WCAG AA on their grounds (4.5:1; large text 3:1). */
+
+/* ---------------------------------------------------------------- fonts (self-hosted; licenses next to the files) */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("../assets/fonts/inter/Inter-opsz-wght-latin.woff2") format("woff2"); }
+@font-face { font-family: "Geist Mono"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("../assets/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2"); }
+@font-face { font-family: "STIX Two Text"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url("../assets/fonts/stix-two/STIXTwoText-wght-latin.woff2") format("woff2"); }
+@font-face { font-family: "STIX Two Text"; font-style: italic; font-weight: 400 700; font-display: swap;
+  src: url("../assets/fonts/stix-two/STIXTwoText-Italic-wght-latin.woff2") format("woff2"); }
+/* STIX Two Math, cut to the math symbols, arrows, Greek and brackets */
+@font-face { font-family: "STIX Two Math"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("../assets/fonts/stix-two/STIXTwoMath-symbols.woff2") format("woff2"); }
+
+:root {
+  color-scheme: light;
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-math: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
+  --font-math-text: "STIX Two Text", "STIX Two Math", Cambria, Georgia, serif;
+  --opsz-display: "opsz" 32;
+
+  /* type (px) */
+  --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-15: 15px; --fs-16: 16px; --fs-18: 18px; --fs-20: 20px;
+  --fs-24: 24px; --fs-28: 28px; --fs-32: 32px; --fs-40: 40px; --fs-48: 48px; --fs-64: 64px;
+  --fs-display: clamp(64px, 13vw, 156px);   /* the home title */
+  --fs-h1: clamp(36px, 6vw, 64px);           /* page titles */
+  --fs-h2: clamp(24px, 3.2vw, 36px);         /* section titles */
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700; --fw-black: 800;
+  --lh-tight: 1.05; --lh-snug: 1.25; --lh-body: 1.55;
+  --track-display: -0.045em; --track-title: -0.03em; --track-ui: -0.006em;
+
+  /* space (4/8 px) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  --sp-9: 96px; --sp-10: 128px;
+
+  /* shape, motion, layout */
+  --r-1: 8px; --r-2: 12px; --r-3: 18px; --r-4: 28px; --r-pill: 999px;
+  --dur-1: 150ms; --dur-2: 250ms; --ease: cubic-bezier(.2, .7, .2, 1);
+  --page-w: 1200px; --gutter: clamp(16px, 4vw, 40px); --bar-h: 56px;
+
+  /* palette (light) */
+  --bg: #ffffff;
+  --bg-2: #f5f6f8;          /* grey grounds: tiles, the problem side of a story row */
+  --bg-3: #eceef2;          /* hover */
+  --surface: #ffffff;       /* cards */
+  --ink: #0e1116;           /* text: 18.9:1 */
+  --ink-2: #4a5260;         /* secondary text: 7.9:1 on white, 7.3:1 on --bg-2 */
+  --ink-3: #8a919c;         /* decoration only, never text */
+  --line: #e2e5ea;          /* rules and quiet card edges */
+  --line-2: #8a919c;        /* boundaries that must show (3.2:1) */
+  --focus: #2563eb;
+
+  /* accents. Verified: mint, the colour of the database in the picture. Trusted: blue. Problem: the warm orange of
+     the cockroach. Each has a text colour, a tint for grounds and a line colour. */
+  --verified: #087a57;      /* 5.3:1 */
+  --verified-bright: #19c58d;
+  --verified-bg: rgba(25, 197, 141, .10);
+  --verified-line: rgba(8, 122, 87, .45);
+  --trusted: #3456a8;       /* 6.9:1 */
+  --trusted-bg: rgba(52, 86, 168, .08);
+  --trusted-line: rgba(52, 86, 168, .45);
+  --warm: #b8410c;          /* 5.5:1 */
+  --warm-bg: rgba(232, 96, 28, .08);
+  --grad: linear-gradient(100deg, #087a57 0%, #0c7c8c 50%, #3456a8 100%);   /* large text only */
+  --glow-1: rgba(25, 197, 141, .16);
+  --glow-2: rgba(52, 86, 168, .12);
+
+  --code-bg: #f6f7f9;
+  --shadow-1: 0 1px 2px rgba(14, 17, 22, .05), 0 4px 12px -4px rgba(14, 17, 22, .08);
+  --shadow-2: 0 1px 2px rgba(14, 17, 22, .04), 0 12px 40px -12px rgba(14, 17, 22, .18);
+  --bar-bg: rgba(255, 255, 255, .82);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #08090b; --bg-2: #0f1115; --bg-3: #1d2128; --surface: #161a20;
+    --ink: #f3f5f8; --ink-2: #a9b1bd; --ink-3: #6b737e; --line: #23272f; --line-2: #6b737e; --focus: #6ea0ff;
+    --verified: #3ddc97; --verified-bright: #3ddc97; --verified-bg: rgba(61, 220, 151, .10); --verified-line: rgba(61, 220, 151, .45);
+    --trusted: #8fb0ff; --trusted-bg: rgba(143, 176, 255, .10); --trusted-line: rgba(143, 176, 255, .45);
+    --warm: #ff9a5c; --warm-bg: rgba(255, 154, 92, .09);
+    --grad: linear-gradient(100deg, #3ddc97 0%, #4fd1c5 50%, #8fb0ff 100%);
+    --glow-1: rgba(61, 220, 151, .13); --glow-2: rgba(110, 160, 255, .12);
+    --code-bg: #101317;
+    --shadow-1: inset 0 1px 0 rgba(255, 255, 255, .04), 0 4px 14px -6px rgba(0, 0, 0, .7);
+    --shadow-2: inset 0 1px 0 rgba(255, 255, 255, .05), 0 16px 40px -16px rgba(0, 0, 0, .8);
+    --bar-bg: rgba(8, 9, 11, .78);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #08090b; --bg-2: #0f1115; --bg-3: #1d2128; --surface: #161a20;
+  --ink: #f3f5f8; --ink-2: #a9b1bd; --ink-3: #6b737e; --line: #23272f; --line-2: #6b737e; --focus: #6ea0ff;
+  --verified: #3ddc97; --verified-bright: #3ddc97; --verified-bg: rgba(61, 220, 151, .10); --verified-line: rgba(61, 220, 151, .45);
+  --trusted: #8fb0ff; --trusted-bg: rgba(143, 176, 255, .10); --trusted-line: rgba(143, 176, 255, .45);
+  --warm: #ff9a5c; --warm-bg: rgba(255, 154, 92, .09);
+  --grad: linear-gradient(100deg, #3ddc97 0%, #4fd1c5 50%, #8fb0ff 100%);
+  --glow-1: rgba(61, 220, 151, .13); --glow-2: rgba(110, 160, 255, .12);
+  --code-bg: #101317;
+  --shadow-1: inset 0 1px 0 rgba(255, 255, 255, .04), 0 4px 14px -6px rgba(0, 0, 0, .7);
+  --shadow-2: inset 0 1px 0 rgba(255, 255, 255, .05), 0 16px 40px -16px rgba(0, 0, 0, .8);
+  --bar-bg: rgba(8, 9, 11, .78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-1: 1ms; --dur-2: 1ms; }
+}

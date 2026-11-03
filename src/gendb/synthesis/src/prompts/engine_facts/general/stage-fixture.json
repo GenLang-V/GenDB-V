@@ -1,0 +1,372 @@
+{
+  "meaning": "The exact keys of what a stage run's records hold and its renders read. context.stage is the context's general.stage (as the session was prepared) and its copy refreshed before each call (top-level stage); evaluation.kept_workloads is the kept part of a stage submission's evaluation record; version.workloads is version.json's per-workload record. Field meanings: synthesis/src/prompts/engine_facts/general/stage.rs. The state: after the stage run's first accepted version v001 (goal sec at sf3, kept tpch at sf100); <run> stands for the run directory. The numbers are a fixture: SEC-EDGAR baselines (v0), four TPC-H templates with baselines and cells of an earlier general-engine version; the rest invented.",
+  "context": {
+    "stage": {
+      "goal": "sec",
+      "seed": {
+        "run": "/path/to/runs/general/general-engine",
+        "version": "v016",
+        "out_of_the_box": {
+          "status": "not_assembled",
+          "step": "compile",
+          "first_errors": [
+            "error[E0433]: failed to resolve: could not find `narrowpack` in `stores`",
+            "   --> src/agent/tables.rs:214:36",
+            "error[E0433]: failed to resolve: could not find `narrowpack2` in `stores`",
+            "   --> src/agent/tables.rs:220:36"
+          ],
+          "score": null,
+          "record": "<run>/engine/seed/out-of-the-box/OUT_OF_THE_BOX.md"
+        }
+      },
+      "workloads": [
+        {
+          "name": "sec",
+          "role": "goal",
+          "scale": "sf3",
+          "first_scale": "sf3",
+          "library": "/path/to/runs/stage/library-sec",
+          "training": {
+            "timing_binding": "v0",
+            "other_bindings": ["v1", "v2"],
+            "workers": [1, 32, 64],
+            "templates": [
+              {
+                "name": "Q1",
+                "sql_file": "q1.sql",
+                "sql": "-- the SQL of q1.sql",
+                "tables": ["pre"],
+                "parameters": [],
+                "bindings": [{"name": "v0", "arguments": []}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 476574000, "umbra_ns": 447843000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 66733000, "umbra_ns": 30014000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 58427000, "umbra_ns": 61847000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q2",
+                "sql_file": "q2.sql",
+                "sql": "-- the SQL of q2.sql",
+                "tables": ["num", "sub"],
+                "parameters": [{"index": 1, "name": "uom", "type": "text"}, {"index": 2, "name": "fy", "type": "text"}],
+                "bindings": [
+                  {"name": "v0", "arguments": ["pure", "2022"]},
+                  {"name": "v1", "arguments": ["pure", "2023"]},
+                  {"name": "v2", "arguments": ["shares", "2024"]}
+                ],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 4283558000, "umbra_ns": 237170000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 202909000, "umbra_ns": 19299000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 176645000, "umbra_ns": 75496000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q3",
+                "sql_file": "q3.sql",
+                "sql": "-- the SQL of q3.sql",
+                "tables": ["num", "sub"],
+                "parameters": [{"index": 1, "name": "uom", "type": "text"}, {"index": 2, "name": "fy", "type": "text"}],
+                "bindings": [{"name": "v0", "arguments": ["USD", "2022"]}, {"name": "v1", "arguments": ["USD", "2023"]}, {"name": "v2", "arguments": ["shares", "2022"]}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 5047723000, "umbra_ns": 1464154000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 270271000, "umbra_ns": 110035000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 248925000, "umbra_ns": 171964000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q4",
+                "sql_file": "q4.sql",
+                "sql": "-- the SQL of q4.sql",
+                "tables": ["num", "sub", "tag", "pre"],
+                "parameters": [
+                  {"index": 1, "name": "uom", "type": "text"},
+                  {"index": 2, "name": "stmt", "type": "text"},
+                  {"index": 3, "name": "sic_low", "type": "text"},
+                  {"index": 4, "name": "sic_high", "type": "text"}
+                ],
+                "bindings": [
+                  {"name": "v0", "arguments": ["USD", "EQ", "4000", "4999"]},
+                  {"name": "v1", "arguments": ["USD", "BS", "2000", "2999"]},
+                  {"name": "v2", "arguments": ["shares", "EQ", "6000", "6999"]}
+                ],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 4672021000, "umbra_ns": 1867447000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 366321000, "umbra_ns": 138814000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 291771000, "umbra_ns": 206059000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q6",
+                "sql_file": "q6.sql",
+                "sql": "-- the SQL of q6.sql",
+                "tables": ["num", "sub", "pre"],
+                "parameters": [{"index": 1, "name": "uom", "type": "text"}, {"index": 2, "name": "stmt", "type": "text"}, {"index": 3, "name": "fy", "type": "text"}],
+                "bindings": [
+                  {"name": "v0", "arguments": ["USD", "IS", "2023"]},
+                  {"name": "v1", "arguments": ["USD", "BS", "2022"]},
+                  {"name": "v2", "arguments": ["USD", "CF", "2024"]}
+                ],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 7948230000, "umbra_ns": 3417172000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 565152000, "umbra_ns": 225468000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 452438000, "umbra_ns": 317285000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q24",
+                "sql_file": "q24.sql",
+                "sql": "-- the SQL of q24.sql",
+                "tables": ["num", "pre"],
+                "parameters": [
+                  {"index": 1, "name": "uom", "type": "text"},
+                  {"index": 2, "name": "ddate_low", "type": "text"},
+                  {"index": 3, "name": "ddate_high", "type": "text"}
+                ],
+                "bindings": [
+                  {"name": "v0", "arguments": ["USD", "20230101", "20231231"]},
+                  {"name": "v1", "arguments": ["USD", "20240101", "20241231"]},
+                  {"name": "v2", "arguments": ["USD", "20230101", "20241231"]}
+                ],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 5497865000, "umbra_ns": 3977008000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 358991000, "umbra_ns": 248467000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 364802000, "umbra_ns": 298104000, "agreement": "exact-order"}
+                ]
+              }
+            ],
+            "baseline_totals": [
+              {"binding": "v0", "workers": 1, "duckdb_ns": 27925971000, "umbra_ns": 11410794000, "target_ns": 11410794000, "target_engine": "umbra"},
+              {"binding": "v0", "workers": 32, "duckdb_ns": 1830377000, "umbra_ns": 772097000, "target_ns": 772097000, "target_engine": "umbra"},
+              {"binding": "v0", "workers": 64, "duckdb_ns": 1593008000, "umbra_ns": 1130755000, "target_ns": 1130755000, "target_engine": "umbra"}
+            ],
+            "variants": {"kinds": [], "frozen": 0, "timed": 0, "not_timed": 0}
+          },
+          "head": "v001",
+          "cells": [
+            {"template": "Q1", "workers": 1, "status": {"status": "finished", "median_ns": 3100000000}},
+            {"template": "Q1", "workers": 32, "status": {"status": "finished", "median_ns": 410000000}},
+            {"template": "Q1", "workers": 64, "status": {"status": "finished", "median_ns": 395000000}},
+            {"template": "Q2", "workers": 1, "status": {"status": "finished", "median_ns": 9800000000}},
+            {"template": "Q2", "workers": 32, "status": {"status": "finished", "median_ns": 820000000}},
+            {"template": "Q2", "workers": 64, "status": {"status": "finished", "median_ns": 760000000}},
+            {"template": "Q3", "workers": 1, "status": {"status": "finished", "median_ns": 14200000000}},
+            {"template": "Q3", "workers": 32, "status": {"status": "finished", "median_ns": 1210000000}},
+            {"template": "Q3", "workers": 64, "status": {"status": "finished", "median_ns": 1150000000}},
+            {"template": "Q4", "workers": 1, "status": {"status": "unfinished", "reason": "over_time_limit"}},
+            {"template": "Q4", "workers": 32, "status": {"status": "finished", "median_ns": 52000000000}},
+            {"template": "Q4", "workers": 64, "status": {"status": "finished", "median_ns": 41000000000}},
+            {"template": "Q6", "workers": 1, "status": {"status": "finished", "median_ns": 22500000000}},
+            {"template": "Q6", "workers": 32, "status": {"status": "finished", "median_ns": 2400000000}},
+            {"template": "Q6", "workers": 64, "status": {"status": "finished", "median_ns": 2100000000}},
+            {"template": "Q24", "workers": 1, "status": {"status": "finished", "median_ns": 17900000000}},
+            {"template": "Q24", "workers": 32, "status": {"status": "finished", "median_ns": 1700000000}},
+            {"template": "Q24", "workers": 64, "status": {"status": "finished", "median_ns": 1480000000}}
+          ],
+          "score": {
+            "scale": "sf3",
+            "score": {"finished": 17, "normalized_time": "128.456566853"},
+            "cells": 18,
+            "beats_both": false,
+            "record": "<run>/engine/versions/v001/race.json"
+          },
+          "storage": {
+            "budget_bytes": 5439582957,
+            "plain_storage_bytes": 7746659210,
+            "serving_bytes": 4987654321,
+            "reads_only_plain": false,
+            "original_data_record": "/path/to/data/sec/export.report.json"
+          },
+          "module_lines": 214,
+          "last_race": null,
+          "reference": null
+        },
+        {
+          "name": "tpch",
+          "role": "kept",
+          "scale": "sf100",
+          "first_scale": "sf1",
+          "library": "/path/to/runs/stage/library-tpch",
+          "training": {
+            "timing_binding": "v0",
+            "other_bindings": ["v1", "v2"],
+            "workers": [1, 32, 64],
+            "templates": [
+              {
+                "name": "Q01",
+                "sql_file": "q01.sql",
+                "sql": "-- the SQL of q01.sql",
+                "tables": ["lineitem"],
+                "parameters": [{"index": 1, "name": "p", "type": "date"}],
+                "bindings": [{"name": "v0", "arguments": ["1998-09-02"]}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 21010746000, "umbra_ns": 12559959000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 847277000, "umbra_ns": 803087000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 683950000, "umbra_ns": 875415000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q06",
+                "sql_file": "q06.sql",
+                "sql": "-- the SQL of q06.sql",
+                "tables": ["lineitem"],
+                "parameters": [{"index": 1, "name": "p", "type": "date"}],
+                "bindings": [{"name": "v0", "arguments": ["1998-09-02"]}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 4327832000, "umbra_ns": 626061000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 247036000, "umbra_ns": 45299000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 150438000, "umbra_ns": 72139000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q09",
+                "sql_file": "q09.sql",
+                "sql": "-- the SQL of q09.sql",
+                "tables": ["lineitem", "orders", "part", "partsupp", "supplier", "nation"],
+                "parameters": [{"index": 1, "name": "p", "type": "date"}],
+                "bindings": [{"name": "v0", "arguments": ["1998-09-02"]}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 44591582000, "umbra_ns": 30149870000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 2551354000, "umbra_ns": 1676677000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 2150017000, "umbra_ns": 1814969000, "agreement": "exact-order"}
+                ]
+              },
+              {
+                "name": "Q18",
+                "sql_file": "q18.sql",
+                "sql": "-- the SQL of q18.sql",
+                "tables": ["lineitem", "orders", "customer"],
+                "parameters": [{"index": 1, "name": "p", "type": "date"}],
+                "bindings": [{"name": "v0", "arguments": ["1998-09-02"]}],
+                "baselines": [
+                  {"binding": "v0", "workers": 1, "duckdb_ns": 44429401000, "umbra_ns": 17501337000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 32, "duckdb_ns": 2016843000, "umbra_ns": 1472139000, "agreement": "exact-order"},
+                  {"binding": "v0", "workers": 64, "duckdb_ns": 1571100000, "umbra_ns": 1527797000, "agreement": "exact-order"}
+                ]
+              }
+            ],
+            "baseline_totals": [
+              {"binding": "v0", "workers": 1, "duckdb_ns": 114359561000, "umbra_ns": 60837227000, "target_ns": 60837227000, "target_engine": "umbra"},
+              {"binding": "v0", "workers": 32, "duckdb_ns": 5662510000, "umbra_ns": 3997202000, "target_ns": 3997202000, "target_engine": "umbra"},
+              {"binding": "v0", "workers": 64, "duckdb_ns": 4555505000, "umbra_ns": 4290320000, "target_ns": 4290320000, "target_engine": "umbra"}
+            ],
+            "variants": {
+              "kinds": ["always_true_conjunct", "between_expansion", "commuted_comparisons", "conjunct_permutation", "from_permutation", "wrapped_tables"],
+              "frozen": 19,
+              "timed": 15,
+              "not_timed": 4
+            }
+          },
+          "head": "v001",
+          "cells": [
+            {"template": "Q01", "workers": 1, "status": {"status": "finished", "median_ns": 10790000000}},
+            {"template": "Q01", "workers": 32, "status": {"status": "finished", "median_ns": 641000000}},
+            {"template": "Q01", "workers": 64, "status": {"status": "finished", "median_ns": 450100000}},
+            {"template": "Q06", "workers": 1, "status": {"status": "finished", "median_ns": 1820000000}},
+            {"template": "Q06", "workers": 32, "status": {"status": "finished", "median_ns": 92000000}},
+            {"template": "Q06", "workers": 64, "status": {"status": "finished", "median_ns": 99000000}},
+            {"template": "Q09", "workers": 1, "status": {"status": "finished", "median_ns": 18100000000}},
+            {"template": "Q09", "workers": 32, "status": {"status": "finished", "median_ns": 1402000000}},
+            {"template": "Q09", "workers": 64, "status": {"status": "finished", "median_ns": 1121000000}},
+            {"template": "Q18", "workers": 1, "status": {"status": "finished", "median_ns": 16200000000}},
+            {"template": "Q18", "workers": 32, "status": {"status": "finished", "median_ns": 1371000000}},
+            {"template": "Q18", "workers": 64, "status": {"status": "finished", "median_ns": 1188000000}}
+          ],
+          "score": {
+            "scale": "sf100",
+            "score": {"finished": 12, "normalized_time": "2.314361561"},
+            "cells": 12,
+            "beats_both": false,
+            "record": "<run>/engine/versions/v001/workloads/tpch/race.json"
+          },
+          "storage": {
+            "budget_bytes": 114641618862,
+            "plain_storage_bytes": 158618806633,
+            "serving_bytes": 90766134568,
+            "reads_only_plain": false,
+            "original_data_record": "/path/to/data/tpch-sf100/data-report.md"
+          },
+          "module_lines": 388,
+          "last_race": {"version": "v001", "parent": "v000", "record": "<run>/engine/versions/v001/workloads/tpch/race.json"},
+          "reference": {
+            "version": "v000",
+            "score": {
+              "scale": "sf100",
+              "score": {"finished": 12, "normalized_time": "2.316701349"},
+              "cells": 12,
+              "beats_both": false,
+              "record": "<run>/engine/versions/v000/workloads/tpch/score.json"
+            },
+            "cells": [
+              {"template": "Q01", "workers": 1, "status": {"status": "finished", "median_ns": 10810388091}},
+              {"template": "Q01", "workers": 32, "status": {"status": "finished", "median_ns": 638984196}},
+              {"template": "Q01", "workers": 64, "status": {"status": "finished", "median_ns": 456478360}},
+              {"template": "Q06", "workers": 1, "status": {"status": "finished", "median_ns": 1734200971}},
+              {"template": "Q06", "workers": 32, "status": {"status": "finished", "median_ns": 88886680}},
+              {"template": "Q06", "workers": 64, "status": {"status": "finished", "median_ns": 103465723}},
+              {"template": "Q09", "workers": 1, "status": {"status": "finished", "median_ns": 18824347481}},
+              {"template": "Q09", "workers": 32, "status": {"status": "finished", "median_ns": 1358395846}},
+              {"template": "Q09", "workers": 64, "status": {"status": "finished", "median_ns": 1110222326}},
+              {"template": "Q18", "workers": 1, "status": {"status": "finished", "median_ns": 16344825706}},
+              {"template": "Q18", "workers": 32, "status": {"status": "finished", "median_ns": 1358195634}},
+              {"template": "Q18", "workers": 64, "status": {"status": "finished", "median_ns": 1207339928}}
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "evaluation": {"kept_workloads": [{"name": "tpch", "status": "timed", "reason": null, "race": "<run>/engine/versions/v001/workloads/tpch/race.json"}]},
+  "version": {
+    "workloads": {
+      "sec": {
+        "role": "goal",
+        "scale": "sf3",
+        "score": {
+          "scale": "sf3",
+          "score": {"finished": 17, "normalized_time": "128.456566853"},
+          "cells": 18,
+          "beats_both": false,
+          "record": "<run>/engine/versions/v001/race.json"
+        },
+        "times": {"sf3": {"race": "<run>/engine/versions/v001/race.json"}},
+        "storage": {
+          "serving_bytes": 4987654321,
+          "budget_bytes": 5439582957,
+          "plain_storage_bytes": 7746659210,
+          "decision": "changed storage within the original data size at sf3: 4987654321 serving bytes of 5439582957, 451928636 bytes left"
+        },
+        "proof": {"errors": 0, "verified": 5733, "wall_ns": 271000000000},
+        "admission": {
+          "library": "/path/to/runs/stage/library-sec",
+          "package": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "module_lines": 214
+      },
+      "tpch": {
+        "role": "kept",
+        "scale": "sf100",
+        "score": {
+          "scale": "sf100",
+          "score": {"finished": 12, "normalized_time": "2.314361561"},
+          "cells": 12,
+          "beats_both": false,
+          "record": "<run>/engine/versions/v001/workloads/tpch/race.json"
+        },
+        "times": {"sf100": {"race": "<run>/engine/versions/v001/workloads/tpch/race.json"}},
+        "storage": {
+          "serving_bytes": 90766134568,
+          "budget_bytes": 114641618862,
+          "plain_storage_bytes": 158618806633,
+          "decision": "changed storage within the original data size at sf100: 90766134568 serving bytes of 114641618862, 23875484294 bytes left"
+        },
+        "proof": {"errors": 0, "verified": 5790, "wall_ns": 268000000000},
+        "admission": {
+          "library": "/path/to/runs/stage/library-tpch",
+          "package": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "module_lines": 388
+      }
+    }
+  }
+}

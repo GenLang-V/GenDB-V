@@ -1,0 +1,31 @@
+{
+ "fixture": "cov_c_strict_or_case",
+ "description": "Control for cov_c_strict_or/or_check (semantics only, not a PostgreSQL comparison): a lazy CASE form of the same guard, CHECK (CASE WHEN b = 0 THEN 2 ELSE a / b END > 1). The If constructor evaluates only the taken branch, so the verified checker accepts row (5, 0). The review's boolean-valued CASE form is outside the fragment (frontend refusal boolean_value). PostgreSQL was not run on this form.",
+ "ddl": [
+  {
+   "path": "src/gendb/sqlspec/tests/fixtures/constraints/cov_c_strict_or/case_check.sql"
+  }
+ ],
+ "tables": [
+  {
+   "name": "t",
+   "columns": [
+    "a",
+    "b"
+   ],
+   "rows": [
+    [
+     5,
+     0
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "case_check_row_5_0",
+   "sql": "SELECT a, b FROM t",
+   "expect_evaluator": "rows [[5, 0]]"
+  }
+ ]
+}

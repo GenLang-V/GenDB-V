@@ -1,0 +1,58 @@
+{
+ "queries": {
+  "Q01": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DELTA": 90
+    },
+    "arguments": [
+     "1998-09-02"
+    ],
+    "params": {
+     "delta": "1998-09-02"
+    }
+   }
+  ],
+  "Q06": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "DATE": "1994-01-01",
+     "DISCOUNT": "0.06",
+     "QUANTITY": 24
+    },
+    "arguments": [
+     "1994-01-01",
+     "0.06",
+     "24"
+    ],
+    "params": {
+     "date": "1994-01-01",
+     "discount": "0.06",
+     "quantity": "24"
+    }
+   }
+  ],
+  "Q11": [
+   {
+    "binding_id": "v0",
+    "source": "validation",
+    "spec_params": {
+     "NATION": "GERMANY",
+     "FRACTION": "0.0001/SF"
+    },
+    "arguments": [
+     "GERMANY",
+     "0.0001000000"
+    ],
+    "params": {
+     "nation": "GERMANY",
+     "fraction": "0.0001000000"
+    }
+   }
+  ]
+ }
+}

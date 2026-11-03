@@ -1,0 +1,383 @@
+{
+ "schema": "gendb.tpch.bindings.v1",
+ "kind": "visible",
+ "benchmark": "sec-edgar",
+ "scale": "SF3 (2022q1-2024q4)",
+ "meaning": "The visible bindings of the SEC-EDGAR SF3 templates (what synthesis and the baselines see). v0 = the original query constants; v1, v2 = other values from value_domains, chosen so that every binding has rows. `rows`: answer rows on the canonical data in DuckDB 1.5.6 and Umbra. Q1 is a concrete statement: one binding without arguments.",
+ "value_domains": {
+  "uom": {
+   "type": "text",
+   "values": [
+    "USD",
+    "shares",
+    "pure"
+   ],
+   "why": "the three most frequent units at SF3 (33.2M, 3.1M, 1.4M of 39.4M num rows)"
+  },
+  "fy": {
+   "type": "integer",
+   "values": [
+    2021,
+    2022,
+    2023,
+    2024
+   ],
+   "why": "fiscal years with at least 7,700 filings at SF3 (2012-2020 and 2025 have <1,100 each; 4,662 filings have fy NULL)"
+  },
+  "stmt": {
+   "type": "text",
+   "values": [
+    "BS",
+    "IS",
+    "CF",
+    "EQ",
+    "CI"
+   ],
+   "why": "the 5 frequent statement codes (UN 234k, SI 26k, CP 4 and 1,073 NULL rows are rare)"
+  },
+  "sic_range": {
+   "type": "integer pair [d*1000, d*1000+999]",
+   "values": [
+    [
+     1000,
+     1999
+    ],
+    [
+     2000,
+     2999
+    ],
+    [
+     3000,
+     3999
+    ],
+    [
+     4000,
+     4999
+    ],
+    [
+     5000,
+     5999
+    ],
+    [
+     6000,
+     6999
+    ],
+    [
+     7000,
+     7999
+    ],
+    [
+     8000,
+     8999
+    ]
+   ],
+   "why": "SIC divisions (sic ranges 100..8900 at SF3; 1,215 filings have sic NULL)"
+  },
+  "ddate_window": {
+   "type": "integer pair [YYYY0101, YYYY1231] or two-year windows",
+   "values": [
+    [
+     20230101,
+     20231231
+    ],
+    [
+     20240101,
+     20241231
+    ],
+    [
+     20230101,
+     20241231
+    ]
+   ],
+   "why": "Q24 has rows only for uom USD with ddate in 2023 or 2024 at SF3 (anti-join rows: 282 in 2023, 276 in 2024; 0 for other units)"
+  }
+ },
+ "queries": {
+  "Q1": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [],
+    "params": {},
+    "rows": {
+     "duckdb": 14,
+     "umbra": 14
+    }
+   }
+  ],
+  "Q2": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "pure",
+     "2022"
+    ],
+    "params": {
+     "uom": "pure",
+     "fy": "2022"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "pure",
+     "2023"
+    ],
+    "params": {
+     "uom": "pure",
+     "fy": "2023"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "shares",
+     "2024"
+    ],
+    "params": {
+     "uom": "shares",
+     "fy": "2024"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   }
+  ],
+  "Q3": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "USD",
+     "2022"
+    ],
+    "params": {
+     "uom": "USD",
+     "fy": "2022"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "2023"
+    ],
+    "params": {
+     "uom": "USD",
+     "fy": "2023"
+    },
+    "rows": {
+     "duckdb": 100,
+     "umbra": 100
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "shares",
+     "2022"
+    ],
+    "params": {
+     "uom": "shares",
+     "fy": "2022"
+    },
+    "rows": {
+     "duckdb": 9,
+     "umbra": 9
+    }
+   }
+  ],
+  "Q4": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "USD",
+     "EQ",
+     "4000",
+     "4999"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "EQ",
+     "sic_low": "4000",
+     "sic_high": "4999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "BS",
+     "2000",
+     "2999"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "BS",
+     "sic_low": "2000",
+     "sic_high": "2999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "shares",
+     "EQ",
+     "6000",
+     "6999"
+    ],
+    "params": {
+     "uom": "shares",
+     "stmt": "EQ",
+     "sic_low": "6000",
+     "sic_high": "6999"
+    },
+    "rows": {
+     "duckdb": 500,
+     "umbra": 500
+    }
+   }
+  ],
+  "Q6": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "USD",
+     "IS",
+     "2023"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "IS",
+     "fy": "2023"
+    },
+    "rows": {
+     "duckdb": 200,
+     "umbra": 200
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "BS",
+     "2022"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "BS",
+     "fy": "2022"
+    },
+    "rows": {
+     "duckdb": 200,
+     "umbra": 200
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "CF",
+     "2024"
+    ],
+    "params": {
+     "uom": "USD",
+     "stmt": "CF",
+     "fy": "2024"
+    },
+    "rows": {
+     "duckdb": 200,
+     "umbra": 200
+    }
+   }
+  ],
+  "Q24": [
+   {
+    "binding_id": "v0",
+    "source": "original",
+    "arguments": [
+     "USD",
+     "20230101",
+     "20231231"
+    ],
+    "params": {
+     "uom": "USD",
+     "ddate_low": "20230101",
+     "ddate_high": "20231231"
+    },
+    "rows": {
+     "duckdb": 2,
+     "umbra": 2
+    }
+   },
+   {
+    "binding_id": "v1",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "20240101",
+     "20241231"
+    ],
+    "params": {
+     "uom": "USD",
+     "ddate_low": "20240101",
+     "ddate_high": "20241231"
+    },
+    "rows": {
+     "duckdb": 3,
+     "umbra": 3
+    }
+   },
+   {
+    "binding_id": "v2",
+    "source": "value_domains",
+    "arguments": [
+     "USD",
+     "20230101",
+     "20241231"
+    ],
+    "params": {
+     "uom": "USD",
+     "ddate_low": "20230101",
+     "ddate_high": "20241231"
+    },
+    "rows": {
+     "duckdb": 12,
+     "umbra": 12
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "fixture": "tpch_all22_q04",
+ "description": "TPC-H Q4 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 54.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [3, "EUROPE"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [6, "FRANCE", 3],
+    [7, "GERMANY", 3]
+  ]},
+  {"name": "supplier", "columns": ["s_suppkey", "s_name", "s_address", "s_nationkey", "s_phone", "s_acctbal", "s_comment"], "rows": [
+    [1, "Supplier#000000001", "1 Rue de Lyon", 6, "16-200-200-2001", "5000.00", "fixture"],
+    [2, "Supplier#000000002", "2 Hauptstrasse", 7, "17-200-200-2002", "4000.00", "fixture"]
+  ]},
+  {"name": "part", "columns": ["p_partkey", "p_name", "p_mfgr", "p_brand", "p_type", "p_size", "p_container", "p_retailprice"], "defaults": {"p_comment": "fixture"}, "rows": [
+    [1, "goldenrod lavender spring chocolate", "Manufacturer#1", "Brand#11", "LARGE BRUSHED STEEL", 1, "JUMBO PKG", "100.00"]
+  ]},
+  {"name": "partsupp", "columns": ["ps_partkey", "ps_suppkey", "ps_availqty", "ps_supplycost"], "defaults": {"ps_comment": "fixture"}, "rows": [
+    [1, 1, 1000, "10.00"],
+    [1, 2, 100, "10.00"]
+  ]},
+  {"name": "customer", "columns": ["c_custkey", "c_name", "c_address", "c_nationkey", "c_phone", "c_acctbal", "c_mktsegment"], "defaults": {"c_comment": "fixture"}, "rows": [
+    [5, "Customer#000000005", "5 Rue Royale", 6, "16-100-100-1005", "794.47", "FURNITURE"],
+    [6, "Customer#000000006", "6 Ringstrasse", 7, "17-100-100-1006", "2000.00", "MACHINERY"]
+  ]},
+  {"name": "orders", "columns": ["o_orderkey", "o_custkey", "o_orderstatus", "o_totalprice", "o_orderdate", "o_orderpriority", "o_comment"], "defaults": {"o_clerk": "Clerk#000000001", "o_shippriority": 0}, "rows": [
+    [40, 6, "F", "2000.00", "1993-07-01", "1-URGENT", "fixture"],
+    [41, 6, "F", "1000.00", "1993-08-15", "1-URGENT", "fixture"],
+    [42, 5, "F", "2000.00", "1993-09-30", "3-MEDIUM", "fixture"],
+    [43, 5, "F", "1000.00", "1993-08-01", "2-HIGH", "fixture"],
+    [44, 6, "F", "1000.00", "1993-06-30", "4-NOT SPECIFIED", "fixture"],
+    [100, 5, "F", "2000.00", "1993-10-01", "5-LOW", "fixture"]
+  ]},
+  {"name": "lineitem", "columns": ["l_orderkey", "l_linenumber", "l_partkey", "l_suppkey", "l_quantity", "l_extendedprice", "l_discount", "l_tax", "l_returnflag", "l_linestatus", "l_shipdate", "l_commitdate", "l_receiptdate", "l_shipinstruct", "l_shipmode"], "defaults": {"l_comment": "fixture"}, "rows": [
+    [40, 1, 1, 1, "10.00", "1000.00", "0.00", "0.00", "R", "F", "1993-07-10", "1993-08-01", "1993-08-05", "NONE", "TRUCK"],
+    [40, 2, 1, 2, "10.00", "1000.00", "0.00", "0.00", "A", "F", "1993-07-10", "1993-08-01", "1993-07-20", "NONE", "TRUCK"],
+    [41, 1, 1, 1, "10.00", "1000.00", "0.00", "0.00", "R", "F", "1993-08-20", "1993-09-01", "1993-09-10", "NONE", "TRUCK"],
+    [42, 1, 1, 1, "10.00", "1000.00", "0.00", "0.00", "R", "F", "1993-10-05", "1993-10-20", "1993-10-25", "NONE", "TRUCK"],
+    [42, 2, 1, 2, "10.00", "1000.00", "0.00", "0.00", "R", "F", "1993-10-06", "1993-10-20", "1993-10-30", "NONE", "TRUCK"],
+    [43, 1, 1, 1, "10.00", "1000.00", "0.00", "0.00", "A", "F", "1993-08-05", "1993-08-20", "1993-08-20", "NONE", "TRUCK"],
+    [44, 1, 1, 1, "10.00", "1000.00", "0.00", "0.00", "R", "F", "1993-07-05", "1993-07-10", "1993-07-20", "NONE", "TRUCK"],
+    [100, 1, 1, 1, "10.00", "1000.00", "0.10", "0.00", "R", "F", "1993-10-05", "1993-10-10", "1993-10-20", "NONE", "TRUCK"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q4", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q4"}, "order_keys": [{"column": "o_orderpriority"}], "note": "Correlated EXISTS. 1-URGENT: orders 40 (dated on the lower bound) and 41; 3-MEDIUM: order 42 with two late lines counts once. Excluded: 43 (commit = receipt), 44 (1993-06-30), 100 (1993-10-01 = upper bound, late line)."}
+ ]
+}

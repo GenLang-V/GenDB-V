@@ -1,0 +1,280 @@
+{
+ "name": "tag",
+ "tables": [
+  {
+   "columns": [
+    "tag",
+    "version",
+    "custom",
+    "abstract",
+    "datatype",
+    "iord",
+    "crdr",
+    "tlabel",
+    "doc"
+   ],
+   "table": "tag"
+  }
+ ],
+ "parts": [
+  "tag code per row (U64)",
+  "tag dictionary offsets (U64)",
+  "tag dictionary bytes (U8)",
+  "version code per row (U64)",
+  "version dictionary offsets (U64)",
+  "version dictionary bytes (U8)",
+  "tv_order: row positions sorted by (tag, version) (U64 permutation)",
+  "custom (I32)",
+  "abstract (I32)",
+  "datatype code per row (U64)",
+  "datatype validity per row (U8, 0 = NULL)",
+  "datatype dictionary offsets (U64)",
+  "datatype dictionary bytes (U8)",
+  "iord code per row (U64)",
+  "iord dictionary offsets (U64)",
+  "iord dictionary bytes (U8)",
+  "crdr code per row (U64)",
+  "crdr validity per row (U8, 0 = NULL)",
+  "crdr dictionary offsets (U64)",
+  "crdr dictionary bytes (U8)",
+  "tlabel code per row (U64)",
+  "tlabel validity per row (U8, 0 = NULL)",
+  "tlabel dictionary offsets (U64)",
+  "tlabel dictionary bytes (U8)",
+  "doc code per row (U64)",
+  "doc validity per row (U8, 0 = NULL)",
+  "doc dictionary offsets (U64)",
+  "doc dictionary bytes (U8)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tag"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tag"
+   ]
+  },
+  {
+   "part": 2,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tag"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "version"
+   ]
+  },
+  {
+   "part": 4,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "version"
+   ]
+  },
+  {
+   "part": 5,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "version"
+   ]
+  },
+  {
+   "part": 6,
+   "table": "tag",
+   "kind": "permutation",
+   "columns": [
+    "tag",
+    "version"
+   ]
+  },
+  {
+   "part": 7,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "custom"
+   ]
+  },
+  {
+   "part": 8,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "abstract"
+   ]
+  },
+  {
+   "part": 9,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "datatype"
+   ]
+  },
+  {
+   "part": 10,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "datatype"
+   ]
+  },
+  {
+   "part": 11,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "datatype"
+   ]
+  },
+  {
+   "part": 12,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "datatype"
+   ]
+  },
+  {
+   "part": 13,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "iord"
+   ]
+  },
+  {
+   "part": 14,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "iord"
+   ]
+  },
+  {
+   "part": 15,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "iord"
+   ]
+  },
+  {
+   "part": 16,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "crdr"
+   ]
+  },
+  {
+   "part": 17,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "crdr"
+   ]
+  },
+  {
+   "part": 18,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "crdr"
+   ]
+  },
+  {
+   "part": 19,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "crdr"
+   ]
+  },
+  {
+   "part": 20,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tlabel"
+   ]
+  },
+  {
+   "part": 21,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tlabel"
+   ]
+  },
+  {
+   "part": 22,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tlabel"
+   ]
+  },
+  {
+   "part": 23,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "tlabel"
+   ]
+  },
+  {
+   "part": 24,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "doc"
+   ]
+  },
+  {
+   "part": 25,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "doc"
+   ]
+  },
+  {
+   "part": 26,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "doc"
+   ]
+  },
+  {
+   "part": 27,
+   "table": "tag",
+   "kind": "base_payload",
+   "columns": [
+    "doc"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "tag in canonical row order; every text column dictionary-coded (U64 code per row into a strictly sorted dictionary, U8 validity for nullable columns); custom and abstract as I32; tv_order: the row positions sorted by (tag, version).",
+  "units": "rows: canonical tag rows; offsets: bytes; codes: dictionary positions; tv_order: row positions"
+ }
+}

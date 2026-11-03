@@ -1,0 +1,35 @@
+{
+ "name": "part_nameidx",
+ "tables": [
+  {
+   "columns": [
+    "p_partkey",
+    "p_name"
+   ],
+   "table": "part"
+  }
+ ],
+ "parts": [
+  "NAME_PERM (U32, one per part row or empty): the stored part rows in nondecreasing bytewise p_name order"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "part",
+   "kind": "permutation",
+   "columns": [
+    "p_name"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "custpart unchanged (50 inherited parts), then one U32 part: a permutation of the part rows sorted by p_name (bytewise, ties in any order)",
+  "units": "permutation entries are stored (= canonical) part row positions of custpart"
+ },
+ "built_from": {
+  "sources": [
+   "custpart"
+  ],
+  "extends": "custpart"
+ }
+}

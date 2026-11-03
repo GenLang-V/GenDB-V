@@ -1,0 +1,9 @@
+{
+ "engines": [
+  {
+   "name": "duckdb",
+   "description": "duckdb (fixture)",
+   "answers": "answers/duckdb/{query}/{binding}.json"
+  }
+ ]
+}

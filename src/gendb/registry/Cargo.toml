@@ -1,0 +1,10 @@
+[package]
+name = "gendb-registry"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Index of the reusable definitions and interfaces of verified storage and query crates, and the one definition of the stored-parts read interface"
+
+[dependencies]
+serde = { workspace = true }

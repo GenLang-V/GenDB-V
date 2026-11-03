@@ -1,0 +1,41 @@
+{
+ "name": "factext_trisig",
+ "tables": [
+  {
+   "columns": [
+    "l_comment"
+   ],
+   "table": "lineitem"
+  },
+  {
+   "columns": [
+    "o_clerk",
+    "o_comment"
+   ],
+   "table": "orders"
+  }
+ ],
+ "parts": [
+  "orders: U64 128-bit trigram signature of o_comment per canonical row (two words per row, row r at 2r, 2r+1)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "orders",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "o_comment"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "factext unchanged (12 inherited parts), plus one U64 part: the 128-bit trigram signature of o_comment of every canonical orders row, two words per row",
+  "units": "bit h(a,b,c) (0..128, word h/64, position h%64) of a row's signature is set iff some three consecutive bytes a,b,c of its o_comment hash to h"
+ },
+ "built_from": {
+  "sources": [
+   "factext"
+  ],
+  "extends": "factext"
+ }
+}

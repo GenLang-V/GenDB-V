@@ -1,0 +1,67 @@
+{
+ "name": "psrun",
+ "tables": [
+  {
+   "columns": [
+    "ps_partkey",
+    "ps_suppkey",
+    "ps_availqty",
+    "ps_supplycost",
+    "ps_comment"
+   ],
+   "table": "partsupp"
+  },
+  {
+   "columns": [
+    "s_suppkey",
+    "s_name",
+    "s_address",
+    "s_nationkey",
+    "s_phone",
+    "s_acctbal",
+    "s_comment"
+   ],
+   "table": "supplier"
+  },
+  {
+   "columns": [
+    "n_nationkey",
+    "n_name",
+    "n_regionkey",
+    "n_comment"
+   ],
+   "table": "nation"
+  },
+  {
+   "columns": [
+    "r_regionkey",
+    "r_name",
+    "r_comment"
+   ],
+   "table": "region"
+  }
+ ],
+ "parts": [
+  "partsupp ps_partkey key runs: I64 [ratio r >= 1, then per block b of 65536 stored partsupp rows: NO_RUN (i64::MIN) or the key k with ps_partkey(i) == k + (i - 65536 b) / r for every row i of the block]"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "partsupp",
+   "kind": "own_skip_metadata",
+   "columns": [
+    "ps_partkey"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "storage suppliers (partsupp, supplier, nation, region; its 48 parts linked unchanged) followed by part 48: I64 runs = [ratio, one entry per 65536-row block of partsupp]",
+  "units": "ratio: partsupp rows per key; entries: ps_partkey values (bigint) or i64::MIN for no run"
+ },
+ "built_from": {
+  "sources": [
+   "suppliers"
+  ],
+  "extends": "suppliers"
+ }
+}

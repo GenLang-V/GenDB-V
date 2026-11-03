@@ -1,0 +1,1974 @@
+{
+ "format": "gendb.tpch.engine-variants.v1",
+ "meaning": "Frozen meaning-preserving variants of the 22 TPC-H templates (correctness gating; timing ratios reported only). Each variant has its template's parameters and exactly its template's SQLSpec meaning (allowed rows, SQL error, NULL handling) at every binding and database.",
+ "generator": {
+  "file": "generate.py",
+  "sha256": "aa84b6f1044f8ef9f33b71cbdcfdeffb3cbd4473a39d3f04d73adfe8ade93011",
+  "sqlglot": "27.0.0",
+  "printer": "sqlglot postgres, pretty"
+ },
+ "templates": {
+  "file": "../templates/templates.json",
+  "sha256": "9006c58b2b4139bd343f062a3e4de8d5c63933b83f5386619ae4701faf2ad4a1"
+ },
+ "schema_for_first_columns": {
+  "file": "check/sf100-dataset-schema.sql",
+  "sha256": "d9de536ac4423eb8b7268a84c8e4d4caa65b8598035b4d6f274da2a6b1e1dffb"
+ },
+ "kinds": [
+  "from_permutation",
+  "conjunct_permutation",
+  "commuted_comparisons",
+  "between_expansion",
+  "wrapped_tables",
+  "always_true_conjunct"
+ ],
+ "variants": [
+  {
+   "id": "Q01-commuted_comparisons",
+   "template": "Q01",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q01-commuted_comparisons.sql",
+   "sha256": "f452ced23f566e47455bda5eb878f817bdc8d7e35578782f1bb75ab866eacccd",
+   "parameters": "those of template Q01 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q01.sql",
+    "template_sha256": "334bf081e96d8bd57e147b27f454400ce673ee770c1e442d36741ea8aee99627",
+    "transformation": [
+     "l_shipdate <= $1 -> $1 >= l_shipdate"
+    ]
+   }
+  },
+  {
+   "id": "Q01-wrapped_tables",
+   "template": "Q01",
+   "kind": "wrapped_tables",
+   "file": "variants/Q01-wrapped_tables.sql",
+   "sha256": "75589a057de86180776bf3e540f51c75d128595e7ab7c11d2f4ebb7f15951acf",
+   "parameters": "those of template Q01 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q01.sql",
+    "template_sha256": "334bf081e96d8bd57e147b27f454400ce673ee770c1e442d36741ea8aee99627",
+    "transformation": [
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q01-always_true_conjunct",
+   "template": "Q01",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q01-always_true_conjunct.sql",
+   "sha256": "20e699b4d88635de4d4c80bf208222f5cee9f1f5876be55f44632e459999a6db",
+   "parameters": "those of template Q01 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q01.sql",
+    "template_sha256": "334bf081e96d8bd57e147b27f454400ce673ee770c1e442d36741ea8aee99627",
+    "transformation": [
+     "appended l_orderkey = l_orderkey to the WHERE of the block FROM lineitem ..."
+    ]
+   }
+  },
+  {
+   "id": "Q02-from_permutation",
+   "template": "Q02",
+   "kind": "from_permutation",
+   "file": "variants/Q02-from_permutation.sql",
+   "sha256": "372a7fa9e16eb34010cadaea2f154109465035b48ab6b6795369109404ed736a",
+   "parameters": "those of template Q02 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q02.sql",
+    "template_sha256": "8f36619e781decd901e6b2fed005dbd0378c83ed00dfda021e3cc4128ef65dcc",
+    "transformation": [
+     "FROM part, supplier, partsupp, nation, region -> FROM region, nation, partsupp, supplier, part",
+     "FROM partsupp, supplier, nation, region -> FROM region, nation, supplier, partsupp"
+    ]
+   }
+  },
+  {
+   "id": "Q02-conjunct_permutation",
+   "template": "Q02",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q02-conjunct_permutation.sql",
+   "sha256": "fd21f8ab5c33f644d72685d1abc22d85bb2d6e554078983ce4b0d254f2ec5b68",
+   "parameters": "those of template Q02 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q02.sql",
+    "template_sha256": "8f36619e781decd901e6b2fed005dbd0378c83ed00dfda021e3cc4128ef65dcc",
+    "transformation": [
+     "8 conjuncts reversed: ps_supplycost = (SELECT MIN(ps_supplycost) FROM partsupp, supplier, nation, region WHERE p_partkey = ps_partkey AND s_suppkey = ps_suppkey AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey AND r_name = $3) AND r_name = $3 AND n_regionkey = r_regionkey AND s_nationkey = n_nationkey AND p_type LIKE $2 AND p_size = $1 AND s_suppkey = ps_suppkey AND p_partkey = ps_partkey",
+     "5 conjuncts reversed: r_name = $3 AND n_regionkey = r_regionkey AND s_nationkey = n_nationkey AND s_suppkey = ps_suppkey AND p_partkey = ps_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q02-commuted_comparisons",
+   "template": "Q02",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q02-commuted_comparisons.sql",
+   "sha256": "4426cf7b8fdba9b871e311e27fe4eddea6a69c76f8555c7bee9e6830f4e34381",
+   "parameters": "those of template Q02 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q02.sql",
+    "template_sha256": "8f36619e781decd901e6b2fed005dbd0378c83ed00dfda021e3cc4128ef65dcc",
+    "transformation": [
+     "ps_supplycost = (SELECT MIN(ps_supplycost) FROM partsupp, supplier, nation, region WHERE p_partkey = ps_partkey AND s_suppkey = ps_suppkey AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey AND r_name = $3) -> (SELECT MIN(ps_supplycost) FROM partsupp, supplier, nation, region WHERE p_partkey = ps_partkey AND s_suppkey = ps_suppkey AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey AND r_name = $3) = ps_supplycost",
+     "r_name = $3 -> $3 = r_name",
+     "n_regionkey = r_regionkey -> r_regionkey = n_regionkey",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "p_size = $1 -> $1 = p_size",
+     "r_name = $3 -> $3 = r_name",
+     "p_partkey = ps_partkey -> ps_partkey = p_partkey",
+     "s_suppkey = ps_suppkey -> ps_suppkey = s_suppkey",
+     "n_regionkey = r_regionkey -> r_regionkey = n_regionkey",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "p_partkey = ps_partkey -> ps_partkey = p_partkey",
+     "s_suppkey = ps_suppkey -> ps_suppkey = s_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q02-wrapped_tables",
+   "template": "Q02",
+   "kind": "wrapped_tables",
+   "file": "variants/Q02-wrapped_tables.sql",
+   "sha256": "902d4437060c5c35765e1dc0b8d8b221912b9df91c4ec3c8245ea49e037924e1",
+   "parameters": "those of template Q02 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q02.sql",
+    "template_sha256": "8f36619e781decd901e6b2fed005dbd0378c83ed00dfda021e3cc4128ef65dcc",
+    "transformation": [
+     "part -> (SELECT * FROM part) AS part",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "region -> (SELECT * FROM region) AS region",
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "region -> (SELECT * FROM region) AS region"
+    ]
+   }
+  },
+  {
+   "id": "Q02-always_true_conjunct",
+   "template": "Q02",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q02-always_true_conjunct.sql",
+   "sha256": "e58439b96730cebe19a4abf0a585fb4a3434fb5da8600eeb0ea91db51733dfbf",
+   "parameters": "those of template Q02 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q02.sql",
+    "template_sha256": "8f36619e781decd901e6b2fed005dbd0378c83ed00dfda021e3cc4128ef65dcc",
+    "transformation": [
+     "appended p_partkey = p_partkey to the WHERE of the block FROM part ..."
+    ]
+   }
+  },
+  {
+   "id": "Q03-from_permutation",
+   "template": "Q03",
+   "kind": "from_permutation",
+   "file": "variants/Q03-from_permutation.sql",
+   "sha256": "0f700c66ad8a2f2146aa03c0202a6e0337724cb3ba4d022d667e1e70a2305ce0",
+   "parameters": "those of template Q03 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q03.sql",
+    "template_sha256": "86e3acd3233c5db9b6620b47bcc6180f4710593e802ebe75394fd44c0316962d",
+    "transformation": [
+     "FROM customer, orders, lineitem -> FROM lineitem, orders, customer"
+    ]
+   }
+  },
+  {
+   "id": "Q03-conjunct_permutation",
+   "template": "Q03",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q03-conjunct_permutation.sql",
+   "sha256": "d77bb2fd902bc3e4e22e87e47f7ee39772b0d5ebfa9570f14e091b2defcf3a82",
+   "parameters": "those of template Q03 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q03.sql",
+    "template_sha256": "86e3acd3233c5db9b6620b47bcc6180f4710593e802ebe75394fd44c0316962d",
+    "transformation": [
+     "5 conjuncts reversed: l_shipdate > $2 AND o_orderdate < $2 AND l_orderkey = o_orderkey AND c_custkey = o_custkey AND c_mktsegment = $1"
+    ]
+   }
+  },
+  {
+   "id": "Q03-commuted_comparisons",
+   "template": "Q03",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q03-commuted_comparisons.sql",
+   "sha256": "5ed7e17a9bf396c6ca1d60b0de7fa348350eacb2b92cac6c6ff49d23682f3c7e",
+   "parameters": "those of template Q03 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q03.sql",
+    "template_sha256": "86e3acd3233c5db9b6620b47bcc6180f4710593e802ebe75394fd44c0316962d",
+    "transformation": [
+     "l_shipdate > $2 -> $2 < l_shipdate",
+     "o_orderdate < $2 -> $2 > o_orderdate",
+     "l_orderkey = o_orderkey -> o_orderkey = l_orderkey",
+     "c_mktsegment = $1 -> $1 = c_mktsegment",
+     "c_custkey = o_custkey -> o_custkey = c_custkey"
+    ]
+   }
+  },
+  {
+   "id": "Q03-wrapped_tables",
+   "template": "Q03",
+   "kind": "wrapped_tables",
+   "file": "variants/Q03-wrapped_tables.sql",
+   "sha256": "76bd53b428c892e45e47318a005f5fca00603e4042c234ad75a59b0a097be5e5",
+   "parameters": "those of template Q03 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q03.sql",
+    "template_sha256": "86e3acd3233c5db9b6620b47bcc6180f4710593e802ebe75394fd44c0316962d",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q03-always_true_conjunct",
+   "template": "Q03",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q03-always_true_conjunct.sql",
+   "sha256": "6e73b2ad111ae274e255a72ca63e724aa419d72216dc16b6fc21d65215699bb8",
+   "parameters": "those of template Q03 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q03.sql",
+    "template_sha256": "86e3acd3233c5db9b6620b47bcc6180f4710593e802ebe75394fd44c0316962d",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  },
+  {
+   "id": "Q04-conjunct_permutation",
+   "template": "Q04",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q04-conjunct_permutation.sql",
+   "sha256": "7a85a1cbd838eb1b5def076536fff0475cbaac0442cbaff59631e0ff135efd28",
+   "parameters": "those of template Q04 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q04.sql",
+    "template_sha256": "a9a8cfa97bf3050790122771f2517ad5bbf2f2580abee0fb6ff9bc634bff6156",
+    "transformation": [
+     "3 conjuncts reversed: EXISTS(SELECT * FROM lineitem WHERE l_orderkey = o_orderkey AND l_commitdate < l_receiptdate) AND o_orderdate < $1 + INTERVAL '3 MONTH' AND o_orderdate >= $1",
+     "2 conjuncts reversed: l_commitdate < l_receiptdate AND l_orderkey = o_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q04-commuted_comparisons",
+   "template": "Q04",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q04-commuted_comparisons.sql",
+   "sha256": "4112d21883150d36aee6fab4d3bb5a4ece224531f8e96b377596b9bfd46e612d",
+   "parameters": "those of template Q04 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q04.sql",
+    "template_sha256": "a9a8cfa97bf3050790122771f2517ad5bbf2f2580abee0fb6ff9bc634bff6156",
+    "transformation": [
+     "o_orderdate >= $1 -> $1 <= o_orderdate",
+     "o_orderdate < $1 + INTERVAL '3 MONTH' -> $1 + INTERVAL '3 MONTH' > o_orderdate",
+     "l_orderkey = o_orderkey -> o_orderkey = l_orderkey",
+     "l_commitdate < l_receiptdate -> l_receiptdate > l_commitdate"
+    ]
+   }
+  },
+  {
+   "id": "Q04-wrapped_tables",
+   "template": "Q04",
+   "kind": "wrapped_tables",
+   "file": "variants/Q04-wrapped_tables.sql",
+   "sha256": "3debf49ad0ef64ea1cca2d15dcf97a66b990bfbe98c83d8ae27c21986257798d",
+   "parameters": "those of template Q04 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q04.sql",
+    "template_sha256": "a9a8cfa97bf3050790122771f2517ad5bbf2f2580abee0fb6ff9bc634bff6156",
+    "transformation": [
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q04-always_true_conjunct",
+   "template": "Q04",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q04-always_true_conjunct.sql",
+   "sha256": "6a10c4abf1103f9120f713915b6e0bbeff2ac2568a290431c152faf352d2d449",
+   "parameters": "those of template Q04 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q04.sql",
+    "template_sha256": "a9a8cfa97bf3050790122771f2517ad5bbf2f2580abee0fb6ff9bc634bff6156",
+    "transformation": [
+     "appended o_orderkey = o_orderkey to the WHERE of the block FROM orders ..."
+    ]
+   }
+  },
+  {
+   "id": "Q05-from_permutation",
+   "template": "Q05",
+   "kind": "from_permutation",
+   "file": "variants/Q05-from_permutation.sql",
+   "sha256": "784397d3d88e7b6044f941d06c85b2603f07f049f515035ee975ec11343ea61d",
+   "parameters": "those of template Q05 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q05.sql",
+    "template_sha256": "37fa973af0d0d1c2413cff346aa64eb5887ba5fd7c583f1a1b8d7d43823b49cd",
+    "transformation": [
+     "FROM customer, orders, lineitem, supplier, nation, region -> FROM region, nation, supplier, lineitem, orders, customer"
+    ]
+   }
+  },
+  {
+   "id": "Q05-conjunct_permutation",
+   "template": "Q05",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q05-conjunct_permutation.sql",
+   "sha256": "0ef90336e177e9c5a4aad6d8411de08982176d64f4be2098feedc82c40566d82",
+   "parameters": "those of template Q05 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q05.sql",
+    "template_sha256": "37fa973af0d0d1c2413cff346aa64eb5887ba5fd7c583f1a1b8d7d43823b49cd",
+    "transformation": [
+     "9 conjuncts reversed: o_orderdate < $2 + INTERVAL '1 YEAR' AND o_orderdate >= $2 AND r_name = $1 AND n_regionkey = r_regionkey AND s_nationkey = n_nationkey AND c_nationkey = s_nationkey AND l_suppkey = s_suppkey AND l_orderkey = o_orderkey AND c_custkey = o_custkey"
+    ]
+   }
+  },
+  {
+   "id": "Q05-commuted_comparisons",
+   "template": "Q05",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q05-commuted_comparisons.sql",
+   "sha256": "58886739ce6024284d8abccdba6d5a33e83c4ee5b98ff87070f3e96c0ae26b44",
+   "parameters": "those of template Q05 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q05.sql",
+    "template_sha256": "37fa973af0d0d1c2413cff346aa64eb5887ba5fd7c583f1a1b8d7d43823b49cd",
+    "transformation": [
+     "o_orderdate < $2 + INTERVAL '1 YEAR' -> $2 + INTERVAL '1 YEAR' > o_orderdate",
+     "o_orderdate >= $2 -> $2 <= o_orderdate",
+     "r_name = $1 -> $1 = r_name",
+     "n_regionkey = r_regionkey -> r_regionkey = n_regionkey",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "c_nationkey = s_nationkey -> s_nationkey = c_nationkey",
+     "l_suppkey = s_suppkey -> s_suppkey = l_suppkey",
+     "c_custkey = o_custkey -> o_custkey = c_custkey",
+     "l_orderkey = o_orderkey -> o_orderkey = l_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q05-wrapped_tables",
+   "template": "Q05",
+   "kind": "wrapped_tables",
+   "file": "variants/Q05-wrapped_tables.sql",
+   "sha256": "9628f1e8a84a673b3eb5e6228a219afb6dca76a0345c1ba120bf2838b647d865",
+   "parameters": "those of template Q05 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q05.sql",
+    "template_sha256": "37fa973af0d0d1c2413cff346aa64eb5887ba5fd7c583f1a1b8d7d43823b49cd",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "region -> (SELECT * FROM region) AS region"
+    ]
+   }
+  },
+  {
+   "id": "Q05-always_true_conjunct",
+   "template": "Q05",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q05-always_true_conjunct.sql",
+   "sha256": "e07fa16a4e893add581c5584aeba6b3ab77388a57ef6fefa05538acf39c94484",
+   "parameters": "those of template Q05 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q05.sql",
+    "template_sha256": "37fa973af0d0d1c2413cff346aa64eb5887ba5fd7c583f1a1b8d7d43823b49cd",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  },
+  {
+   "id": "Q06-conjunct_permutation",
+   "template": "Q06",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q06-conjunct_permutation.sql",
+   "sha256": "be3abda300c048d30fdc58b1c9e365cee04dad76e20088fab9f199befb761f57",
+   "parameters": "those of template Q06 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q06.sql",
+    "template_sha256": "36d65738baa72f98fd35674451fabf9d6ad6a7e80d01f42fd2815d17183c4aa6",
+    "transformation": [
+     "4 conjuncts reversed: l_quantity < $3 AND l_discount BETWEEN $2 - 0.01 AND $2 + 0.01 AND l_shipdate < $1 + INTERVAL '1 YEAR' AND l_shipdate >= $1"
+    ]
+   }
+  },
+  {
+   "id": "Q06-commuted_comparisons",
+   "template": "Q06",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q06-commuted_comparisons.sql",
+   "sha256": "a1f8da13ad68ce1f480a1e28cd967b941ede49a7312c7fe4140c651bb72733b2",
+   "parameters": "those of template Q06 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q06.sql",
+    "template_sha256": "36d65738baa72f98fd35674451fabf9d6ad6a7e80d01f42fd2815d17183c4aa6",
+    "transformation": [
+     "l_quantity < $3 -> $3 > l_quantity",
+     "l_shipdate >= $1 -> $1 <= l_shipdate",
+     "l_shipdate < $1 + INTERVAL '1 YEAR' -> $1 + INTERVAL '1 YEAR' > l_shipdate"
+    ]
+   }
+  },
+  {
+   "id": "Q06-between_expansion",
+   "template": "Q06",
+   "kind": "between_expansion",
+   "file": "variants/Q06-between_expansion.sql",
+   "sha256": "a54fd7ce88ac9d42a458c7c6abe511e36abd78deb342bbff002a931ef3e33c47",
+   "parameters": "those of template Q06 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q06.sql",
+    "template_sha256": "36d65738baa72f98fd35674451fabf9d6ad6a7e80d01f42fd2815d17183c4aa6",
+    "transformation": [
+     "l_discount BETWEEN $2 - 0.01 AND $2 + 0.01 -> l_discount >= $2 - 0.01 AND l_discount <= $2 + 0.01"
+    ]
+   }
+  },
+  {
+   "id": "Q06-wrapped_tables",
+   "template": "Q06",
+   "kind": "wrapped_tables",
+   "file": "variants/Q06-wrapped_tables.sql",
+   "sha256": "7ce4f4774af6c0d866d55d66145e83d2312f3a4fe6a56ede80d0407a8a5c54f7",
+   "parameters": "those of template Q06 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q06.sql",
+    "template_sha256": "36d65738baa72f98fd35674451fabf9d6ad6a7e80d01f42fd2815d17183c4aa6",
+    "transformation": [
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q06-always_true_conjunct",
+   "template": "Q06",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q06-always_true_conjunct.sql",
+   "sha256": "f2d4e410371fc602f61fe8a0f09ac67caaf6b30c74123597852514a44572f14a",
+   "parameters": "those of template Q06 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q06.sql",
+    "template_sha256": "36d65738baa72f98fd35674451fabf9d6ad6a7e80d01f42fd2815d17183c4aa6",
+    "transformation": [
+     "appended l_orderkey = l_orderkey to the WHERE of the block FROM lineitem ..."
+    ]
+   }
+  },
+  {
+   "id": "Q07-from_permutation",
+   "template": "Q07",
+   "kind": "from_permutation",
+   "file": "variants/Q07-from_permutation.sql",
+   "sha256": "c4ae623d36528e038685b166ce4b55c06e99e200abbfd128777ac048b677ceff",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "FROM supplier, lineitem, orders, customer, n1, n2 -> FROM n2, n1, customer, orders, lineitem, supplier"
+    ]
+   }
+  },
+  {
+   "id": "Q07-conjunct_permutation",
+   "template": "Q07",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q07-conjunct_permutation.sql",
+   "sha256": "a165d6a3d7df937ec47cd49bb55ca8f4a50e27c7def5bf0e5830d70800e90bd7",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "2 conjuncts reversed: n2.n_name = $2 AND n1.n_name = $1",
+     "2 conjuncts reversed: n2.n_name = $1 AND n1.n_name = $2",
+     "7 conjuncts reversed: l_shipdate BETWEEN CAST('1995-01-01' AS DATE) AND CAST('1996-12-31' AS DATE) AND ((n2.n_name = $2 AND n1.n_name = $1) OR (n2.n_name = $1 AND n1.n_name = $2)) AND c_nationkey = n2.n_nationkey AND s_nationkey = n1.n_nationkey AND c_custkey = o_custkey AND o_orderkey = l_orderkey AND s_suppkey = l_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q07-commuted_comparisons",
+   "template": "Q07",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q07-commuted_comparisons.sql",
+   "sha256": "3ed3ded435bd8d0cb0e4a084e77c622e158bdcf4305abd75a6d74cc6debb6d6f",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "c_nationkey = n2.n_nationkey -> n2.n_nationkey = c_nationkey",
+     "s_nationkey = n1.n_nationkey -> n1.n_nationkey = s_nationkey",
+     "c_custkey = o_custkey -> o_custkey = c_custkey",
+     "s_suppkey = l_suppkey -> l_suppkey = s_suppkey",
+     "o_orderkey = l_orderkey -> l_orderkey = o_orderkey",
+     "n1.n_name = $1 -> $1 = n1.n_name",
+     "n2.n_name = $2 -> $2 = n2.n_name",
+     "n1.n_name = $2 -> $2 = n1.n_name",
+     "n2.n_name = $1 -> $1 = n2.n_name"
+    ]
+   }
+  },
+  {
+   "id": "Q07-between_expansion",
+   "template": "Q07",
+   "kind": "between_expansion",
+   "file": "variants/Q07-between_expansion.sql",
+   "sha256": "c617d23b44ac60303fe0faf2eabb76698a04680dceaf892af423a74d0c4f7c08",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "l_shipdate BETWEEN CAST('1995-01-01' AS DATE) AND CAST('1996-12-31' AS DATE) -> l_shipdate >= CAST('1995-01-01' AS DATE) AND l_shipdate <= CAST('1996-12-31' AS DATE)"
+    ]
+   }
+  },
+  {
+   "id": "Q07-wrapped_tables",
+   "template": "Q07",
+   "kind": "wrapped_tables",
+   "file": "variants/Q07-wrapped_tables.sql",
+   "sha256": "b39d35298a3645ad01769edda9a229d3d713fecc315618373cbe449908b72e96",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "customer -> (SELECT * FROM customer) AS customer",
+     "nation AS n1 -> (SELECT * FROM nation) AS n1",
+     "nation AS n2 -> (SELECT * FROM nation) AS n2"
+    ]
+   }
+  },
+  {
+   "id": "Q07-always_true_conjunct",
+   "template": "Q07",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q07-always_true_conjunct.sql",
+   "sha256": "535d9ea0647d62965426bd76ae8fddba8d6aa1100face73c882eb04216a4c706",
+   "parameters": "those of template Q07 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q07.sql",
+    "template_sha256": "5ebe2055cb6e040065cd05bcacc41b6acaa656520b98c83e0cf1377048c93654",
+    "transformation": [
+     "appended s_suppkey = s_suppkey to the WHERE of the block FROM supplier ..."
+    ]
+   }
+  },
+  {
+   "id": "Q08-conjunct_permutation",
+   "template": "Q08",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q08-conjunct_permutation.sql",
+   "sha256": "805c92744f68ed2c9e3b1c2ef7f330b4bb2db68d4fece284217bc6984432bc7d",
+   "parameters": "those of template Q08 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q08.sql",
+    "template_sha256": "69f69c96487792298f8f7a181dbe601794abb156c7e0411810b081d8b4032c98",
+    "transformation": [
+     "10 conjuncts reversed: p_type = $3 AND o_orderdate BETWEEN CAST('1995-01-01' AS DATE) AND CAST('1996-12-31' AS DATE) AND s_nationkey = n2.n_nationkey AND r_name = $2 AND n1.n_regionkey = r_regionkey AND c_nationkey = n1.n_nationkey AND o_custkey = c_custkey AND l_orderkey = o_orderkey AND s_suppkey = l_suppkey AND p_partkey = l_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q08-commuted_comparisons",
+   "template": "Q08",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q08-commuted_comparisons.sql",
+   "sha256": "1a1c902049f160e1fbbb2afadf3327d3c1edf8ae070f1c6dbf41078eecfaa868",
+   "parameters": "those of template Q08 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q08.sql",
+    "template_sha256": "69f69c96487792298f8f7a181dbe601794abb156c7e0411810b081d8b4032c98",
+    "transformation": [
+     "nation = $1 -> $1 = nation",
+     "p_type = $3 -> $3 = p_type",
+     "s_nationkey = n2.n_nationkey -> n2.n_nationkey = s_nationkey",
+     "r_name = $2 -> $2 = r_name",
+     "n1.n_regionkey = r_regionkey -> r_regionkey = n1.n_regionkey",
+     "c_nationkey = n1.n_nationkey -> n1.n_nationkey = c_nationkey",
+     "o_custkey = c_custkey -> c_custkey = o_custkey",
+     "l_orderkey = o_orderkey -> o_orderkey = l_orderkey",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "s_suppkey = l_suppkey -> l_suppkey = s_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q08-between_expansion",
+   "template": "Q08",
+   "kind": "between_expansion",
+   "file": "variants/Q08-between_expansion.sql",
+   "sha256": "ef7a25ca164f5c33bff5ec6238c1701979c9ce4f2d7882ec7c2b9211dfda5f1f",
+   "parameters": "those of template Q08 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q08.sql",
+    "template_sha256": "69f69c96487792298f8f7a181dbe601794abb156c7e0411810b081d8b4032c98",
+    "transformation": [
+     "o_orderdate BETWEEN CAST('1995-01-01' AS DATE) AND CAST('1996-12-31' AS DATE) -> o_orderdate >= CAST('1995-01-01' AS DATE) AND o_orderdate <= CAST('1996-12-31' AS DATE)"
+    ]
+   }
+  },
+  {
+   "id": "Q08-wrapped_tables",
+   "template": "Q08",
+   "kind": "wrapped_tables",
+   "file": "variants/Q08-wrapped_tables.sql",
+   "sha256": "0908a03097adf1779e01f893bbad9d785b1b6d0f96e8421da51047c65e98d377",
+   "parameters": "those of template Q08 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q08.sql",
+    "template_sha256": "69f69c96487792298f8f7a181dbe601794abb156c7e0411810b081d8b4032c98",
+    "transformation": [
+     "part -> (SELECT * FROM part) AS part",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "customer -> (SELECT * FROM customer) AS customer",
+     "nation AS n1 -> (SELECT * FROM nation) AS n1",
+     "nation AS n2 -> (SELECT * FROM nation) AS n2",
+     "region -> (SELECT * FROM region) AS region"
+    ]
+   }
+  },
+  {
+   "id": "Q08-always_true_conjunct",
+   "template": "Q08",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q08-always_true_conjunct.sql",
+   "sha256": "42cd1934815910a7b791994bf2c3868d77adbfafd6e9ef1aca9adbb29be399eb",
+   "parameters": "those of template Q08 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q08.sql",
+    "template_sha256": "69f69c96487792298f8f7a181dbe601794abb156c7e0411810b081d8b4032c98",
+    "transformation": [
+     "appended p_partkey = p_partkey to the WHERE of the block FROM part ..."
+    ]
+   }
+  },
+  {
+   "id": "Q09-from_permutation",
+   "template": "Q09",
+   "kind": "from_permutation",
+   "file": "variants/Q09-from_permutation.sql",
+   "sha256": "67fc25860f674efd37963bcd9bb8bdc43f8b0b4ded93dbb615da45d8636635a2",
+   "parameters": "those of template Q09 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q09.sql",
+    "template_sha256": "667f5112ffea81452dafaac5c9b6ed7a2798da1c0fec814e16f7f3ed59ef705f",
+    "transformation": [
+     "FROM part, supplier, lineitem, partsupp, orders, nation -> FROM nation, orders, partsupp, lineitem, supplier, part"
+    ]
+   }
+  },
+  {
+   "id": "Q09-conjunct_permutation",
+   "template": "Q09",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q09-conjunct_permutation.sql",
+   "sha256": "1639563262b288471971728fb29783a751dd5dec4748c59d044e9a8aa9e311e6",
+   "parameters": "those of template Q09 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q09.sql",
+    "template_sha256": "667f5112ffea81452dafaac5c9b6ed7a2798da1c0fec814e16f7f3ed59ef705f",
+    "transformation": [
+     "7 conjuncts reversed: p_name LIKE $1 AND s_nationkey = n_nationkey AND o_orderkey = l_orderkey AND p_partkey = l_partkey AND ps_partkey = l_partkey AND ps_suppkey = l_suppkey AND s_suppkey = l_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q09-commuted_comparisons",
+   "template": "Q09",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q09-commuted_comparisons.sql",
+   "sha256": "934cd9ff2578e864061f1711aa96b7956f19b4239aca4a4d7cb78c1171c96323",
+   "parameters": "those of template Q09 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q09.sql",
+    "template_sha256": "667f5112ffea81452dafaac5c9b6ed7a2798da1c0fec814e16f7f3ed59ef705f",
+    "transformation": [
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "o_orderkey = l_orderkey -> l_orderkey = o_orderkey",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "ps_partkey = l_partkey -> l_partkey = ps_partkey",
+     "s_suppkey = l_suppkey -> l_suppkey = s_suppkey",
+     "ps_suppkey = l_suppkey -> l_suppkey = ps_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q09-wrapped_tables",
+   "template": "Q09",
+   "kind": "wrapped_tables",
+   "file": "variants/Q09-wrapped_tables.sql",
+   "sha256": "e32ee8d40e0eb16005078bc7280d08792ade201da1643c1c116b569cf5ce0640",
+   "parameters": "those of template Q09 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q09.sql",
+    "template_sha256": "667f5112ffea81452dafaac5c9b6ed7a2798da1c0fec814e16f7f3ed59ef705f",
+    "transformation": [
+     "part -> (SELECT * FROM part) AS part",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "nation -> (SELECT * FROM nation) AS nation"
+    ]
+   }
+  },
+  {
+   "id": "Q09-always_true_conjunct",
+   "template": "Q09",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q09-always_true_conjunct.sql",
+   "sha256": "2af462c250ae7419c1c58c6fa44540acb464b9a42bc875207861e89e9e4c5897",
+   "parameters": "those of template Q09 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q09.sql",
+    "template_sha256": "667f5112ffea81452dafaac5c9b6ed7a2798da1c0fec814e16f7f3ed59ef705f",
+    "transformation": [
+     "appended p_partkey = p_partkey to the WHERE of the block FROM part ..."
+    ]
+   }
+  },
+  {
+   "id": "Q10-from_permutation",
+   "template": "Q10",
+   "kind": "from_permutation",
+   "file": "variants/Q10-from_permutation.sql",
+   "sha256": "0d113e169a6167999fbe4611dddbac79c843ecc0aeffa9219687c516a200efb7",
+   "parameters": "those of template Q10 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q10.sql",
+    "template_sha256": "ad1a74602917dcba4ba2c77952b1ea272aa736bfb3dd433ed1396c937d10548c",
+    "transformation": [
+     "FROM customer, orders, lineitem, nation -> FROM nation, lineitem, orders, customer"
+    ]
+   }
+  },
+  {
+   "id": "Q10-conjunct_permutation",
+   "template": "Q10",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q10-conjunct_permutation.sql",
+   "sha256": "4c52f34623ff0c6bdc785d8aebb0dd90612f3851a8ab80787d5847fe7a2a413f",
+   "parameters": "those of template Q10 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q10.sql",
+    "template_sha256": "ad1a74602917dcba4ba2c77952b1ea272aa736bfb3dd433ed1396c937d10548c",
+    "transformation": [
+     "6 conjuncts reversed: c_nationkey = n_nationkey AND l_returnflag = 'R' AND o_orderdate < $1 + INTERVAL '3 MONTH' AND o_orderdate >= $1 AND l_orderkey = o_orderkey AND c_custkey = o_custkey"
+    ]
+   }
+  },
+  {
+   "id": "Q10-commuted_comparisons",
+   "template": "Q10",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q10-commuted_comparisons.sql",
+   "sha256": "709b007cc4a85ead3c58118e2ffc0727914fb0a42cd7ace9814d4f86a7581b1f",
+   "parameters": "those of template Q10 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q10.sql",
+    "template_sha256": "ad1a74602917dcba4ba2c77952b1ea272aa736bfb3dd433ed1396c937d10548c",
+    "transformation": [
+     "c_nationkey = n_nationkey -> n_nationkey = c_nationkey",
+     "l_returnflag = 'R' -> 'R' = l_returnflag",
+     "o_orderdate < $1 + INTERVAL '3 MONTH' -> $1 + INTERVAL '3 MONTH' > o_orderdate",
+     "o_orderdate >= $1 -> $1 <= o_orderdate",
+     "c_custkey = o_custkey -> o_custkey = c_custkey",
+     "l_orderkey = o_orderkey -> o_orderkey = l_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q10-wrapped_tables",
+   "template": "Q10",
+   "kind": "wrapped_tables",
+   "file": "variants/Q10-wrapped_tables.sql",
+   "sha256": "cc3d5602379640bf054e714bee4106428c492b4f2c2ea033821cc9f2a6f69661",
+   "parameters": "those of template Q10 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q10.sql",
+    "template_sha256": "ad1a74602917dcba4ba2c77952b1ea272aa736bfb3dd433ed1396c937d10548c",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "nation -> (SELECT * FROM nation) AS nation"
+    ]
+   }
+  },
+  {
+   "id": "Q10-always_true_conjunct",
+   "template": "Q10",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q10-always_true_conjunct.sql",
+   "sha256": "3d9e5fd9eb89e1d9b18d27a357f25988c1c6175236018220d789579d8c4924c9",
+   "parameters": "those of template Q10 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q10.sql",
+    "template_sha256": "ad1a74602917dcba4ba2c77952b1ea272aa736bfb3dd433ed1396c937d10548c",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  },
+  {
+   "id": "Q11-from_permutation",
+   "template": "Q11",
+   "kind": "from_permutation",
+   "file": "variants/Q11-from_permutation.sql",
+   "sha256": "f0929abc4c0b85d4fc7c2f5aa8c6ed2ef5322f514404d13494e36a05d83d7d96",
+   "parameters": "those of template Q11 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q11.sql",
+    "template_sha256": "92ecda2b2aba2f1439d344a180fdca8239f7df9cbfee002b0847caf88709b7a8",
+    "transformation": [
+     "FROM partsupp, supplier, nation -> FROM nation, supplier, partsupp",
+     "FROM partsupp, supplier, nation -> FROM nation, supplier, partsupp"
+    ]
+   }
+  },
+  {
+   "id": "Q11-conjunct_permutation",
+   "template": "Q11",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q11-conjunct_permutation.sql",
+   "sha256": "b75b3c532fea4b473fa2bb7ba090a084e4b5c99498b37f2f10031fd17a3b21a3",
+   "parameters": "those of template Q11 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q11.sql",
+    "template_sha256": "92ecda2b2aba2f1439d344a180fdca8239f7df9cbfee002b0847caf88709b7a8",
+    "transformation": [
+     "3 conjuncts reversed: n_name = $1 AND s_nationkey = n_nationkey AND ps_suppkey = s_suppkey",
+     "3 conjuncts reversed: n_name = $1 AND s_nationkey = n_nationkey AND ps_suppkey = s_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q11-commuted_comparisons",
+   "template": "Q11",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q11-commuted_comparisons.sql",
+   "sha256": "bb698256303a2a4a19dee0a01534e9641ad82d9bdfd82c413063e1274e909bb7",
+   "parameters": "those of template Q11 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q11.sql",
+    "template_sha256": "92ecda2b2aba2f1439d344a180fdca8239f7df9cbfee002b0847caf88709b7a8",
+    "transformation": [
+     "SUM(ps_supplycost * ps_availqty) > (SELECT SUM(ps_supplycost * ps_availqty) * $2 FROM partsupp, supplier, nation WHERE ps_suppkey = s_suppkey AND s_nationkey = n_nationkey AND n_name = $1) -> (SELECT SUM(ps_supplycost * ps_availqty) * $2 FROM partsupp, supplier, nation WHERE ps_suppkey = s_suppkey AND s_nationkey = n_nationkey AND n_name = $1) < SUM(ps_supplycost * ps_availqty)",
+     "n_name = $1 -> $1 = n_name",
+     "ps_suppkey = s_suppkey -> s_suppkey = ps_suppkey",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "n_name = $1 -> $1 = n_name",
+     "ps_suppkey = s_suppkey -> s_suppkey = ps_suppkey",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey"
+    ]
+   }
+  },
+  {
+   "id": "Q11-wrapped_tables",
+   "template": "Q11",
+   "kind": "wrapped_tables",
+   "file": "variants/Q11-wrapped_tables.sql",
+   "sha256": "cf2074c50411e4dd141ad6d521c008a5ba69a73a555053f26bd4659e18b73992",
+   "parameters": "those of template Q11 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q11.sql",
+    "template_sha256": "92ecda2b2aba2f1439d344a180fdca8239f7df9cbfee002b0847caf88709b7a8",
+    "transformation": [
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "nation -> (SELECT * FROM nation) AS nation"
+    ]
+   }
+  },
+  {
+   "id": "Q11-always_true_conjunct",
+   "template": "Q11",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q11-always_true_conjunct.sql",
+   "sha256": "b3df8597974f23d0574904ab18ce94fb3605634bd2754fb76aef7a0b454be382",
+   "parameters": "those of template Q11 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q11.sql",
+    "template_sha256": "92ecda2b2aba2f1439d344a180fdca8239f7df9cbfee002b0847caf88709b7a8",
+    "transformation": [
+     "appended ps_partkey = ps_partkey to the WHERE of the block FROM partsupp ..."
+    ]
+   }
+  },
+  {
+   "id": "Q12-from_permutation",
+   "template": "Q12",
+   "kind": "from_permutation",
+   "file": "variants/Q12-from_permutation.sql",
+   "sha256": "c53bd6b447e9a099ae9e078fe356528f35802b63a038109f16e25efed8b64eb4",
+   "parameters": "those of template Q12 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q12.sql",
+    "template_sha256": "20843c5c0ed05704173b947b791783ad0af88deef06259a81353c1017c0dd3cf",
+    "transformation": [
+     "FROM orders, lineitem -> FROM lineitem, orders"
+    ]
+   }
+  },
+  {
+   "id": "Q12-conjunct_permutation",
+   "template": "Q12",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q12-conjunct_permutation.sql",
+   "sha256": "f41c7283157a27ed5f63b0a90bbe44651745c5f8d9d5f6738b26af30ecc8a2ed",
+   "parameters": "those of template Q12 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q12.sql",
+    "template_sha256": "20843c5c0ed05704173b947b791783ad0af88deef06259a81353c1017c0dd3cf",
+    "transformation": [
+     "6 conjuncts reversed: l_receiptdate < $3 + INTERVAL '1 YEAR' AND l_receiptdate >= $3 AND l_shipdate < l_commitdate AND l_commitdate < l_receiptdate AND l_shipmode IN ($1, $2) AND o_orderkey = l_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q12-commuted_comparisons",
+   "template": "Q12",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q12-commuted_comparisons.sql",
+   "sha256": "34eac180a2e501f2946129b29f137deb78af9c4358a28dffd4b111b45162f617",
+   "parameters": "those of template Q12 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q12.sql",
+    "template_sha256": "20843c5c0ed05704173b947b791783ad0af88deef06259a81353c1017c0dd3cf",
+    "transformation": [
+     "l_receiptdate < $3 + INTERVAL '1 YEAR' -> $3 + INTERVAL '1 YEAR' > l_receiptdate",
+     "l_receiptdate >= $3 -> $3 <= l_receiptdate",
+     "l_shipdate < l_commitdate -> l_commitdate > l_shipdate",
+     "o_orderpriority = '1-URGENT' -> '1-URGENT' = o_orderpriority",
+     "o_orderpriority = '2-HIGH' -> '2-HIGH' = o_orderpriority",
+     "o_orderpriority <> '1-URGENT' -> '1-URGENT' <> o_orderpriority",
+     "o_orderpriority <> '2-HIGH' -> '2-HIGH' <> o_orderpriority",
+     "l_commitdate < l_receiptdate -> l_receiptdate > l_commitdate",
+     "o_orderkey = l_orderkey -> l_orderkey = o_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q12-wrapped_tables",
+   "template": "Q12",
+   "kind": "wrapped_tables",
+   "file": "variants/Q12-wrapped_tables.sql",
+   "sha256": "6de0df2e8b38daf8198d76fb09b82e415c93860004ce699a4976ae751cca65a8",
+   "parameters": "those of template Q12 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q12.sql",
+    "template_sha256": "20843c5c0ed05704173b947b791783ad0af88deef06259a81353c1017c0dd3cf",
+    "transformation": [
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q12-always_true_conjunct",
+   "template": "Q12",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q12-always_true_conjunct.sql",
+   "sha256": "97d107f4c0cd0cd8899639262f599e3acd8ad174c257262e452f55470f1a31ef",
+   "parameters": "those of template Q12 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q12.sql",
+    "template_sha256": "20843c5c0ed05704173b947b791783ad0af88deef06259a81353c1017c0dd3cf",
+    "transformation": [
+     "appended o_orderkey = o_orderkey to the WHERE of the block FROM orders ..."
+    ]
+   }
+  },
+  {
+   "id": "Q13-conjunct_permutation",
+   "template": "Q13",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q13-conjunct_permutation.sql",
+   "sha256": "62e5006f3f07663cdc1f4012bc86f33513e74e2781dc4ab477db57684ad516b2",
+   "parameters": "those of template Q13 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q13.sql",
+    "template_sha256": "6e2273aa998a8cd8957e3d668778ed1f3e88b4c7f33c1e27fab90ed62d23c774",
+    "transformation": [
+     "2 conjuncts reversed: NOT o_comment LIKE $1 AND c_custkey = o_custkey"
+    ]
+   }
+  },
+  {
+   "id": "Q13-commuted_comparisons",
+   "template": "Q13",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q13-commuted_comparisons.sql",
+   "sha256": "2ba1f9aed0b170e77bdb0b8f15662395b2dcb67f3d90c711f69d6bf498ef8f1e",
+   "parameters": "those of template Q13 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q13.sql",
+    "template_sha256": "6e2273aa998a8cd8957e3d668778ed1f3e88b4c7f33c1e27fab90ed62d23c774",
+    "transformation": [
+     "c_custkey = o_custkey -> o_custkey = c_custkey"
+    ]
+   }
+  },
+  {
+   "id": "Q13-wrapped_tables",
+   "template": "Q13",
+   "kind": "wrapped_tables",
+   "file": "variants/Q13-wrapped_tables.sql",
+   "sha256": "7ea1bc3a5bc8b1f3767e9c8ff1d4686f12771a24e075ba905ba432b6403d89be",
+   "parameters": "those of template Q13 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q13.sql",
+    "template_sha256": "6e2273aa998a8cd8957e3d668778ed1f3e88b4c7f33c1e27fab90ed62d23c774",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders"
+    ]
+   }
+  },
+  {
+   "id": "Q13-always_true_conjunct",
+   "template": "Q13",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q13-always_true_conjunct.sql",
+   "sha256": "72f21ca39501f53117bbbd19be2996fb60767f4df43bdaff0b7d2844923f8dbc",
+   "parameters": "those of template Q13 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q13.sql",
+    "template_sha256": "6e2273aa998a8cd8957e3d668778ed1f3e88b4c7f33c1e27fab90ed62d23c774",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  },
+  {
+   "id": "Q14-from_permutation",
+   "template": "Q14",
+   "kind": "from_permutation",
+   "file": "variants/Q14-from_permutation.sql",
+   "sha256": "2c1dcbeacf9e99e1c27089583c927a0707bd93cc70a9b4d30ed3eec7d565521e",
+   "parameters": "those of template Q14 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q14.sql",
+    "template_sha256": "d2ea3dddd5dccfed6fbff3c4ee690914ca4a19785185adfd3c4497e5ff33e43f",
+    "transformation": [
+     "FROM lineitem, part -> FROM part, lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q14-conjunct_permutation",
+   "template": "Q14",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q14-conjunct_permutation.sql",
+   "sha256": "fb7310aa1db991acb3ed092cadbe7bcf2cb8d5e8f000e1260d2021250bc1767c",
+   "parameters": "those of template Q14 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q14.sql",
+    "template_sha256": "d2ea3dddd5dccfed6fbff3c4ee690914ca4a19785185adfd3c4497e5ff33e43f",
+    "transformation": [
+     "3 conjuncts reversed: l_shipdate < $1 + INTERVAL '1 MONTH' AND l_shipdate >= $1 AND l_partkey = p_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q14-commuted_comparisons",
+   "template": "Q14",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q14-commuted_comparisons.sql",
+   "sha256": "693fa067ea46a338a19d55e61373af06971a0750d06b86f98bb0478262e838f3",
+   "parameters": "those of template Q14 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q14.sql",
+    "template_sha256": "d2ea3dddd5dccfed6fbff3c4ee690914ca4a19785185adfd3c4497e5ff33e43f",
+    "transformation": [
+     "l_shipdate < $1 + INTERVAL '1 MONTH' -> $1 + INTERVAL '1 MONTH' > l_shipdate",
+     "l_partkey = p_partkey -> p_partkey = l_partkey",
+     "l_shipdate >= $1 -> $1 <= l_shipdate"
+    ]
+   }
+  },
+  {
+   "id": "Q14-wrapped_tables",
+   "template": "Q14",
+   "kind": "wrapped_tables",
+   "file": "variants/Q14-wrapped_tables.sql",
+   "sha256": "9a33a32f1a40b10b5a506132927f974dd292b1cae92f1537b6b9d1d4c508d71b",
+   "parameters": "those of template Q14 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q14.sql",
+    "template_sha256": "d2ea3dddd5dccfed6fbff3c4ee690914ca4a19785185adfd3c4497e5ff33e43f",
+    "transformation": [
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "part -> (SELECT * FROM part) AS part"
+    ]
+   }
+  },
+  {
+   "id": "Q14-always_true_conjunct",
+   "template": "Q14",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q14-always_true_conjunct.sql",
+   "sha256": "8b27b57917db2df8f9d3489698492326e7954585ae4a686d32700901285c04e7",
+   "parameters": "those of template Q14 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q14.sql",
+    "template_sha256": "d2ea3dddd5dccfed6fbff3c4ee690914ca4a19785185adfd3c4497e5ff33e43f",
+    "transformation": [
+     "appended l_orderkey = l_orderkey to the WHERE of the block FROM lineitem ..."
+    ]
+   }
+  },
+  {
+   "id": "Q15-from_permutation",
+   "template": "Q15",
+   "kind": "from_permutation",
+   "file": "variants/Q15-from_permutation.sql",
+   "sha256": "6e6dae7a87c75a394e436e9083f9c9032ceb0506ae311e52ecbddea69d093a6a",
+   "parameters": "those of template Q15 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q15.sql",
+    "template_sha256": "dc020252fb7481b5411d5df1fc178a94c338b45233bf1e61af72e92014150f8a",
+    "transformation": [
+     "FROM supplier, revenue0 -> FROM revenue0, supplier"
+    ]
+   }
+  },
+  {
+   "id": "Q15-conjunct_permutation",
+   "template": "Q15",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q15-conjunct_permutation.sql",
+   "sha256": "95729955857d7417ca7e58401e2e563a567dcc7e0e5b710f73890331338caaad",
+   "parameters": "those of template Q15 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q15.sql",
+    "template_sha256": "dc020252fb7481b5411d5df1fc178a94c338b45233bf1e61af72e92014150f8a",
+    "transformation": [
+     "2 conjuncts reversed: total_revenue = (SELECT MAX(total_revenue) FROM revenue0) AND s_suppkey = supplier_no",
+     "2 conjuncts reversed: l_shipdate < $1 + INTERVAL '3 MONTH' AND l_shipdate >= $1"
+    ]
+   }
+  },
+  {
+   "id": "Q15-commuted_comparisons",
+   "template": "Q15",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q15-commuted_comparisons.sql",
+   "sha256": "77e4921b333d3debf476337a141c73ff8c9db2191220f5dcccbebdc80a7c592d",
+   "parameters": "those of template Q15 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q15.sql",
+    "template_sha256": "dc020252fb7481b5411d5df1fc178a94c338b45233bf1e61af72e92014150f8a",
+    "transformation": [
+     "s_suppkey = supplier_no -> supplier_no = s_suppkey",
+     "total_revenue = (SELECT MAX(total_revenue) FROM revenue0) -> (SELECT MAX(total_revenue) FROM revenue0) = total_revenue",
+     "l_shipdate >= $1 -> $1 <= l_shipdate",
+     "l_shipdate < $1 + INTERVAL '3 MONTH' -> $1 + INTERVAL '3 MONTH' > l_shipdate"
+    ]
+   }
+  },
+  {
+   "id": "Q15-wrapped_tables",
+   "template": "Q15",
+   "kind": "wrapped_tables",
+   "file": "variants/Q15-wrapped_tables.sql",
+   "sha256": "84f3299e7c66a6307d56023f7687eaf8628b38960901f76fe095a9ec82a4e67f",
+   "parameters": "those of template Q15 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q15.sql",
+    "template_sha256": "dc020252fb7481b5411d5df1fc178a94c338b45233bf1e61af72e92014150f8a",
+    "transformation": [
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q15-always_true_conjunct",
+   "template": "Q15",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q15-always_true_conjunct.sql",
+   "sha256": "c524f86b82d33bc094e41bbb098ce1351091229dbf06457e33909901f8d26763",
+   "parameters": "those of template Q15 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q15.sql",
+    "template_sha256": "dc020252fb7481b5411d5df1fc178a94c338b45233bf1e61af72e92014150f8a",
+    "transformation": [
+     "appended s_suppkey = s_suppkey to the WHERE of the block FROM supplier ..."
+    ]
+   }
+  },
+  {
+   "id": "Q16-from_permutation",
+   "template": "Q16",
+   "kind": "from_permutation",
+   "file": "variants/Q16-from_permutation.sql",
+   "sha256": "a641bef25eeb193156e6bca5b45ea4a804abe53eb16951a6dceeedd9b1b56419",
+   "parameters": "those of template Q16 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q16.sql",
+    "template_sha256": "c550b273c1ef9fadb2232c1417725c2791dfd5e5cf9208cf1f3894bf921be1aa",
+    "transformation": [
+     "FROM partsupp, part -> FROM part, partsupp"
+    ]
+   }
+  },
+  {
+   "id": "Q16-conjunct_permutation",
+   "template": "Q16",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q16-conjunct_permutation.sql",
+   "sha256": "3e7930e6ee838a164ace40b8a9989383034b09b342080aaee966351997211199",
+   "parameters": "those of template Q16 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q16.sql",
+    "template_sha256": "c550b273c1ef9fadb2232c1417725c2791dfd5e5cf9208cf1f3894bf921be1aa",
+    "transformation": [
+     "5 conjuncts reversed: NOT ps_suppkey IN (SELECT s_suppkey FROM supplier WHERE s_comment LIKE '%Customer%Complaints%') AND p_size IN ($3, $4, $5, $6, $7, $8, $9, $10) AND NOT p_type LIKE $2 AND p_brand <> $1 AND p_partkey = ps_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q16-commuted_comparisons",
+   "template": "Q16",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q16-commuted_comparisons.sql",
+   "sha256": "b21e53a8d5a14e5a093c627ffedffddadf464ca510ac7e246543a662646a1962",
+   "parameters": "those of template Q16 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q16.sql",
+    "template_sha256": "c550b273c1ef9fadb2232c1417725c2791dfd5e5cf9208cf1f3894bf921be1aa",
+    "transformation": [
+     "p_partkey = ps_partkey -> ps_partkey = p_partkey",
+     "p_brand <> $1 -> $1 <> p_brand"
+    ]
+   }
+  },
+  {
+   "id": "Q16-wrapped_tables",
+   "template": "Q16",
+   "kind": "wrapped_tables",
+   "file": "variants/Q16-wrapped_tables.sql",
+   "sha256": "9c58beb2db2d9988c9024b46390890836a5578197b0514a728f58c1a3f327de8",
+   "parameters": "those of template Q16 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q16.sql",
+    "template_sha256": "c550b273c1ef9fadb2232c1417725c2791dfd5e5cf9208cf1f3894bf921be1aa",
+    "transformation": [
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "part -> (SELECT * FROM part) AS part",
+     "supplier -> (SELECT * FROM supplier) AS supplier"
+    ]
+   }
+  },
+  {
+   "id": "Q16-always_true_conjunct",
+   "template": "Q16",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q16-always_true_conjunct.sql",
+   "sha256": "282a4fa2489adfe838e0241c85acf66a66eabad4c0d0caa47a90165f84dd3143",
+   "parameters": "those of template Q16 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q16.sql",
+    "template_sha256": "c550b273c1ef9fadb2232c1417725c2791dfd5e5cf9208cf1f3894bf921be1aa",
+    "transformation": [
+     "appended ps_partkey = ps_partkey to the WHERE of the block FROM partsupp ..."
+    ]
+   }
+  },
+  {
+   "id": "Q17-from_permutation",
+   "template": "Q17",
+   "kind": "from_permutation",
+   "file": "variants/Q17-from_permutation.sql",
+   "sha256": "a1baa9cd1e4a45ffacc087dc06c3a59da0cac17c32dce1b9f3aa206c14c1c513",
+   "parameters": "those of template Q17 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q17.sql",
+    "template_sha256": "13c372b822feff81178223b1b1a35f42ee6e07d326e1fc07a3eb129b64e1f587",
+    "transformation": [
+     "FROM lineitem, part -> FROM part, lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q17-conjunct_permutation",
+   "template": "Q17",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q17-conjunct_permutation.sql",
+   "sha256": "38a7011d45901256434c51fea1a76c4fdf971842b5d3dc868dbefe2c0fa477da",
+   "parameters": "those of template Q17 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q17.sql",
+    "template_sha256": "13c372b822feff81178223b1b1a35f42ee6e07d326e1fc07a3eb129b64e1f587",
+    "transformation": [
+     "4 conjuncts reversed: l_quantity < (SELECT 0.2 * AVG(l_quantity) FROM lineitem WHERE l_partkey = p_partkey) AND p_container = $2 AND p_brand = $1 AND p_partkey = l_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q17-commuted_comparisons",
+   "template": "Q17",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q17-commuted_comparisons.sql",
+   "sha256": "9817e7f88c471dea6478b0518e5a3a09d9935f747929211bc472c902e1533f44",
+   "parameters": "those of template Q17 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q17.sql",
+    "template_sha256": "13c372b822feff81178223b1b1a35f42ee6e07d326e1fc07a3eb129b64e1f587",
+    "transformation": [
+     "l_quantity < (SELECT 0.2 * AVG(l_quantity) FROM lineitem WHERE l_partkey = p_partkey) -> (SELECT 0.2 * AVG(l_quantity) FROM lineitem WHERE l_partkey = p_partkey) > l_quantity",
+     "p_container = $2 -> $2 = p_container",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "p_brand = $1 -> $1 = p_brand",
+     "l_partkey = p_partkey -> p_partkey = l_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q17-wrapped_tables",
+   "template": "Q17",
+   "kind": "wrapped_tables",
+   "file": "variants/Q17-wrapped_tables.sql",
+   "sha256": "94b4905dd96126ee0faa610ff1d447468d24317ec54c0912443689c1b572f790",
+   "parameters": "those of template Q17 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q17.sql",
+    "template_sha256": "13c372b822feff81178223b1b1a35f42ee6e07d326e1fc07a3eb129b64e1f587",
+    "transformation": [
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "part -> (SELECT * FROM part) AS part",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q17-always_true_conjunct",
+   "template": "Q17",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q17-always_true_conjunct.sql",
+   "sha256": "63160cbcfcc111fa96ff4f9d1059e75a6df5d25583ef92833e39191becc486c9",
+   "parameters": "those of template Q17 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q17.sql",
+    "template_sha256": "13c372b822feff81178223b1b1a35f42ee6e07d326e1fc07a3eb129b64e1f587",
+    "transformation": [
+     "appended l_orderkey = l_orderkey to the WHERE of the block FROM lineitem ..."
+    ]
+   }
+  },
+  {
+   "id": "Q18-from_permutation",
+   "template": "Q18",
+   "kind": "from_permutation",
+   "file": "variants/Q18-from_permutation.sql",
+   "sha256": "aefb71fcc17e40d879ad89ca9aa0aa7eddc97b91a9eda1e1c16d95f0a9435ace",
+   "parameters": "those of template Q18 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q18.sql",
+    "template_sha256": "7897c88802d0599898f666e2ff872ed5233e13f74a68119c2fc515b1c6c2247c",
+    "transformation": [
+     "FROM customer, orders, lineitem -> FROM lineitem, orders, customer"
+    ]
+   }
+  },
+  {
+   "id": "Q18-conjunct_permutation",
+   "template": "Q18",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q18-conjunct_permutation.sql",
+   "sha256": "2b457669346f29b5cabb89295da46be99f09fc9236f5dcb78b20a5e7d9681bc1",
+   "parameters": "those of template Q18 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q18.sql",
+    "template_sha256": "7897c88802d0599898f666e2ff872ed5233e13f74a68119c2fc515b1c6c2247c",
+    "transformation": [
+     "3 conjuncts reversed: o_orderkey = l_orderkey AND c_custkey = o_custkey AND o_orderkey IN (SELECT l_orderkey FROM lineitem GROUP BY l_orderkey HAVING SUM(l_quantity) > $1)"
+    ]
+   }
+  },
+  {
+   "id": "Q18-commuted_comparisons",
+   "template": "Q18",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q18-commuted_comparisons.sql",
+   "sha256": "abc1e2c4422b6c575503b0bcbf93cbd57c57ac0a8e73b1d8d9770bc24c750fdc",
+   "parameters": "those of template Q18 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q18.sql",
+    "template_sha256": "7897c88802d0599898f666e2ff872ed5233e13f74a68119c2fc515b1c6c2247c",
+    "transformation": [
+     "o_orderkey = l_orderkey -> l_orderkey = o_orderkey",
+     "c_custkey = o_custkey -> o_custkey = c_custkey",
+     "SUM(l_quantity) > $1 -> $1 < SUM(l_quantity)"
+    ]
+   }
+  },
+  {
+   "id": "Q18-wrapped_tables",
+   "template": "Q18",
+   "kind": "wrapped_tables",
+   "file": "variants/Q18-wrapped_tables.sql",
+   "sha256": "3aff18714c39285c6772cfe504a869e598f117e675fc7c8c972dc89d389ee497",
+   "parameters": "those of template Q18 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q18.sql",
+    "template_sha256": "7897c88802d0599898f666e2ff872ed5233e13f74a68119c2fc515b1c6c2247c",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q18-always_true_conjunct",
+   "template": "Q18",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q18-always_true_conjunct.sql",
+   "sha256": "321a39df2b99c4305779f176fa6f64ce2d250838f11e0d90b05695887f53adff",
+   "parameters": "those of template Q18 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q18.sql",
+    "template_sha256": "7897c88802d0599898f666e2ff872ed5233e13f74a68119c2fc515b1c6c2247c",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  },
+  {
+   "id": "Q19-from_permutation",
+   "template": "Q19",
+   "kind": "from_permutation",
+   "file": "variants/Q19-from_permutation.sql",
+   "sha256": "32dfc0fec1311eaaaaea0e681757e693bf10ce324638016a41c3d9659cd32f36",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "FROM lineitem, part -> FROM part, lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q19-conjunct_permutation",
+   "template": "Q19",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q19-conjunct_permutation.sql",
+   "sha256": "fd17a8006a7125a7d62f034123af6a349f0aa14b8bd19d78fddacc40c0ddc2ec",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "8 conjuncts reversed: l_shipinstruct = 'DELIVER IN PERSON' AND l_shipmode IN ('AIR', 'AIR REG') AND p_size BETWEEN 1 AND 5 AND l_quantity <= $2 + 10 AND l_quantity >= $2 AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') AND p_brand = $1 AND p_partkey = l_partkey",
+     "8 conjuncts reversed: l_shipinstruct = 'DELIVER IN PERSON' AND l_shipmode IN ('AIR', 'AIR REG') AND p_size BETWEEN 1 AND 10 AND l_quantity <= $4 + 10 AND l_quantity >= $4 AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') AND p_brand = $3 AND p_partkey = l_partkey",
+     "8 conjuncts reversed: l_shipinstruct = 'DELIVER IN PERSON' AND l_shipmode IN ('AIR', 'AIR REG') AND p_size BETWEEN 1 AND 15 AND l_quantity <= $6 + 10 AND l_quantity >= $6 AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') AND p_brand = $5 AND p_partkey = l_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q19-commuted_comparisons",
+   "template": "Q19",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q19-commuted_comparisons.sql",
+   "sha256": "66e47a520409d423eb6a3914494139341b89fd7309819a97c322f2bb2fcce2e7",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "l_shipinstruct = 'DELIVER IN PERSON' -> 'DELIVER IN PERSON' = l_shipinstruct",
+     "l_shipinstruct = 'DELIVER IN PERSON' -> 'DELIVER IN PERSON' = l_shipinstruct",
+     "l_shipinstruct = 'DELIVER IN PERSON' -> 'DELIVER IN PERSON' = l_shipinstruct",
+     "l_quantity <= $6 + 10 -> $6 + 10 >= l_quantity",
+     "l_quantity <= $2 + 10 -> $2 + 10 >= l_quantity",
+     "l_quantity <= $4 + 10 -> $4 + 10 >= l_quantity",
+     "l_quantity >= $6 -> $6 <= l_quantity",
+     "l_quantity >= $2 -> $2 <= l_quantity",
+     "l_quantity >= $4 -> $4 <= l_quantity",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "p_brand = $5 -> $5 = p_brand",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "p_brand = $1 -> $1 = p_brand",
+     "p_partkey = l_partkey -> l_partkey = p_partkey",
+     "p_brand = $3 -> $3 = p_brand"
+    ]
+   }
+  },
+  {
+   "id": "Q19-between_expansion",
+   "template": "Q19",
+   "kind": "between_expansion",
+   "file": "variants/Q19-between_expansion.sql",
+   "sha256": "6509baf7e0242e3435c75baf62d7ca150cbaaafa09ef7b7f9434ccb6588b8bde",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "p_size BETWEEN 1 AND 15 -> p_size >= 1 AND p_size <= 15",
+     "p_size BETWEEN 1 AND 5 -> p_size >= 1 AND p_size <= 5",
+     "p_size BETWEEN 1 AND 10 -> p_size >= 1 AND p_size <= 10"
+    ]
+   }
+  },
+  {
+   "id": "Q19-wrapped_tables",
+   "template": "Q19",
+   "kind": "wrapped_tables",
+   "file": "variants/Q19-wrapped_tables.sql",
+   "sha256": "80c3164c4f20b1aabb8bdac2db2e9e465ad9d509c6692f2371b25c6f852f98d3",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem",
+     "part -> (SELECT * FROM part) AS part"
+    ]
+   }
+  },
+  {
+   "id": "Q19-always_true_conjunct",
+   "template": "Q19",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q19-always_true_conjunct.sql",
+   "sha256": "0ce522c75e6c91f028047c1b1ed96a71debe3f16184abb302b99b7a4dbc8e039",
+   "parameters": "those of template Q19 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q19.sql",
+    "template_sha256": "5760609b2bc0b56e96d0da8769590d549712bc988aa60afa039826f67f8e87ad",
+    "transformation": [
+     "appended l_orderkey = l_orderkey to the WHERE of the block FROM lineitem ..."
+    ]
+   }
+  },
+  {
+   "id": "Q20-from_permutation",
+   "template": "Q20",
+   "kind": "from_permutation",
+   "file": "variants/Q20-from_permutation.sql",
+   "sha256": "fd5a782c6fa243b6a8fb6cad2e36c5fd0244ea08a1b0021e709d07d1af03a4e3",
+   "parameters": "those of template Q20 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q20.sql",
+    "template_sha256": "2934bce27890a4a9a035ff286544423465b40d469ce9feaf28f3d4d33698b4b6",
+    "transformation": [
+     "FROM supplier, nation -> FROM nation, supplier"
+    ]
+   }
+  },
+  {
+   "id": "Q20-conjunct_permutation",
+   "template": "Q20",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q20-conjunct_permutation.sql",
+   "sha256": "d2fbb91d0004b2fb54d3c8ebe32e0c7b9c24cd575b2c337f99357100ebb110d4",
+   "parameters": "those of template Q20 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q20.sql",
+    "template_sha256": "2934bce27890a4a9a035ff286544423465b40d469ce9feaf28f3d4d33698b4b6",
+    "transformation": [
+     "3 conjuncts reversed: n_name = $3 AND s_nationkey = n_nationkey AND s_suppkey IN (SELECT ps_suppkey FROM partsupp WHERE ps_partkey IN (SELECT p_partkey FROM part WHERE p_name LIKE $1) AND ps_availqty > (SELECT 0.5 * SUM(l_quantity) FROM lineitem WHERE l_partkey = ps_partkey AND l_suppkey = ps_suppkey AND l_shipdate >= $2 AND l_shipdate < $2 + INTERVAL '1 YEAR'))",
+     "4 conjuncts reversed: l_shipdate < $2 + INTERVAL '1 YEAR' AND l_shipdate >= $2 AND l_suppkey = ps_suppkey AND l_partkey = ps_partkey"
+    ]
+   }
+  },
+  {
+   "id": "Q20-commuted_comparisons",
+   "template": "Q20",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q20-commuted_comparisons.sql",
+   "sha256": "25a47cc07c6c42ac37f71b9a9da1fc0ab7fc47dec3790a7eb40c80881611f210",
+   "parameters": "those of template Q20 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q20.sql",
+    "template_sha256": "2934bce27890a4a9a035ff286544423465b40d469ce9feaf28f3d4d33698b4b6",
+    "transformation": [
+     "n_name = $3 -> $3 = n_name",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "ps_availqty > (SELECT 0.5 * SUM(l_quantity) FROM lineitem WHERE l_partkey = ps_partkey AND l_suppkey = ps_suppkey AND l_shipdate >= $2 AND l_shipdate < $2 + INTERVAL '1 YEAR') -> (SELECT 0.5 * SUM(l_quantity) FROM lineitem WHERE l_partkey = ps_partkey AND l_suppkey = ps_suppkey AND l_shipdate >= $2 AND l_shipdate < $2 + INTERVAL '1 YEAR') < ps_availqty",
+     "l_shipdate < $2 + INTERVAL '1 YEAR' -> $2 + INTERVAL '1 YEAR' > l_shipdate",
+     "l_shipdate >= $2 -> $2 <= l_shipdate",
+     "l_partkey = ps_partkey -> ps_partkey = l_partkey",
+     "l_suppkey = ps_suppkey -> ps_suppkey = l_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q20-wrapped_tables",
+   "template": "Q20",
+   "kind": "wrapped_tables",
+   "file": "variants/Q20-wrapped_tables.sql",
+   "sha256": "4803a0bd98cea3f850f11cb69019971429e393c557adea2d4d014c8cddda9a7a",
+   "parameters": "those of template Q20 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q20.sql",
+    "template_sha256": "2934bce27890a4a9a035ff286544423465b40d469ce9feaf28f3d4d33698b4b6",
+    "transformation": [
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "partsupp -> (SELECT * FROM partsupp) AS partsupp",
+     "part -> (SELECT * FROM part) AS part",
+     "lineitem -> (SELECT * FROM lineitem) AS lineitem"
+    ]
+   }
+  },
+  {
+   "id": "Q20-always_true_conjunct",
+   "template": "Q20",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q20-always_true_conjunct.sql",
+   "sha256": "488574dd5de410117199748dda494c203fecd2371adcde695522bac533df0e8b",
+   "parameters": "those of template Q20 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q20.sql",
+    "template_sha256": "2934bce27890a4a9a035ff286544423465b40d469ce9feaf28f3d4d33698b4b6",
+    "transformation": [
+     "appended s_suppkey = s_suppkey to the WHERE of the block FROM supplier ..."
+    ]
+   }
+  },
+  {
+   "id": "Q21-from_permutation",
+   "template": "Q21",
+   "kind": "from_permutation",
+   "file": "variants/Q21-from_permutation.sql",
+   "sha256": "35df70cca668e25a48c76d025a98d8c31b26438859fdf2e8768cf8d62f1e82df",
+   "parameters": "those of template Q21 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q21.sql",
+    "template_sha256": "7bd64ca5a22268d9b2ddf2858927ed9dff21aea7a674ab1a84bca84281d6254f",
+    "transformation": [
+     "FROM supplier, l1, orders, nation -> FROM nation, orders, l1, supplier"
+    ]
+   }
+  },
+  {
+   "id": "Q21-conjunct_permutation",
+   "template": "Q21",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q21-conjunct_permutation.sql",
+   "sha256": "3787cd16ff72d64c24ab8f38bd1a6fddd30f658dc377a40977710155970f5825",
+   "parameters": "those of template Q21 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q21.sql",
+    "template_sha256": "7bd64ca5a22268d9b2ddf2858927ed9dff21aea7a674ab1a84bca84281d6254f",
+    "transformation": [
+     "8 conjuncts reversed: n_name = $1 AND s_nationkey = n_nationkey AND NOT EXISTS(SELECT * FROM lineitem AS l3 WHERE l3.l_orderkey = l1.l_orderkey AND l3.l_suppkey <> l1.l_suppkey AND l3.l_receiptdate > l3.l_commitdate) AND EXISTS(SELECT * FROM lineitem AS l2 WHERE l2.l_orderkey = l1.l_orderkey AND l2.l_suppkey <> l1.l_suppkey) AND l1.l_receiptdate > l1.l_commitdate AND o_orderstatus = 'F' AND o_orderkey = l1.l_orderkey AND s_suppkey = l1.l_suppkey",
+     "2 conjuncts reversed: l2.l_suppkey <> l1.l_suppkey AND l2.l_orderkey = l1.l_orderkey",
+     "3 conjuncts reversed: l3.l_receiptdate > l3.l_commitdate AND l3.l_suppkey <> l1.l_suppkey AND l3.l_orderkey = l1.l_orderkey"
+    ]
+   }
+  },
+  {
+   "id": "Q21-commuted_comparisons",
+   "template": "Q21",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q21-commuted_comparisons.sql",
+   "sha256": "0e6a0513f9041dcfa6ad6179bcd681b60b875993aaad5664f9056fa65c733429",
+   "parameters": "those of template Q21 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q21.sql",
+    "template_sha256": "7bd64ca5a22268d9b2ddf2858927ed9dff21aea7a674ab1a84bca84281d6254f",
+    "transformation": [
+     "n_name = $1 -> $1 = n_name",
+     "s_nationkey = n_nationkey -> n_nationkey = s_nationkey",
+     "l1.l_receiptdate > l1.l_commitdate -> l1.l_commitdate < l1.l_receiptdate",
+     "o_orderstatus = 'F' -> 'F' = o_orderstatus",
+     "s_suppkey = l1.l_suppkey -> l1.l_suppkey = s_suppkey",
+     "o_orderkey = l1.l_orderkey -> l1.l_orderkey = o_orderkey",
+     "l2.l_orderkey = l1.l_orderkey -> l1.l_orderkey = l2.l_orderkey",
+     "l2.l_suppkey <> l1.l_suppkey -> l1.l_suppkey <> l2.l_suppkey",
+     "l3.l_receiptdate > l3.l_commitdate -> l3.l_commitdate < l3.l_receiptdate",
+     "l3.l_orderkey = l1.l_orderkey -> l1.l_orderkey = l3.l_orderkey",
+     "l3.l_suppkey <> l1.l_suppkey -> l1.l_suppkey <> l3.l_suppkey"
+    ]
+   }
+  },
+  {
+   "id": "Q21-wrapped_tables",
+   "template": "Q21",
+   "kind": "wrapped_tables",
+   "file": "variants/Q21-wrapped_tables.sql",
+   "sha256": "c20c6e25ae9ae174315144614fd3860e21ca5cda5dcf3c362329108fc808c42d",
+   "parameters": "those of template Q21 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q21.sql",
+    "template_sha256": "7bd64ca5a22268d9b2ddf2858927ed9dff21aea7a674ab1a84bca84281d6254f",
+    "transformation": [
+     "supplier -> (SELECT * FROM supplier) AS supplier",
+     "lineitem AS l1 -> (SELECT * FROM lineitem) AS l1",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "nation -> (SELECT * FROM nation) AS nation",
+     "lineitem AS l2 -> (SELECT * FROM lineitem) AS l2",
+     "lineitem AS l3 -> (SELECT * FROM lineitem) AS l3"
+    ]
+   }
+  },
+  {
+   "id": "Q21-always_true_conjunct",
+   "template": "Q21",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q21-always_true_conjunct.sql",
+   "sha256": "871d477d20e95a989147369a82c48b6aeb6adfcef10e0ba46291d250aef89864",
+   "parameters": "those of template Q21 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q21.sql",
+    "template_sha256": "7bd64ca5a22268d9b2ddf2858927ed9dff21aea7a674ab1a84bca84281d6254f",
+    "transformation": [
+     "appended s_suppkey = s_suppkey to the WHERE of the block FROM supplier ..."
+    ]
+   }
+  },
+  {
+   "id": "Q22-conjunct_permutation",
+   "template": "Q22",
+   "kind": "conjunct_permutation",
+   "file": "variants/Q22-conjunct_permutation.sql",
+   "sha256": "231ab5adc359de95b796d1defee44979244e1c635bfffff57794b292cb0f3311",
+   "parameters": "those of template Q22 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q22.sql",
+    "template_sha256": "6093ad1a938ac8158f83f34f1892e4d5090fa4d6127b79b34b83ac41ea76bdad",
+    "transformation": [
+     "3 conjuncts reversed: NOT EXISTS(SELECT * FROM orders WHERE o_custkey = c_custkey) AND c_acctbal > (SELECT AVG(c_acctbal) FROM customer WHERE c_acctbal > 0.00 AND SUBSTRING(c_phone FROM 1 FOR 2) IN ($1, $2, $3, $4, $5, $6, $7)) AND SUBSTRING(c_phone FROM 1 FOR 2) IN ($1, $2, $3, $4, $5, $6, $7)",
+     "2 conjuncts reversed: SUBSTRING(c_phone FROM 1 FOR 2) IN ($1, $2, $3, $4, $5, $6, $7) AND c_acctbal > 0.00"
+    ]
+   }
+  },
+  {
+   "id": "Q22-commuted_comparisons",
+   "template": "Q22",
+   "kind": "commuted_comparisons",
+   "file": "variants/Q22-commuted_comparisons.sql",
+   "sha256": "ccb393bd39f56f6ac93f69e6c9de0d607348385662d2faa44d2727f5ef3eaf01",
+   "parameters": "those of template Q22 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q22.sql",
+    "template_sha256": "6093ad1a938ac8158f83f34f1892e4d5090fa4d6127b79b34b83ac41ea76bdad",
+    "transformation": [
+     "c_acctbal > (SELECT AVG(c_acctbal) FROM customer WHERE c_acctbal > 0.00 AND SUBSTRING(c_phone FROM 1 FOR 2) IN ($1, $2, $3, $4, $5, $6, $7)) -> (SELECT AVG(c_acctbal) FROM customer WHERE c_acctbal > 0.00 AND SUBSTRING(c_phone FROM 1 FOR 2) IN ($1, $2, $3, $4, $5, $6, $7)) < c_acctbal",
+     "o_custkey = c_custkey -> c_custkey = o_custkey",
+     "c_acctbal > 0.00 -> 0.00 < c_acctbal"
+    ]
+   }
+  },
+  {
+   "id": "Q22-wrapped_tables",
+   "template": "Q22",
+   "kind": "wrapped_tables",
+   "file": "variants/Q22-wrapped_tables.sql",
+   "sha256": "b57f3e53b0a16939ad514a024e318bf499ac2b77a82507ed8d85ac23ec98f185",
+   "parameters": "those of template Q22 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q22.sql",
+    "template_sha256": "6093ad1a938ac8158f83f34f1892e4d5090fa4d6127b79b34b83ac41ea76bdad",
+    "transformation": [
+     "customer -> (SELECT * FROM customer) AS customer",
+     "orders -> (SELECT * FROM orders) AS orders",
+     "customer -> (SELECT * FROM customer) AS customer"
+    ]
+   }
+  },
+  {
+   "id": "Q22-always_true_conjunct",
+   "template": "Q22",
+   "kind": "always_true_conjunct",
+   "file": "variants/Q22-always_true_conjunct.sql",
+   "sha256": "775b1c91504bf86f8f82b5a9e0e2abdf64b8014aad0e80c0787b8ecfa82cecec",
+   "parameters": "those of template Q22 in templates.json (same $n, types and domains)",
+   "lineage": {
+    "template_file": "../templates/q22.sql",
+    "template_sha256": "6093ad1a938ac8158f83f34f1892e4d5090fa4d6127b79b34b83ac41ea76bdad",
+    "transformation": [
+     "appended c_custkey = c_custkey to the WHERE of the block FROM customer ..."
+    ]
+   }
+  }
+ ],
+ "not_applicable": [
+  {
+   "template": "Q01",
+   "kind": "from_permutation",
+   "reason": "no comma FROM list with two or more items"
+  },
+  {
+   "template": "Q01",
+   "kind": "conjunct_permutation",
+   "reason": "no AND chain of two or more conjuncts in a WHERE, ON or HAVING condition"
+  },
+  {
+   "template": "Q01",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q02",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q03",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q04",
+   "kind": "from_permutation",
+   "reason": "no comma FROM list with two or more items"
+  },
+  {
+   "template": "Q04",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q05",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q06",
+   "kind": "from_permutation",
+   "reason": "no comma FROM list with two or more items"
+  },
+  {
+   "template": "Q09",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q10",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q11",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q12",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q13",
+   "kind": "from_permutation",
+   "reason": "no comma FROM list with two or more items"
+  },
+  {
+   "template": "Q13",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q14",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q15",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q16",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q17",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q18",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q20",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q21",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  },
+  {
+   "template": "Q22",
+   "kind": "from_permutation",
+   "reason": "no comma FROM list with two or more items"
+  },
+  {
+   "template": "Q22",
+   "kind": "between_expansion",
+   "reason": "no BETWEEN"
+  }
+ ],
+ "skipped_not_exact": [
+  {
+   "template": "Q08",
+   "kind": "from_permutation",
+   "chain": null,
+   "reason": "the FROM order of the derived table decides the row order reaching the outer GROUP BY, hence the order of the o_year groups, and the per-group projection SUM(CASE ...) / SUM(volume) can raise 22012 (a group whose SUM(volume) is 0) or 22003 (a quotient beyond PostgreSQL's numeric format, on a database with enough rows); SQLSpec returns the first error in group order, so another FROM order could return the other error"
+  },
+  {
+   "template": "Q20",
+   "kind": "conjunct_permutation",
+   "chain": "ps_partkey IN (SELECT p_partkey FROM part WHERE p_name LIKE $1) AND ps_availqty > (SELECT 0.5 * SUM(l_quantity) FROM lineitem WHERE l_partkey = ps_partkey AND l_suppkey = ps_suppkey AND l_shipdate >= $2 AND l_shipdate < $2 + INTERVAL '1 YEAR')",
+   "reason": "the partsupp subquery's chain `ps_partkey IN (SELECT ... WHERE p_name LIKE $1) AND ps_availqty > (SELECT ... l_shipdate < $2 + INTERVAL '1' YEAR)` can raise 22025 (an invalid LIKE pattern $1) in its first conjunct and 22008 (a date overflow at $2) in its second; SQLSpec's AND evaluates left to right and returns the first error, so reversing it would change the error on a database where both arise"
+  }
+ ],
+ "counts": {
+  "variants": 107,
+  "templates": 22,
+  "per_kind": {
+   "from_permutation": 16,
+   "conjunct_permutation": 21,
+   "commuted_comparisons": 22,
+   "between_expansion": 4,
+   "wrapped_tables": 22,
+   "always_true_conjunct": 22
+  }
+ }
+}

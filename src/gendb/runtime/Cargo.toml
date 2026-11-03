@@ -1,0 +1,33 @@
+[package]
+name = "gendb-runtime"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "Execution of admitted Verus packages: ABI v3 loading, isolated worker, serving and runtime identity"
+
+[dependencies]
+gendb-artifacts = { workspace = true }
+gendb-frontend = { workspace = true }
+# The SQLSpec result codec (GSQLRS1 decoding, PostgreSQL output text); sqlspec depends on frontend only.
+gendb-sqlspec = { workspace = true }
+gendb-storage = { workspace = true }
+libc = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[dev-dependencies]
+arrow = { workspace = true }
+
+# The worker process test runs its own executable as the worker (`<test> worker REQUEST RESULT`, the same contract as
+# `gendb worker`), so it needs its own `main`.
+[[test]]
+name = "worker_process"
+harness = false
+
+# The user's stop test runs its own executable as the controller child (`process_stop::install`, signal handlers and
+# the launch tag belong to that child process, never to a test harness).
+[[test]]
+name = "process_stop"
+harness = false

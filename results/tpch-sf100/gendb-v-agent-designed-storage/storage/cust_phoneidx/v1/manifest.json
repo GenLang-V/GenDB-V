@@ -1,0 +1,43 @@
+{
+ "name": "cust_phoneidx",
+ "tables": [
+  {
+   "columns": [
+    "c_phone"
+   ],
+   "table": "customer"
+  }
+ ],
+ "parts": [
+  "PHONE_PERM (U32, one per customer row or empty): the customer rows ordered by SUBSTRING(c_phone, 1, 2) (stable: ascending row within a code)",
+  "PHONE_RUNS (U64, m + 1 run starts from 0 to n, or empty): every run of PHONE_PERM holds rows of one country code"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "customer",
+   "kind": "permutation",
+   "columns": [
+    "c_phone"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "customer",
+   "kind": "layout_offsets_counts",
+   "columns": [
+    "c_phone"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "custpart unchanged (50 inherited parts), then a U32 permutation of the customer rows grouped by country code (first two characters of c_phone; rows ascending within a code) and the U64 starts of its runs",
+  "units": "permutation entries are stored (= canonical) customer row positions of custpart; run starts are positions in the permutation"
+ },
+ "built_from": {
+  "sources": [
+   "custpart"
+  ],
+  "extends": "custpart"
+ }
+}

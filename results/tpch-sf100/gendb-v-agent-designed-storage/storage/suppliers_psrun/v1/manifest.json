@@ -1,0 +1,67 @@
+{
+ "name": "suppliers_psrun",
+ "tables": [
+  {
+   "columns": [
+    "ps_partkey",
+    "ps_suppkey",
+    "ps_availqty",
+    "ps_supplycost",
+    "ps_comment"
+   ],
+   "table": "partsupp"
+  },
+  {
+   "columns": [
+    "s_suppkey",
+    "s_name",
+    "s_address",
+    "s_nationkey",
+    "s_phone",
+    "s_acctbal",
+    "s_comment"
+   ],
+   "table": "supplier"
+  },
+  {
+   "columns": [
+    "n_nationkey",
+    "n_name",
+    "n_regionkey",
+    "n_comment"
+   ],
+   "table": "nation"
+  },
+  {
+   "columns": [
+    "r_regionkey",
+    "r_name",
+    "r_comment"
+   ],
+   "table": "region"
+  }
+ ],
+ "parts": [
+  "part: I64 [ratio, first]: when ratio >= 1, the stored partsupp rows (sorted by ps_partkey) form runs of exactly ratio rows per key, starting at ps_partkey first: row k has ps_partkey first + k / ratio; [0, 0] when the layout has no such uniform runs"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "partsupp",
+   "kind": "layout_offsets_counts",
+   "columns": [
+    "ps_partkey"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "Storage suppliers with its parts unchanged (linked), extended by one layout part: the uniform run length of partsupp's ps_partkey runs and the first key, so the partsupp rows of a key are found by arithmetic (rows (key - first) * ratio .. + ratio) without reading the key column.",
+  "units": "ratio: rows per ps_partkey run; first: bigint ps_partkey of row 0"
+ },
+ "built_from": {
+  "sources": [
+   "suppliers"
+  ],
+  "extends": "suppliers"
+ }
+}

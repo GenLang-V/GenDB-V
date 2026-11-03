@@ -1,0 +1,10 @@
+{
+ "format": "gendb-sql-frontend-toolchain-v2",
+ "comment": "Pinned toolchain and deployment policy of the Python SQL frontend (package gendb_sql_frontend in this directory). The package runs from source; no GenDB binary embeds it. A host runs `<python> -m gendb_sql_frontend translate ...` with this directory as working directory, and the package reads the one AST encoding schema at ../ast/ast_schema.json. `python` is the default interpreter (resolved on PATH); a host may choose another interpreter or parser directory through the environment variables named in `deployment`. Whatever runs is checked by the frontend itself: a Python minor version or sqlglot version other than `python_version` / `sqlglot` is the refusal toolchain_mismatch, so documents only come from the pinned toolchain.",
+ "python": "python3",
+ "python_version": "3.12",
+ "sqlglot": "27.0.0",
+ "dialects": ["postgres"],
+ "target": "postgresql-18",
+ "deployment": {"mode": "source", "python_env": "GENDB_SQL_FRONTEND_PYTHON", "parser_dir_env": "GENDB_SQL_FRONTEND_DIR"}
+}

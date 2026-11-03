@@ -1,0 +1,12 @@
+{
+ "queries": {
+  "readings-count": [
+   {
+    "binding_id": "v0",
+    "arguments": [
+     "4"
+    ]
+   }
+  ]
+ }
+}

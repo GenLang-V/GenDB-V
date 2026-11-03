@@ -1,0 +1,104 @@
+{
+ "Q01": {
+  "DELTA": "delta"
+ },
+ "Q02": {
+  "SIZE": "size",
+  "TYPE": "type",
+  "REGION": "region"
+ },
+ "Q03": {
+  "SEGMENT": "segment",
+  "DATE": "date"
+ },
+ "Q04": {
+  "DATE": "date"
+ },
+ "Q05": {
+  "REGION": "region",
+  "DATE": "date"
+ },
+ "Q06": {
+  "DATE": "date",
+  "DISCOUNT": "discount",
+  "QUANTITY": "quantity"
+ },
+ "Q07": {
+  "NATION1": "nation1",
+  "NATION2": "nation2"
+ },
+ "Q08": {
+  "NATION": "nation",
+  "REGION": "region",
+  "TYPE": "type"
+ },
+ "Q09": {
+  "COLOR": "color"
+ },
+ "Q10": {
+  "DATE": "date"
+ },
+ "Q11": {
+  "NATION": "nation",
+  "FRACTION": "fraction"
+ },
+ "Q12": {
+  "SHIPMODE1": "shipmode1",
+  "SHIPMODE2": "shipmode2",
+  "DATE": "date"
+ },
+ "Q13": {
+  "WORD1": "words",
+  "WORD2": "words"
+ },
+ "Q14": {
+  "DATE": "date"
+ },
+ "Q15": {
+  "DATE": "date"
+ },
+ "Q16": {
+  "BRAND": "brand",
+  "TYPE": "type",
+  "SIZE1": "size1",
+  "SIZE2": "size2",
+  "SIZE3": "size3",
+  "SIZE4": "size4",
+  "SIZE5": "size5",
+  "SIZE6": "size6",
+  "SIZE7": "size7",
+  "SIZE8": "size8"
+ },
+ "Q17": {
+  "BRAND": "brand",
+  "CONTAINER": "container"
+ },
+ "Q18": {
+  "QUANTITY": "quantity"
+ },
+ "Q19": {
+  "BRAND1": "brand1",
+  "QUANTITY1": "quantity1",
+  "BRAND2": "brand2",
+  "QUANTITY2": "quantity2",
+  "BRAND3": "brand3",
+  "QUANTITY3": "quantity3"
+ },
+ "Q20": {
+  "COLOR": "color",
+  "DATE": "date",
+  "NATION": "nation"
+ },
+ "Q21": {
+  "NATION": "nation"
+ },
+ "Q22": {
+  "I1": "i1",
+  "I2": "i2",
+  "I3": "i3",
+  "I4": "i4",
+  "I5": "i5",
+  "I6": "i6",
+  "I7": "i7"
+ }
+}

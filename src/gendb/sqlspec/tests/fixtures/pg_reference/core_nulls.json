@@ -1,0 +1,36 @@
+{
+ "fixture": "core_nulls",
+ "description": "Two tiny nullable tables for NULL/3VL, duplicates, empty and grouped SUM/COUNT, joins on NULL keys, subqueries, result types and scales, text caveats, and one run-time SQL error.",
+ "ddl": [{"sql": "CREATE TABLE r (k integer, v numeric(10,2), tag text);\nCREATE TABLE s (k integer, w integer);"}],
+ "tables": [
+  {"name": "r", "columns": ["k", "v", "tag"],
+   "rows": [[1, "1.50", "a"], [1, "1.50", "a"], [2, null, "b"], [null, "2.25", null], [3, "-0.75", "c"]]},
+  {"name": "s", "columns": ["k", "w"],
+   "rows": [[1, 10], [1, null], [null, 5], [4, 7]]}
+ ],
+ "cases": [
+  {"name": "filter_3vl_duplicates", "sql": "SELECT k, v, tag FROM r WHERE NOT (v < 1)",
+   "note": "NOT UNKNOWN is UNKNOWN, so the NULL-v row is dropped; the duplicate row stays twice."},
+  {"name": "empty_sum_count", "sql": "SELECT SUM(v) AS total, COUNT(*) AS n, COUNT(v) AS nv FROM r WHERE k > 100",
+   "note": "Scalar aggregate over no rows: one row, SUM NULL, COUNTs 0."},
+  {"name": "group_null_key", "sql": "SELECT k, COUNT(*) AS n, COUNT(v) AS nv, SUM(v) AS total FROM r GROUP BY k",
+   "note": "NULL keys form one group; COUNT(*) vs COUNT(v); SUM over only NULLs is NULL."},
+  {"name": "join_null_keys_duplicates", "sql": "SELECT r.k, r.tag, s.w FROM r JOIN s ON r.k = s.k",
+   "note": "NULL = NULL is not true, so NULL keys never join; 2 x 2 duplicate matches give 4 rows."},
+  {"name": "left_join_group", "sql": "SELECT r.k, COUNT(s.w) AS nw, SUM(s.w) AS total FROM r LEFT JOIN s ON r.k = s.k GROUP BY r.k",
+   "note": "Outer join (outside the accepted core; evidence only): unmatched rows padded with NULL, counted by COUNT(s.w) as 0."},
+  {"name": "not_in_with_null", "sql": "SELECT k FROM r WHERE k NOT IN (SELECT k FROM s)",
+   "note": "s.k contains NULL, so NOT IN is never true: empty result."},
+  {"name": "exists_correlated_duplicates", "sql": "SELECT r.k, r.tag FROM r WHERE EXISTS (SELECT 1 FROM s WHERE s.k = r.k)",
+   "note": "EXISTS keeps each outer row once (two matches do not multiply it); the duplicate outer row stays twice."},
+  {"name": "result_types_and_scales", "sql": "SELECT v * v AS v_sq, v + 1 AS v_plus_int, k * 2 AS k_times_int, 0.06 - 0.01 AS lit FROM r WHERE k = 3",
+   "note": "numeric*numeric adds scales (4), numeric+integer keeps 2, integer*integer stays integer, literal arithmetic keeps scale 2."},
+  {"name": "sum_integer_is_bigint", "sql": "SELECT SUM(w) AS total, COUNT(*) AS n, COUNT(w) AS nw FROM s",
+   "note": "SUM(integer) and COUNT are bigint."},
+  {"name": "text_bpchar_c_collation",
+   "sql": "SELECT CAST('ab' AS char(4)) AS padded, CAST('ab' AS char(4)) = 'ab' AS pad_ignored, 'a' < 'B' AS c_order, length(CAST('ab' AS char(4))) AS bpchar_len",
+   "note": "char(n) prints padded but compares and measures without trailing blanks; C collation orders by bytes, so 'B' < 'a'."},
+  {"name": "division_by_zero", "sql": "SELECT k / 0 AS boom FROM r WHERE k = 1", "expect": "error",
+   "note": "Run-time SQL error: recorded as sql_error with SQLSTATE, not a harness failure."}
+ ]
+}

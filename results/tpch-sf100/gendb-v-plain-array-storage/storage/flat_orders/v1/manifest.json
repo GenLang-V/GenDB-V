@@ -1,0 +1,39 @@
+{
+ "name": "flat_orders",
+ "plain_array": true,
+ "tables": [
+  {
+   "columns": [
+    "o_orderkey",
+    "o_custkey",
+    "o_orderstatus",
+    "o_totalprice",
+    "o_orderdate",
+    "o_orderpriority",
+    "o_clerk",
+    "o_shippriority",
+    "o_comment"
+   ],
+   "table": "orders"
+  }
+ ],
+ "parts": [
+  "O_ORDERKEY I64 of o_orderkey",
+  "O_CUSTKEY I64 of o_custkey",
+  "O_ORDERSTATUS_OFFSETS I64 of o_orderstatus",
+  "O_ORDERSTATUS_BYTES U8 of o_orderstatus",
+  "O_TOTALPRICE I128 of o_totalprice",
+  "O_ORDERDATE I32 of o_orderdate",
+  "O_ORDERPRIORITY_OFFSETS I64 of o_orderpriority",
+  "O_ORDERPRIORITY_BYTES U8 of o_orderpriority",
+  "O_CLERK_OFFSETS I64 of o_clerk",
+  "O_CLERK_BYTES U8 of o_clerk",
+  "O_SHIPPRIORITY I64 of o_shippriority",
+  "O_COMMENT_OFFSETS I64 of o_comment",
+  "O_COMMENT_BYTES U8 of o_comment"
+ ],
+ "layout": {
+  "summary": "fixed flat storage of orders: every column as a plain typed array in source row order, one part per column, two (offsets, bytes) per text column",
+  "units": "bigint I64, integer I32, date I32 days since 1970-01-01, numeric I128 coefficient at the declared scale, text I64 offsets into U8 UTF-8 bytes"
+ }
+}

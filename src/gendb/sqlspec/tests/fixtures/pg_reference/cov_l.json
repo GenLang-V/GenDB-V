@@ -1,0 +1,529 @@
+{
+ "fixture": "cov_l",
+ "description": "VERUS_SQL_COVERAGE task L: LIKE (default and explicit ESCAPE, NULLs, escape errors, multibyte _ and escape, char(n) padding seen by LIKE), SUBSTRING (start <= 0, negative length 22011, int4-extreme bounds, multibyte, char(n) argument), EXTRACT YEAR/MONTH/DAY from date and timestamp, including BC results reached by interval arithmetic (the GenDB fixture loader reads astronomical ISO dates only). Error cases filter one row by id so the failing expression is evaluated per row (no constant folding).",
+ "ddl": [
+  {
+   "sql": "CREATE TABLE lk (id integer NOT NULL, t text, p text);\nCREATE TABLE lke (id integer NOT NULL, t text, p text, x text);\nCREATE TABLE bp (id integer NOT NULL, c char(4), v varchar(30), m char(3));\nCREATE TABLE ss (id integer NOT NULL, t text, st integer, ln integer);\nCREATE TABLE dd (id integer NOT NULL, dt date, ts timestamp);"
+  }
+ ],
+ "tables": [
+  {
+   "name": "lk",
+   "columns": [
+    "id",
+    "t",
+    "p"
+   ],
+   "rows": [
+    [
+     1,
+     "abc",
+     "a%c"
+    ],
+    [
+     2,
+     "abc",
+     "a_c"
+    ],
+    [
+     3,
+     "ac",
+     "a_c"
+    ],
+    [
+     4,
+     "é",
+     "_"
+    ],
+    [
+     5,
+     "é",
+     "__"
+    ],
+    [
+     6,
+     "éa",
+     "__"
+    ],
+    [
+     7,
+     "",
+     "%"
+    ],
+    [
+     8,
+     "",
+     "_"
+    ],
+    [
+     9,
+     "a_c",
+     "a\\_c"
+    ],
+    [
+     10,
+     "abc",
+     "a\\_c"
+    ],
+    [
+     11,
+     "ab",
+     "\\a\\b"
+    ],
+    [
+     12,
+     "A",
+     "a"
+    ],
+    [
+     13,
+     "abc",
+     "%%"
+    ],
+    [
+     14,
+     "xyz",
+     "%y%"
+    ],
+    [
+     15,
+     "a%",
+     "a\\%"
+    ],
+    [
+     16,
+     "special requests here",
+     "%special%requests%"
+    ],
+    [
+     17,
+     "a\\b",
+     "a\\\\b"
+    ],
+    [
+     18,
+     "aaa",
+     "%a%a%a%a%"
+    ],
+    [
+     19,
+     null,
+     "a"
+    ],
+    [
+     20,
+     "a",
+     null
+    ],
+    [
+     21,
+     "Customer x Complaints",
+     "%Customer%Complaints%"
+    ],
+    [
+     30,
+     "abc",
+     "abc\\"
+    ]
+   ]
+  },
+  {
+   "name": "lke",
+   "columns": [
+    "id",
+    "t",
+    "p",
+    "x"
+   ],
+   "rows": [
+    [
+     1,
+     "a%",
+     "a#%",
+     "#"
+    ],
+    [
+     2,
+     "ab",
+     "a#%",
+     "#"
+    ],
+    [
+     3,
+     "a\\b",
+     "a\\b",
+     ""
+    ],
+    [
+     4,
+     "a%",
+     "a%%",
+     "%"
+    ],
+    [
+     5,
+     "ab",
+     "a%%",
+     "%"
+    ],
+    [
+     6,
+     "a_",
+     "aé_",
+     "é"
+    ],
+    [
+     7,
+     null,
+     "a",
+     "#"
+    ],
+    [
+     8,
+     "a",
+     null,
+     "#"
+    ],
+    [
+     9,
+     "a",
+     "a",
+     null
+    ],
+    [
+     10,
+     "a\\b",
+     "a\\\\b",
+     "#"
+    ],
+    [
+     11,
+     "a_",
+     "a__",
+     "_"
+    ],
+    [
+     20,
+     "a",
+     "a",
+     "ab"
+    ],
+    [
+     21,
+     null,
+     "a",
+     "ab"
+    ],
+    [
+     22,
+     "a",
+     null,
+     "ab"
+    ],
+    [
+     23,
+     "abc",
+     "abc#",
+     "#"
+    ]
+   ]
+  },
+  {
+   "name": "bp",
+   "columns": [
+    "id",
+    "c",
+    "v",
+    "m"
+   ],
+   "rows": [
+    [
+     1,
+     "ab",
+     "LARGE BRASS",
+     "é"
+    ],
+    [
+     2,
+     "abcd",
+     "MEDIUM POLISHED TIN",
+     "éa"
+    ],
+    [
+     3,
+     null,
+     null,
+     null
+    ],
+    [
+     4,
+     "xy",
+     "forest green",
+     "x"
+    ]
+   ]
+  },
+  {
+   "name": "ss",
+   "columns": [
+    "id",
+    "t",
+    "st",
+    "ln"
+   ],
+   "rows": [
+    [
+     1,
+     "hello",
+     0,
+     3
+    ],
+    [
+     2,
+     "hello",
+     -1,
+     3
+    ],
+    [
+     3,
+     "hello",
+     -5,
+     3
+    ],
+    [
+     4,
+     "hello",
+     2,
+     2
+    ],
+    [
+     5,
+     "hello",
+     6,
+     1
+    ],
+    [
+     6,
+     "hello",
+     1,
+     2147483647
+    ],
+    [
+     7,
+     "hello",
+     2147483647,
+     10
+    ],
+    [
+     8,
+     "hello",
+     -2147483648,
+     2147483647
+    ],
+    [
+     9,
+     "héllo",
+     2,
+     2
+    ],
+    [
+     10,
+     null,
+     1,
+     1
+    ],
+    [
+     11,
+     "hello",
+     null,
+     1
+    ],
+    [
+     12,
+     "hello",
+     1,
+     null
+    ],
+    [
+     13,
+     "€x",
+     1,
+     1
+    ],
+    [
+     14,
+     "hello",
+     3,
+     0
+    ],
+    [
+     20,
+     "hello",
+     1,
+     -1
+    ],
+    [
+     21,
+     null,
+     1,
+     -1
+    ]
+   ]
+  },
+  {
+   "name": "dd",
+   "columns": [
+    "id",
+    "dt",
+    "ts"
+   ],
+   "rows": [
+    [
+     1,
+     "1996-02-29",
+     "1996-02-29 23:59:59.999999"
+    ],
+    [
+     2,
+     "2000-01-01",
+     "1999-12-31 00:00:00"
+    ],
+    [
+     3,
+     "1995-03-15",
+     "1994-06-30 12:34:56"
+    ],
+    [
+     4,
+     null,
+     null
+    ],
+    [
+     5,
+     "1995-12-31",
+     "1995-01-01 00:00:00"
+    ],
+    [
+     10,
+     "0001-06-15",
+     "0001-01-01 00:00:00"
+    ],
+    [
+     11,
+     "0003-01-01",
+     "0002-12-31 10:00:00"
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "like_default",
+   "sql": "SELECT id, t LIKE p AS m FROM lk WHERE id < 30",
+   "note": "Default escape backslash: % any sequence, _ one character (multibyte e-acute is one), escaped wildcards, escaped ordinary characters, C-collation case sensitivity, NULL operands."
+  },
+  {
+   "name": "like_where",
+   "sql": "SELECT id FROM lk WHERE t LIKE p AND id < 30",
+   "note": "LIKE as a condition (OfBool): NULL is Unknown and drops the row."
+  },
+  {
+   "name": "not_like_where",
+   "sql": "SELECT id FROM lk WHERE t NOT LIKE p AND id < 30",
+   "note": "NOT LIKE = Not(OfBool(Like)): NULL rows are dropped by both."
+  },
+  {
+   "name": "like_trailing_escape",
+   "sql": "SELECT id, t LIKE p AS m FROM lk WHERE id = 30",
+   "note": "Pattern 'abc\\' ending in the escape: PostgreSQL's matcher exhausts the text first and never reaches the dangling escape, so FALSE, not 22025 (lazy error)."
+  },
+  {
+   "name": "like_escape",
+   "sql": "SELECT id, t LIKE p ESCAPE x AS m FROM lke WHERE id < 20",
+   "note": "Explicit ESCAPE: '#', '' (no escape: backslash is literal), '%' and '_' as escape (escape wins over the wildcard), multibyte escape, NULL subject/pattern/escape."
+  },
+  {
+   "name": "like_escape_too_long",
+   "sql": "SELECT id, t LIKE p ESCAPE x AS m FROM lke WHERE id = 20",
+   "expect": "error",
+   "note": "Escape string of two characters: invalid escape string."
+  },
+  {
+   "name": "like_escape_too_long_null_subject",
+   "sql": "SELECT id, t LIKE p ESCAPE x AS m FROM lke WHERE id = 21",
+   "expect": "error",
+   "note": "NULL subject with an invalid escape: does PostgreSQL check the escape (like_escape(p, x) is evaluated as the operator's argument) before the strict LIKE sees the NULL?"
+  },
+  {
+   "name": "like_escape_too_long_null_pattern",
+   "sql": "SELECT id, t LIKE p ESCAPE x AS m FROM lke WHERE id = 22",
+   "note": "NULL pattern with an invalid escape: like_escape is strict, so NULL without an error."
+  },
+  {
+   "name": "like_escape_trailing",
+   "sql": "SELECT id, t LIKE p ESCAPE x AS m FROM lke WHERE id = 23",
+   "note": "Pattern ending in the explicit escape: like_escape does not reject it; the matcher does not reach it here, so FALSE."
+  },
+  {
+   "name": "like_bpchar_padding",
+   "sql": "SELECT id, c LIKE 'ab' AS a, c LIKE 'ab%' AS b, c LIKE 'ab__' AS c4, c LIKE 'ab  ' AS d, m LIKE 'é__' AS e, m LIKE 'é_' AS f FROM bp",
+   "note": "char(n) LIKE: bpcharlike sees the value blank-padded to n characters (GenDB: PadBpchar)."
+  },
+  {
+   "name": "like_bpchar_where_not",
+   "sql": "SELECT id FROM bp WHERE c NOT LIKE 'ab'",
+   "note": "char(4) 'ab' is 'ab  ' for LIKE, so NOT LIKE 'ab' keeps it."
+  },
+  {
+   "name": "like_varchar_tpch_shapes",
+   "sql": "SELECT id FROM bp WHERE v LIKE '%BRASS' OR v LIKE 'forest%' OR v NOT LIKE 'MEDIUM POLISHED%'",
+   "note": "TPC-H pattern shapes on varchar (Q2, Q20, Q16)."
+  },
+  {
+   "name": "substring3",
+   "sql": "SELECT id, SUBSTRING(t FROM st FOR ln) AS r FROM ss WHERE id < 20",
+   "note": "start <= 0 shortens the result, start + len beyond int4 means 'to the end', start past the end is empty, multibyte characters, NULL operands."
+  },
+  {
+   "name": "substring2",
+   "sql": "SELECT id, SUBSTRING(t FROM st) AS r FROM ss WHERE id < 20",
+   "note": "Two-argument form."
+  },
+  {
+   "name": "substring_negative_length",
+   "sql": "SELECT id, SUBSTRING(t FROM st FOR ln) AS r FROM ss WHERE id = 20",
+   "expect": "error",
+   "note": "Negative length: 22011."
+  },
+  {
+   "name": "substring_negative_length_null",
+   "sql": "SELECT id, SUBSTRING(t FROM st FOR ln) AS r FROM ss WHERE id = 21",
+   "note": "Strict: a NULL string gives NULL before the length check."
+  },
+  {
+   "name": "substring_bpchar",
+   "sql": "SELECT id, SUBSTRING(c FROM 1 FOR 3) AS r, SUBSTRING(c FROM 2) AS r2 FROM bp WHERE SUBSTRING(c FROM 1 FOR 2) IN ('ab', 'xy')",
+   "note": "char(n) argument goes through the implicit rtrim cast to text (Q22 shape: SUBSTRING(c_phone FROM 1 FOR 2) IN (...))."
+  },
+  {
+   "name": "extract_date",
+   "sql": "SELECT id, EXTRACT(YEAR FROM dt) AS y, EXTRACT(MONTH FROM dt) AS m, EXTRACT(DAY FROM dt) AS d FROM dd",
+   "note": "numeric, scale 0; leap day; NULL."
+  },
+  {
+   "name": "extract_timestamp",
+   "sql": "SELECT id, EXTRACT(YEAR FROM ts) AS y, EXTRACT(MONTH FROM ts) AS m, EXTRACT(DAY FROM ts) AS d FROM dd",
+   "note": "Timestamp fields ignore the time of day."
+  },
+  {
+   "name": "extract_bc",
+   "sql": "SELECT id, EXTRACT(YEAR FROM dt - INTERVAL '1' YEAR) AS y1, EXTRACT(YEAR FROM dt - INTERVAL '3' YEAR) AS y3, EXTRACT(MONTH FROM dt - INTERVAL '3' YEAR) AS m3, EXTRACT(YEAR FROM ts - INTERVAL '1' DAY) AS yt, EXTRACT(DAY FROM ts - INTERVAL '1' DAY) AS dt1 FROM dd WHERE id >= 10",
+   "note": "BC years: astronomical year y <= 0 is reported as y - 1 (no year 0)."
+  },
+  {
+   "name": "extract_group",
+   "sql": "SELECT EXTRACT(YEAR FROM dt) AS y, COUNT(*) AS n FROM dd GROUP BY EXTRACT(YEAR FROM dt)",
+   "note": "Q7/Q9 shape: GROUP BY an EXTRACT (numeric scale-0 key, NULL group)."
+  }
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "Q1": {
+  "v0": {
+   "1": {
+    "duckdb_ms": 476.574,
+    "umbra_ms": 447.843,
+    "target_ms": 447.843,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 66.733,
+    "umbra_ms": 30.014,
+    "target_ms": 30.014,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 58.427,
+    "umbra_ms": 61.847,
+    "target_ms": 58.427,
+    "agreement": "exact-order"
+   }
+  }
+ },
+ "Q2": {
+  "v0": {
+   "1": {
+    "duckdb_ms": 4283.558,
+    "umbra_ms": 237.17,
+    "target_ms": 237.17,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 202.909,
+    "umbra_ms": 19.299,
+    "target_ms": 19.299,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 176.645,
+    "umbra_ms": 75.496,
+    "target_ms": 75.496,
+    "agreement": "exact-order"
+   }
+  },
+  "v1": {
+   "1": {
+    "duckdb_ms": 4083.75,
+    "umbra_ms": 232.309,
+    "target_ms": 232.309,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 250.049,
+    "umbra_ms": 19.306,
+    "target_ms": 19.306,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 173.126,
+    "umbra_ms": 96.284,
+    "target_ms": 96.284,
+    "agreement": "exact-order"
+   }
+  },
+  "v2": {
+   "1": {
+    "duckdb_ms": 4989.182,
+    "umbra_ms": 992.632,
+    "target_ms": 992.632,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 320.042,
+    "umbra_ms": 63.696,
+    "target_ms": 63.696,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 230.961,
+    "umbra_ms": 132.011,
+    "target_ms": 132.011,
+    "agreement": "exact-order"
+   }
+  }
+ },
+ "Q4": {
+  "v0": {
+   "1": {
+    "duckdb_ms": 4672.021,
+    "umbra_ms": 1867.447,
+    "target_ms": 1867.447,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 366.321,
+    "umbra_ms": 138.814,
+    "target_ms": 138.814,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 291.771,
+    "umbra_ms": 206.059,
+    "target_ms": 206.059,
+    "agreement": "exact-order"
+   }
+  },
+  "v1": {
+   "1": {
+    "duckdb_ms": 6231.895,
+    "umbra_ms": 2939.285,
+    "target_ms": 2939.285,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 401.843,
+    "umbra_ms": 257.403,
+    "target_ms": 257.403,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 365.693,
+    "umbra_ms": 407.643,
+    "target_ms": 365.693,
+    "agreement": "exact-order"
+   }
+  },
+  "v2": {
+   "1": {
+    "duckdb_ms": 3490.931,
+    "umbra_ms": 564.436,
+    "target_ms": 564.436,
+    "agreement": "exact-order"
+   },
+   "32": {
+    "duckdb_ms": 347.908,
+    "umbra_ms": 55.396,
+    "target_ms": 55.396,
+    "agreement": "exact-order"
+   },
+   "64": {
+    "duckdb_ms": 323.923,
+    "umbra_ms": 144.589,
+    "target_ms": 144.589,
+    "agreement": "exact-order"
+   }
+  }
+ },
+ "baseline_setting": "untuned, SEC-EDGAR keys declared"
+}

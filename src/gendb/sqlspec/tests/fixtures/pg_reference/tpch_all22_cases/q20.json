@@ -1,0 +1,40 @@
+{
+ "fixture": "tpch_all22_q20",
+ "description": "TPC-H Q20 on its own tiny database: rows of ../tpch_all22.json selected by make_cases.py and closed under the schema's foreign keys and nation -> region. Static naive-work bound (FROM product x subquery re-evaluation): 44.",
+ "ddl": [{"path": "src/gendb/fixtures/tpch-spec/schema.sql"}],
+ "tables": [
+  {"name": "region", "columns": ["r_regionkey", "r_name"], "defaults": {"r_comment": "fixture"}, "rows": [
+    [1, "AMERICA"],
+    [2, "ASIA"]
+  ]},
+  {"name": "nation", "columns": ["n_nationkey", "n_name", "n_regionkey"], "defaults": {"n_comment": "fixture"}, "rows": [
+    [3, "CANADA", 1],
+    [8, "INDIA", 2]
+  ]},
+  {"name": "supplier", "columns": ["s_suppkey", "s_name", "s_address", "s_nationkey", "s_phone", "s_acctbal", "s_comment"], "rows": [
+    [7, "Supplier#000000007", "7 Yonge Street", 3, "13-200-200-2007", "4500.00", "fixture"],
+    [8, "Supplier#000000008", "8 Rue Sherbrooke", 3, "13-200-200-2008", "5500.00", "fixture"]
+  ]},
+  {"name": "part", "columns": ["p_partkey", "p_name", "p_mfgr", "p_brand", "p_type", "p_size", "p_container", "p_retailprice"], "defaults": {"p_comment": "fixture"}, "rows": [
+    [5, "forest green frosted lime", "Manufacturer#5", "Brand#51", "MEDIUM ANODIZED COPPER", 8, "MED CAN", "100.00"]
+  ]},
+  {"name": "partsupp", "columns": ["ps_partkey", "ps_suppkey", "ps_availqty", "ps_supplycost"], "defaults": {"ps_comment": "fixture"}, "rows": [
+    [5, 7, 100, "20.00"],
+    [5, 8, 10, "25.00"]
+  ]},
+  {"name": "customer", "columns": ["c_custkey", "c_name", "c_address", "c_nationkey", "c_phone", "c_acctbal", "c_mktsegment"], "defaults": {"c_comment": "fixture"}, "rows": [
+    [3, "Customer#000000003", "3 Park Road", 8, "18-100-100-1003", "3000.00", "MACHINERY"]
+  ]},
+  {"name": "orders", "columns": ["o_orderkey", "o_custkey", "o_orderstatus", "o_totalprice", "o_orderdate", "o_orderpriority", "o_comment"], "defaults": {"o_clerk": "Clerk#000000001", "o_shippriority": 0}, "rows": [
+    [200, 3, "F", "9000.00", "1994-02-01", "5-LOW", "fixture"]
+  ]},
+  {"name": "lineitem", "columns": ["l_orderkey", "l_linenumber", "l_partkey", "l_suppkey", "l_quantity", "l_extendedprice", "l_discount", "l_tax", "l_returnflag", "l_linestatus", "l_shipdate", "l_commitdate", "l_receiptdate", "l_shipinstruct", "l_shipmode"], "defaults": {"l_comment": "fixture"}, "rows": [
+    [200, 1, 5, 7, "20.00", "2000.00", "0.00", "0.00", "R", "F", "1994-03-01", "1994-03-15", "1994-03-10", "NONE", "TRUCK"],
+    [200, 2, 5, 8, "30.00", "3000.00", "0.00", "0.00", "A", "F", "1994-03-01", "1994-03-15", "1994-03-10", "NONE", "TRUCK"],
+    [200, 3, 5, 7, "40.00", "4000.00", "0.00", "0.00", "A", "F", "1995-01-01", "1995-01-15", "1995-01-10", "NONE", "TRUCK"]
+  ]}
+ ],
+ "cases": [
+  {"name": "q20", "query": {"path": "src/gendb/fixtures/tpch-spec/queries.sql", "label": "Q20"}, "order_keys": [{"column": "s_name"}], "note": "Nested IN subqueries, LIKE 'forest%', correlated scalar SUM. Supplier 7 (CANADA): availqty 100 > 0.5 * 20 (200-3 of 1995 is outside the window); supplier 8 (CANADA): availqty 10 is not > 0.5 * 30."}
+ ]
+}

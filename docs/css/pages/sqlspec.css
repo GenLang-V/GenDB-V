@@ -1,0 +1,246 @@
+/* SQLSpec (js/pages/sqlspec.js): the overview, then the book (contents and search beside the chapter). Accent: the
+   trusted blue, as SQLSpec on the Design page. Code: Geist Mono, wrapped lines with a hanging indent. */
+.page-sqlspec { --sq-side: 252px; --sq-gap: clamp(32px, 4vw, 56px); --sq-code: 13px; --sq-to: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 16px); }
+
+/* ---------------------------------------------------------------- search */
+.page-sqlspec .search { position: relative; }
+.page-sqlspec .search__field {
+  display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 10px 0 12px; cursor: text;
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.page-sqlspec .search__field:focus-within { border-color: var(--trusted-line); box-shadow: 0 0 0 3px var(--trusted-bg); }
+.page-sqlspec .search__ic { color: var(--ink-2); font-size: 17px; }
+.page-sqlspec .search input {
+  flex: 1; width: 100%; min-width: 0; height: 100%; padding: 0; border: 0; outline: none; background: transparent; color: var(--ink);
+  font: inherit; font-size: var(--fs-15); -webkit-appearance: none; appearance: none;
+}
+.page-sqlspec .search input::placeholder { color: var(--ink-2); opacity: 1; }
+.page-sqlspec .search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.page-sqlspec .search kbd {
+  flex: none; min-width: 22px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 6px; text-align: center;
+  font-family: var(--font-mono); font-size: var(--fs-12); color: var(--ink-2); background: var(--bg-2);
+}
+.page-sqlspec .search.is-big .search__field { height: 54px; padding-inline: 18px 14px; border-radius: var(--r-3); gap: 12px; }
+.page-sqlspec .search.is-big input { font-size: var(--fs-18); }
+.page-sqlspec .search.is-big .search__ic { font-size: 20px; }
+.page-sqlspec .search__list {
+  position: absolute; z-index: 15; top: calc(100% + 6px); left: 0; width: max(100%, min(440px, calc(100vw - 2 * var(--gutter))));
+  max-height: min(70vh, 540px); overflow-y: auto; padding: 6px; display: grid; gap: 2px;
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--shadow-2);
+}
+.page-sqlspec .hit { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; row-gap: 2px; padding: 8px 10px; border-radius: 8px; }
+.page-sqlspec .hit__ic { grid-row: span 2; padding-top: 3px; color: var(--ink-2); }
+.page-sqlspec .hit__t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; }
+.page-sqlspec .hit__t > code, .page-sqlspec .hit__t > span { font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
+.page-sqlspec .hit__t > code { font-size: var(--fs-14); }
+.page-sqlspec .hit__t small { font-size: var(--fs-13); color: var(--ink-2); }
+.page-sqlspec .hit__d { grid-column: 2; font-size: var(--fs-13); line-height: 1.45; color: var(--ink-2); overflow-wrap: anywhere; }
+.page-sqlspec .hit__d code { font-size: .92em; color: var(--ink); }
+.page-sqlspec .hit:hover, .page-sqlspec .hit.is-active { background: var(--bg-2); }
+.page-sqlspec .hit.is-active .hit__ic { color: var(--trusted); }
+.page-sqlspec .search__none, .page-sqlspec .search__more { padding: 8px 10px; font-size: var(--fs-14); color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- overview */
+.page-sqlspec .sq-home .page-head { margin-bottom: var(--sp-6); }
+.page-sqlspec .sq-home > .search { max-width: 680px; margin-bottom: var(--sp-7); }
+.page-sqlspec .meaning { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); box-shadow: var(--shadow-2); border-radius: var(--r-4); }
+.page-sqlspec .meaning__f { display: grid; align-content: center; justify-items: start; gap: var(--sp-4); padding: clamp(24px, 4vw, 48px); }
+.page-sqlspec .meaning__math { font-size: clamp(48px, 6.4vw, 80px); line-height: 1; color: var(--trusted); }
+.page-sqlspec .meaning__math .math { font-size: 1em; }
+.page-sqlspec .meaning__f p { font-size: clamp(17px, 1.7vw, 20px); color: var(--ink-2); max-width: 26ch; }
+.page-sqlspec .meaning__f .go { color: var(--trusted); }
+.page-sqlspec .meaning__f .go code { font-size: var(--fs-15); }
+.page-sqlspec .meaning__code { min-width: 0; padding-bottom: 12px; border-left: 1px solid var(--line); border-radius: 0 var(--r-4) var(--r-4) 0; background: var(--code-bg); }
+.page-sqlspec .meaning__code .blk__head { padding: 14px 18px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.page-sqlspec .meaning__code .blk__name { font-family: var(--font-mono); font-size: var(--fs-14); }
+.page-sqlspec .chaps { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sp-4); margin-top: var(--sp-7); }
+.page-sqlspec .chap {
+  height: 100%; display: grid; align-content: start; gap: 10px; padding: 20px 22px 22px;
+  border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.page-sqlspec .chap:hover { border-color: var(--trusted-line); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.page-sqlspec .chap__n { font-family: var(--font-mono); font-size: var(--fs-13); font-weight: var(--fw-semibold); color: var(--trusted); }
+.page-sqlspec .chap__t { display: flex; align-items: center; gap: 8px; font-size: var(--fs-24); letter-spacing: -0.025em; line-height: 1.15; }
+.page-sqlspec .chap__t .ic { font-size: 18px; color: var(--ink-2); transition: transform var(--dur-1) var(--ease), color var(--dur-1) var(--ease); }
+.page-sqlspec .chap:hover .chap__t .ic { transform: translateX(3px); color: var(--trusted); }
+.page-sqlspec .chap__c { display: flex; flex-wrap: wrap; gap: 6px; }
+.page-sqlspec .chap__c code { padding: 2px 8px; border-radius: 6px; background: var(--bg-2); font-size: var(--fs-12); color: var(--ink-2); overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- the book: contents beside the chapter */
+.page-sqlspec .sq-doc {
+  display: grid; grid-template-columns: var(--sq-side) minmax(0, 1fr); grid-template-areas: "side head" "side main";
+  column-gap: var(--sq-gap); align-items: start;
+}
+.page-sqlspec .side {
+  grid-area: side; align-self: start; position: sticky; top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 24px); z-index: 5;
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: var(--sp-4);
+  max-height: calc(100vh - var(--bar-h) - 48px);
+}
+.page-sqlspec .side > .toc { overflow-y: auto; overscroll-behavior: contain; padding: 2px 4px 16px 0; scrollbar-width: thin; }
+.page-sqlspec .toc ol { display: grid; gap: 1px; }
+.page-sqlspec .toc a { display: flex; gap: 10px; border-radius: 8px; color: var(--ink-2); overflow-wrap: anywhere; transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease); }
+.page-sqlspec .toc a span { flex: none; font-variant-numeric: tabular-nums; }
+.page-sqlspec .toc a:hover { color: var(--ink); background: var(--bg-2); }
+.page-sqlspec .toc__ch { padding: 6px 10px; font-size: var(--fs-15); font-weight: var(--fw-semibold); }
+.page-sqlspec .toc__ch span { width: 1.2em; }
+.page-sqlspec .toc .is-current > .toc__ch { color: var(--ink); }
+.page-sqlspec .toc li > ol { margin: 2px 0 10px 19px; padding-left: 8px; border-left: 1px solid var(--line); }
+.page-sqlspec .toc__sec { padding: 4px 10px; font-size: var(--fs-14); line-height: 1.4; }
+.page-sqlspec .toc__sec span { min-width: 2.3em; }
+.page-sqlspec .toc__sec.is-here { color: var(--trusted); background: var(--trusted-bg); font-weight: var(--fw-medium); }
+.page-sqlspec .toc-m { display: none; }
+
+.page-sqlspec .chapter { grid-area: main; min-width: 0; }
+.page-sqlspec .ch-head { grid-area: head; min-width: 0; display: grid; gap: var(--sp-2); margin-bottom: var(--sp-6); }
+.page-sqlspec .ch-head__book { justify-self: start; font-size: var(--fs-14); font-weight: var(--fw-semibold); color: var(--trusted); }
+.page-sqlspec .ch-head__book:hover { text-decoration: underline; text-underline-offset: 3px; }
+.page-sqlspec .ch-head h1 { display: flex; align-items: baseline; gap: .32em; font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: var(--track-display); font-variation-settings: var(--opsz-display); }
+.page-sqlspec .ch-head__n { color: var(--trusted); font-weight: var(--fw-semibold); }
+
+/* ---------------------------------------------------------------- the chapter's picture */
+.page-sqlspec .pic {
+  margin: 0 0 var(--sp-6); padding: clamp(18px, 3vw, 32px); display: grid; justify-items: center;
+  border: 1px solid var(--line); border-radius: var(--r-3); background: var(--bg-2);
+  background-image: radial-gradient(color-mix(in srgb, var(--line-2) 35%, transparent) 1px, transparent 1px); background-size: 18px 18px;
+}
+.page-sqlspec .pic__top { display: grid; justify-items: center; }
+.page-sqlspec .pic__top::after { content: ""; width: 1px; height: 22px; background: var(--line-2); }
+.page-sqlspec .pic__boxes, .page-sqlspec .pic__steps {
+  width: 100%; display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 10px; padding: 14px;
+  border: 1px dashed var(--line-2); border-radius: var(--r-3);
+}
+.page-sqlspec .pbox {
+  min-width: 104px; display: grid; align-content: start; gap: 2px; padding: 9px 14px; text-align: left;
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+}
+.page-sqlspec .pbox:hover { border-color: var(--trusted-line); transform: translateY(-1px); }
+.page-sqlspec .pbox b { font-family: var(--font-mono); font-size: var(--fs-14); font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
+.page-sqlspec .pbox span, .page-sqlspec .pbox em { font-family: var(--font-mono); font-size: var(--fs-12); font-style: normal; color: var(--ink-2); overflow-wrap: anywhere; }
+.page-sqlspec .pbox em { color: var(--trusted); }
+.page-sqlspec .pbox.is-root { padding-inline: 18px; border-color: var(--trusted-line); background: color-mix(in srgb, var(--trusted) 9%, var(--surface)); }
+.page-sqlspec .pbox.is-root b { color: var(--trusted); font-size: var(--fs-15); }
+.page-sqlspec .pic__nest { flex-basis: 100%; display: grid; gap: 8px; padding: 10px; border: 1px dashed var(--line-2); border-radius: var(--r-2); }
+.page-sqlspec .pic__kids { display: flex; flex-wrap: wrap; gap: 6px; }
+.page-sqlspec .pbox.is-kid { min-width: 0; padding: 5px 10px; box-shadow: none; }
+.page-sqlspec .pbox.is-kid b { font-size: var(--fs-13); font-weight: var(--fw-medium); }
+.page-sqlspec .pic__steps { align-items: center; }
+.page-sqlspec .pic__steps li { display: flex; align-items: center; gap: 10px; }
+.page-sqlspec .pic__arrow { color: var(--ink-2); font-size: 18px; }
+.page-sqlspec .pic__notes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: var(--sp-4); }
+.page-sqlspec .pnote {
+  display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 6px 14px; font-size: var(--fs-14);
+  border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface);
+}
+.page-sqlspec .pnote:hover { border-color: var(--trusted-line); }
+.page-sqlspec .pnote span { font-family: var(--font-mono); font-size: var(--fs-13); color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- sections and their definitions */
+.page-sqlspec .sec { padding-top: var(--sp-6); margin-top: var(--sp-6); border-top: 1px solid var(--line); scroll-margin-top: var(--sq-to); }
+.page-sqlspec .sec__head { display: flex; align-items: baseline; gap: 12px; }
+.page-sqlspec .sec__num { font-family: var(--font-mono); font-size: var(--fs-15); font-weight: var(--fw-semibold); color: var(--trusted); }
+.page-sqlspec .sec__head h2 { font-size: clamp(24px, 2.6vw, 30px); letter-spacing: -0.025em; }
+.page-sqlspec .sec__link { align-self: center; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: var(--ink-2); font-size: 15px; opacity: 0; transition: opacity var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
+.page-sqlspec .sec__head:hover .sec__link, .page-sqlspec .sec__link:focus-visible { opacity: 1; }
+.page-sqlspec .sec__link:hover { background: var(--bg-2); color: var(--trusted); }
+@media (hover: none) { .page-sqlspec .sec__link { opacity: .7; } }
+.page-sqlspec .sec.is-hit > .sec__head h2 { animation: sq-mark 1.8s var(--ease); border-radius: 6px; }
+@keyframes sq-mark { 0%, 40% { background: var(--trusted-bg); box-shadow: 0 0 0 6px var(--trusted-bg); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
+
+.page-sqlspec .grp { display: grid; gap: 10px; margin-top: var(--sp-5); }
+.page-sqlspec .grp__label { font-size: var(--fs-12); font-weight: var(--fw-semibold); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+
+.page-sqlspec .blk {
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); scroll-margin-top: var(--sq-to);
+  transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.page-sqlspec .blk.is-hit { border-color: var(--trusted); box-shadow: 0 0 0 3px var(--trusted-bg); }
+.page-sqlspec .blk__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 10px 14px; }
+.page-sqlspec .blk__toggle {
+  display: inline-flex; align-items: center; gap: 8px; min-width: 0; padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
+  font-family: var(--font-mono); font-size: var(--fs-14); letter-spacing: 0;
+}
+.page-sqlspec .blk__chev { color: var(--ink-2); transition: transform var(--dur-1) var(--ease); }
+.page-sqlspec .blk.is-open .blk__chev { transform: rotate(90deg); }
+.page-sqlspec .blk__toggle:hover .blk__name { color: var(--trusted); }
+.page-sqlspec .blk__name { font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
+.page-sqlspec .blk__arm { color: var(--ink-2); overflow-wrap: anywhere; }
+.page-sqlspec .blk__arm::before { content: "·"; margin: 0 8px 0 2px; }
+.page-sqlspec .blk__size { font-size: var(--fs-12); color: var(--ink-2); }
+.page-sqlspec .blk__file { margin-left: auto; font-family: var(--font-mono); font-size: var(--fs-12); color: var(--ink-2); overflow-wrap: anywhere; }
+.page-sqlspec .doc { display: grid; gap: 6px; font-size: var(--fs-15); line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
+.page-sqlspec .blk > .doc { padding: 0 16px 12px 38px; margin-top: -2px; }
+.page-sqlspec .doc code { padding: 1px 5px; border-radius: 5px; background: var(--bg-2); color: var(--ink); font-size: .86em; overflow-wrap: anywhere; }
+.page-sqlspec .doc ul, .page-sqlspec .doc ol { display: grid; gap: 4px; padding-left: 1.25em; }
+.page-sqlspec .doc ul { list-style: disc; }
+.page-sqlspec .doc ol { list-style: decimal; }
+.page-sqlspec .blk__code { padding: 10px 0; border-top: 1px solid var(--line); border-radius: 0 0 var(--r-2) var(--r-2); background: var(--code-bg); }
+
+/* code: line numbers, hanging indent, a few token colours, links to definitions */
+.page-sqlspec .code-lines { font-family: var(--font-mono); font-size: var(--sq-code); line-height: 1.62; font-weight: 450; letter-spacing: 0; }
+.page-sqlspec .ln { display: grid; grid-template-columns: 3.2em minmax(0, 1fr); column-gap: 14px; padding-right: 16px; }
+.page-sqlspec .ln__n { text-align: right; color: var(--ink-3); user-select: none; -webkit-user-select: none; }
+.page-sqlspec .ln__c { white-space: pre-wrap; overflow-wrap: anywhere; padding-left: calc(var(--ind) * 1ch + 2ch); text-indent: -2ch; }
+.page-sqlspec .ln--gap .ln__c { color: var(--ink-2); letter-spacing: .1em; }
+.page-sqlspec .code-lines .k { color: var(--trusted); font-weight: 650; }
+.page-sqlspec .code-lines .t { color: color-mix(in srgb, var(--trusted) 50%, var(--ink)); }
+.page-sqlspec .code-lines .c { color: var(--ink-2); font-style: italic; }
+.page-sqlspec .code-lines .s { color: var(--verified); }
+.page-sqlspec .code-lines a.ref { text-decoration: underline; text-decoration-color: var(--trusted-line); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.page-sqlspec .code-lines a.ref:hover { color: var(--trusted); text-decoration-color: currentColor; }
+
+/* hover preview of a definition */
+.page-sqlspec .peek {
+  position: fixed; z-index: 30; display: grid; gap: 6px; padding: 12px 14px; pointer-events: none;
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--shadow-2);
+}
+.page-sqlspec .peek__n { font-size: var(--fs-14); font-weight: var(--fw-semibold); color: var(--trusted); overflow-wrap: anywhere; }
+.page-sqlspec .peek .doc { font-size: var(--fs-14); }
+.page-sqlspec .peek__w { font-size: var(--fs-12); color: var(--ink-2); }
+
+/* previous and next chapter */
+.page-sqlspec .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); margin-top: var(--sp-8); }
+.page-sqlspec .pager__a {
+  display: flex; align-items: center; gap: 14px; padding: 18px 22px; font-size: var(--fs-18); font-weight: var(--fw-semibold);
+  border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface);
+  transition: border-color var(--dur-1) var(--ease);
+}
+.page-sqlspec .pager__a:hover { border-color: var(--trusted-line); }
+.page-sqlspec .pager__a > span { display: grid; }
+.page-sqlspec .pager__a small { font-size: var(--fs-13); font-weight: var(--fw-medium); color: var(--ink-2); }
+.page-sqlspec .pager__a .ic { color: var(--ink-2); }
+.page-sqlspec .pager__a.is-next { justify-content: flex-end; text-align: right; }
+.page-sqlspec .pager__back { transform: rotate(180deg); }
+
+/* ---------------------------------------------------------------- narrow screens */
+@media (max-width: 1000px) {
+  .page-sqlspec .sq-doc { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "side" "main"; }
+  .page-sqlspec .side { position: static; max-height: none; grid-template-rows: none; gap: var(--sp-3); margin-bottom: var(--sp-5); }
+  .page-sqlspec .ch-head { margin-bottom: var(--sp-5); }
+  .page-sqlspec .side > .toc { display: none; }
+  .page-sqlspec .toc-m { display: block; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); }
+  .page-sqlspec .toc-m summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-weight: var(--fw-semibold); cursor: pointer; list-style: none; }
+  .page-sqlspec .toc-m summary::-webkit-details-marker { display: none; }
+  .page-sqlspec .toc-m__chev { margin-left: auto; color: var(--ink-2); transition: transform var(--dur-1) var(--ease); }
+  .page-sqlspec .toc-m[open] .toc-m__chev { transform: rotate(180deg); }
+  .page-sqlspec .toc-m .toc { padding: 6px 6px 10px; border-top: 1px solid var(--line); }
+  .page-sqlspec .meaning { grid-template-columns: minmax(0, 1fr); }
+  .page-sqlspec .meaning__code { border-left: 0; border-top: 1px solid var(--line); border-radius: 0 0 var(--r-4) var(--r-4); }
+}
+@media (max-width: 600px) {
+  .page-sqlspec { --sq-code: 12px; }
+  .page-sqlspec .ln { grid-template-columns: 2.5em minmax(0, 1fr); column-gap: 8px; padding-right: 10px; }
+  .page-sqlspec .ln__c { padding-left: calc(var(--ind) * .5ch + 2ch); }
+  .page-sqlspec .blk__head { padding: 10px 12px; }
+  .page-sqlspec .blk > .doc { padding: 0 12px 12px; font-size: var(--fs-14); }
+  .page-sqlspec .blk__file { margin-left: 0; flex-basis: 100%; }
+  .page-sqlspec .pbox { min-width: 0; padding: 8px 11px; }
+  .page-sqlspec .pic__boxes, .page-sqlspec .pic__steps { padding: 10px; gap: 8px; }
+  .page-sqlspec .pic__steps { flex-direction: column; align-items: center; }
+  .page-sqlspec .pic__steps li { flex-direction: column; gap: 8px; }
+  .page-sqlspec .pic__arrow { transform: rotate(90deg); }
+  .page-sqlspec .pager { grid-template-columns: minmax(0, 1fr); }
+  .page-sqlspec .pager__a { font-size: var(--fs-16); }
+}

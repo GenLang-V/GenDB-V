@@ -1,0 +1,18 @@
+{
+ "fixture": "final_validation",
+ "description": "VERUS_SQL T6 final check: IN lists newly accepted by frontend v2 (PostgreSQL common type), with a one-row table because queries without FROM are refused, plus one table-backed empty-string/NULL/escaped-text bag (copy_text_edges has no tables, so the evaluator never ran it).",
+ "ddl": [{"sql": "CREATE TABLE one (id integer NOT NULL);\nCREATE TABLE t (v text);"}],
+ "tables": [
+  {"name": "one", "columns": ["id"], "rows": [[1]]},
+  {"name": "t", "columns": ["v"],
+   "rows": [[""], [""], [null], ["a\nb"], ["tab\tin"], ["back\\slash"], ["\\N"], [" "]]}
+ ],
+ "cases": [
+  {"name": "in_common_type_bpchar", "sql": "SELECT count(*) AS n FROM one WHERE 'a' IN ('b'::char(1), 'a ')",
+   "note": "Common type bpchar (first typed item); both untyped literals become bpchar, so 'a ' equals 'a'. Frontend v1 typed this as text (false)."},
+  {"name": "in_common_type_numeric", "sql": "SELECT count(*) AS n FROM one WHERE '1.0' IN (2.5, '1')",
+   "note": "Common type numeric; 1.0 = 1 is true. Frontend v1 compared as text (false)."},
+  {"name": "text_edges_table", "sql": "SELECT v FROM t",
+   "note": "Stored text: duplicate '', NULL distinct from '' and from the two-character text \\N, embedded newline/tab/backslash, a single blank."}
+ ]
+}

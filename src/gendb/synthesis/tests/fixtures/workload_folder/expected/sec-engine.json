@@ -1,0 +1,532 @@
+{
+ "format_version": 2,
+ "dataset": {
+  "tables": [
+   {
+    "name": "sub",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "cik",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "name",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "sic",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "countryba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "stprba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "cityba",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "countryinc",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "form",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "period",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "fy",
+      "ty": "I32",
+      "nullable": true
+     },
+     {
+      "name": "fp",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "filed",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "accepted",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "prevrpt",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "nciks",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "afs",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "wksi",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "fye",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "instance",
+      "ty": "Utf8",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "num",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "ddate",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "qtrs",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "uom",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "coreg",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "value",
+      "ty": {
+       "Decimal": {
+        "p": 28,
+        "s": 4
+       }
+      },
+      "nullable": false
+     },
+     {
+      "name": "footnote",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "tag",
+    "fields": [
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "custom",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "abstract",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "datatype",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "iord",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "crdr",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "tlabel",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "doc",
+      "ty": "Utf8",
+      "nullable": true
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   },
+   {
+    "name": "pre",
+    "fields": [
+     {
+      "name": "adsh",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "report",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "line",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "stmt",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "inpth",
+      "ty": "I32",
+      "nullable": false
+     },
+     {
+      "name": "rfile",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "tag",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "version",
+      "ty": "Utf8",
+      "nullable": false
+     },
+     {
+      "name": "plabel",
+      "ty": "Utf8",
+      "nullable": true
+     },
+     {
+      "name": "negating",
+      "ty": "I32",
+      "nullable": false
+     }
+    ],
+    "locations": [
+     "<path>"
+    ],
+    "format": "Parquet"
+   }
+  ]
+ },
+ "queries": [],
+ "hardware": {
+  "threads": [
+   1,
+   32,
+   64
+  ]
+ },
+ "max_concurrent_queries": 1,
+ "max_concurrent_preparations": 8,
+ "author_executable": "<path>",
+ "library": "<path>",
+ "barriers": "<locks>",
+ "storage_policy": {
+  "kind": "physical_only",
+  "eligible_storages": [
+   {
+    "package": "7900a462b2850b8529f129c478e945e770479127bb92cf8ce66259b364b49d97",
+    "review": "<text>"
+   },
+   {
+    "package": "1f0f8e3304008b07970b7289c7db5f8171f77f98702841865d5e8cef1d8bbf7e",
+    "review": "<text>"
+   },
+   {
+    "package": "f612b583acc9f49a425a32b99f7fdfc0d8ddc704356238ef9735aebc216d343b",
+    "review": "<text>"
+   },
+   {
+    "package": "4b51d3a0f92c3f2fde136939515e67f5ad814fcc58420834a720f253c156efbc",
+    "review": "<text>"
+   }
+  ]
+ },
+ "integrity_constraints": {
+  "trust": "user_declared",
+  "declarations": [
+   {
+    "table": "sub",
+    "sql": "PRIMARY KEY (adsh)"
+   },
+   {
+    "table": "tag",
+    "sql": "PRIMARY KEY (tag, version)"
+   },
+   {
+    "table": "pre",
+    "sql": "PRIMARY KEY (adsh, report, line)"
+   },
+   {
+    "table": "num",
+    "sql": "FOREIGN KEY (adsh) REFERENCES sub (adsh)"
+   },
+   {
+    "table": "pre",
+    "sql": "FOREIGN KEY (adsh) REFERENCES sub (adsh)"
+   },
+   {
+    "table": "num",
+    "sql": "FOREIGN KEY (tag, version) REFERENCES tag (tag, version)"
+   },
+   {
+    "table": "pre",
+    "sql": "FOREIGN KEY (tag, version) REFERENCES tag (tag, version)"
+   }
+  ]
+ },
+ "validation": {
+  "kind": "formal_proofs",
+  "numeric_relative_tolerance": "1e-9",
+  "required_engines": [
+   "duckdb",
+   "umbra"
+  ]
+ },
+ "engine": {
+  "line": "general",
+  "templates": "<path>",
+  "timing_binding": "v0",
+  "variants": "<path>",
+  "storage_seed": {
+   "source_library": "<path>",
+   "packages": [
+    "7900a462b2850b8529f129c478e945e770479127bb92cf8ce66259b364b49d97",
+    "1f0f8e3304008b07970b7289c7db5f8171f77f98702841865d5e8cef1d8bbf7e",
+    "f612b583acc9f49a425a32b99f7fdfc0d8ddc704356238ef9735aebc216d343b",
+    "4b51d3a0f92c3f2fde136939515e67f5ad814fcc58420834a720f253c156efbc"
+   ]
+  },
+  "limits": {
+   "max_iterations": "unset",
+   "max_cost_usd": "1000",
+   "spend_policy": "estimated_usd",
+   "max_retries_per_iteration": "unset",
+   "author_timeout_seconds": "unset"
+  },
+  "scales": [
+   {
+    "name": "sf3",
+    "locations": {
+     "sub": [
+      "<path>"
+     ],
+     "num": [
+      "<path>"
+     ],
+     "tag": [
+      "<path>"
+     ],
+     "pre": [
+      "<path>"
+     ]
+    },
+    "prepared_workload": "<path>",
+    "bindings": "<path>",
+    "targets": "<path>",
+    "saved_answers": [
+     {
+      "query": "Q1",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q1",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v1",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v2",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q2",
+      "binding": "v2",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v0",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v0",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v1",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v1",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v2",
+      "engine": "duckdb",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     },
+     {
+      "query": "Q4",
+      "binding": "v2",
+      "engine": "umbra",
+      "description": "<text>",
+      "path": "<path>",
+      "rows_pointer": "<path>"
+     }
+    ],
+    "original_data_bytes": 5439582957,
+    "original_data_record": "<path>"
+   }
+  ],
+  "branches": 1,
+  "call_limit_seconds": 60,
+  "anon_memory_limit_bytes": 154618822656,
+  "reuse_libraries": [
+   "<path>",
+   "<path>",
+   "<path>"
+  ],
+  "emphasis": "co_optimization"
+ }
+}

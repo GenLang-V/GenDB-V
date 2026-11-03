@@ -1,0 +1,112 @@
+{
+ "fixture": "scalar_pins",
+ "description": "PostgreSQL counterparts of the VERUS_SQL T2 scalar meaning pins (verus/pins/scalar.rs): numeric result scales, int4 overflow and int4/int8 promotion, cross-type numeric comparison, date + interval with month-end clamping, date vs timestamp comparison and timestamp range overflow. One-row table `one` so every expression has a FROM; `d` holds month-end dates, `far` a date one month before the end of the timestamp range.",
+ "ddl": [
+  {
+   "sql": "CREATE TABLE one (k integer NOT NULL);\nCREATE TABLE d (dt date NOT NULL, n integer NOT NULL);\nCREATE TABLE far (dt date NOT NULL);"
+  }
+ ],
+ "tables": [
+  {
+   "name": "one",
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  {
+   "name": "d",
+   "columns": [
+    "dt",
+    "n"
+   ],
+   "rows": [
+    [
+     "2024-01-31",
+     1
+    ],
+    [
+     "2023-01-31",
+     2
+    ],
+    [
+     "2000-02-29",
+     3
+    ],
+    [
+     "2024-03-31",
+     4
+    ],
+    [
+     "1998-12-01",
+     5
+    ]
+   ]
+  },
+  {
+   "name": "far",
+   "columns": [
+    "dt"
+   ],
+   "rows": [
+    [
+     "294276-12-01"
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "numeric_scales",
+   "sql": "SELECT 0.06 - 0.01 AS a, 1.50 * 0.25 AS b, 1 - 0.05 AS c, 0.1 - 0.012 AS d FROM one",
+   "note": "pin_numeric_arithmetic: add/sub keep max scale, mul adds scales (0.05, 0.3750, 0.95, 0.088)."
+  },
+  {
+   "name": "int4_overflow",
+   "sql": "SELECT k + 2147483647 AS x FROM one",
+   "expect": "error",
+   "note": "pin_integer_overflow_and_null: int4 + int4 beyond 2^31-1 is 22003."
+  },
+  {
+   "name": "int4_int8_promotion",
+   "sql": "SELECT k + 2147483648 AS x, k * 3 AS y FROM one",
+   "note": "2147483648 is an int8 literal: the int4 side is promoted, no overflow (2147483649); int4*int4 stays int4."
+  },
+  {
+   "name": "numeric_comparisons",
+   "sql": "SELECT k FROM one WHERE 24 > 23.99 AND 1.0 = 1.00 AND -0.5 < -0.49",
+   "note": "pin_comparisons_and_3vl: exact cross-type/cross-scale numeric comparison; the row stays."
+  },
+  {
+   "name": "month_end_clamp_literals",
+   "sql": "SELECT DATE '2024-01-31' + INTERVAL '1' MONTH AS a, DATE '2023-01-31' + INTERVAL '1' MONTH AS b, DATE '2000-02-29' + INTERVAL '1' YEAR AS c, DATE '1998-12-01' - INTERVAL '90' DAY AS d, DATE '2024-03-31' - INTERVAL '1' MONTH AS e FROM one",
+   "note": "pin_dates_and_intervals: date + interval is a timestamp; month arithmetic clamps to the month end."
+  },
+  {
+   "name": "month_end_clamp_column",
+   "sql": "SELECT n, dt + INTERVAL '1' MONTH AS plus_month, dt - INTERVAL '1' MONTH AS minus_month, dt + INTERVAL '1' YEAR AS plus_year FROM d",
+   "note": "The same clamping on a date column (bag)."
+  },
+  {
+   "name": "date_vs_timestamp",
+   "sql": "SELECT k FROM one WHERE DATE '1994-12-31' < DATE '1994-01-01' + INTERVAL '1' YEAR AND NOT (DATE '1995-01-01' < DATE '1994-01-01' + INTERVAL '1' YEAR)",
+   "note": "Q6's upper bound: date vs timestamp comparison is exact (1994-12-31 inside, 1995-01-01 outside)."
+  },
+  {
+   "name": "timestamp_overflow_literal",
+   "sql": "SELECT DATE '294276-12-01' + INTERVAL '1' MONTH AS t FROM one",
+   "expect": "error",
+   "note": "pin_datetime_errors: the timestamp leaves PostgreSQL's range (22008). The frontend refuses the six-digit year literal (recorded refusal)."
+  },
+  {
+   "name": "timestamp_overflow_column",
+   "sql": "SELECT dt + INTERVAL '1' MONTH AS t FROM far",
+   "expect": "error",
+   "note": "pin_datetime_errors on a stored date: 294276-12-01 + 1 month leaves the timestamp range (22008)."
+  }
+ ]
+}

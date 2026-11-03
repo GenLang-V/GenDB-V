@@ -1,0 +1,10 @@
+target/
+__pycache__/
+*.pyc
+# made by the benchmarks/*/setup_data.sh scripts and by gendb run
+benchmarks/*/data/
+benchmarks/*/raw/
+benchmarks/*/runs/
+benchmarks/tpc-h/tpch-dbgen/
+# the proof tools that GUIDE.md "Install" installs
+toolchains/

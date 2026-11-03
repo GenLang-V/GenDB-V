@@ -1,0 +1,72 @@
+{
+ "correctness": {
+  "answer": "GenDB-V formally verifies your engine for correctness and program safety.",
+  "guarantees": [
+   {
+    "id": "correctness",
+    "label": "Correctness"
+   },
+   {
+    "id": "memory",
+    "label": "Memory safety"
+   },
+   {
+    "id": "arithmetic",
+    "label": "Arithmetic safety"
+   },
+   {
+    "id": "races",
+    "label": "No data races"
+   },
+   {
+    "id": "termination",
+    "label": "Termination"
+   }
+  ],
+  "problem": "Mature systems still return wrong answers, after years of engineering and testing."
+ },
+ "speed": {
+  "answer": "GenDB-V synthesizes a fast engine for your workload and hardware.",
+  "baselines": [
+   "DuckDB",
+   "Umbra"
+  ],
+  "problem": "Databases are rebuilt again and again for new workloads and new hardware.",
+  "workloads": [
+   {
+    "name": "TPC-H",
+    "speedups": [
+     {
+      "baseline": "DuckDB",
+      "text": "51.6",
+      "value": 51.5589
+     },
+     {
+      "baseline": "Umbra",
+      "text": "22.0",
+      "value": 21.9573
+     }
+    ],
+    "templates": 22
+   },
+   {
+    "name": "SEC-EDGAR",
+    "speedups": [
+     {
+      "baseline": "DuckDB",
+      "text": "61.3",
+      "value": 61.2686
+     },
+     {
+      "baseline": "Umbra",
+      "text": "28.3",
+      "value": 28.2951
+     }
+    ],
+    "templates": 6
+   }
+  ]
+ },
+ "tagline": "AI-generated, formally verified database engines",
+ "title": "GenDB-V"
+}

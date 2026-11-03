@@ -1,0 +1,434 @@
+{
+ "name": "sub",
+ "tables": [
+  {
+   "columns": [
+    "adsh",
+    "cik",
+    "name",
+    "sic",
+    "countryba",
+    "stprba",
+    "cityba",
+    "countryinc",
+    "form",
+    "period",
+    "fy",
+    "fp",
+    "filed",
+    "accepted",
+    "prevrpt",
+    "nciks",
+    "afs",
+    "wksi",
+    "fye",
+    "instance"
+   ],
+   "table": "sub"
+  }
+ ],
+ "parts": [
+  "adsh text offsets (U64, n+1)",
+  "adsh text bytes (U8)",
+  "adsh_order: row positions sorted by adsh (U64 permutation)",
+  "cik (I32)",
+  "name codes per row (U64) into the name dictionary",
+  "name dictionary offsets (U64)",
+  "name dictionary bytes (U8)",
+  "sic (I32)",
+  "sic validity (U8, 0 = NULL)",
+  "countryba text offsets (U64, n+1)",
+  "countryba text bytes (U8)",
+  "countryba validity (U8, 0 = NULL)",
+  "stprba text offsets (U64, n+1)",
+  "stprba text bytes (U8)",
+  "stprba validity (U8, 0 = NULL)",
+  "cityba text offsets (U64, n+1)",
+  "cityba text bytes (U8)",
+  "cityba validity (U8, 0 = NULL)",
+  "countryinc text offsets (U64, n+1)",
+  "countryinc text bytes (U8)",
+  "countryinc validity (U8, 0 = NULL)",
+  "form text offsets (U64, n+1)",
+  "form text bytes (U8)",
+  "period (I32)",
+  "period validity (U8, 0 = NULL)",
+  "fy (I32)",
+  "fy validity (U8, 0 = NULL)",
+  "fp text offsets (U64, n+1)",
+  "fp text bytes (U8)",
+  "fp validity (U8, 0 = NULL)",
+  "filed (I32)",
+  "accepted text offsets (U64, n+1)",
+  "accepted text bytes (U8)",
+  "prevrpt (I32)",
+  "nciks (I32)",
+  "afs text offsets (U64, n+1)",
+  "afs text bytes (U8)",
+  "afs validity (U8, 0 = NULL)",
+  "wksi (I32)",
+  "fye text offsets (U64, n+1)",
+  "fye text bytes (U8)",
+  "fye validity (U8, 0 = NULL)",
+  "instance text offsets (U64, n+1)",
+  "instance text bytes (U8)"
+ ],
+ "data_policy": [
+  {
+   "part": 0,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "adsh"
+   ]
+  },
+  {
+   "part": 1,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "adsh"
+   ]
+  },
+  {
+   "part": 2,
+   "table": "sub",
+   "kind": "permutation",
+   "columns": [
+    "adsh"
+   ]
+  },
+  {
+   "part": 3,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "cik"
+   ]
+  },
+  {
+   "part": 4,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "name"
+   ]
+  },
+  {
+   "part": 5,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "name"
+   ]
+  },
+  {
+   "part": 6,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "name"
+   ]
+  },
+  {
+   "part": 7,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "sic"
+   ]
+  },
+  {
+   "part": 8,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "sic"
+   ]
+  },
+  {
+   "part": 9,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryba"
+   ]
+  },
+  {
+   "part": 10,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryba"
+   ]
+  },
+  {
+   "part": 11,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryba"
+   ]
+  },
+  {
+   "part": 12,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "stprba"
+   ]
+  },
+  {
+   "part": 13,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "stprba"
+   ]
+  },
+  {
+   "part": 14,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "stprba"
+   ]
+  },
+  {
+   "part": 15,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "cityba"
+   ]
+  },
+  {
+   "part": 16,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "cityba"
+   ]
+  },
+  {
+   "part": 17,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "cityba"
+   ]
+  },
+  {
+   "part": 18,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryinc"
+   ]
+  },
+  {
+   "part": 19,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryinc"
+   ]
+  },
+  {
+   "part": 20,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "countryinc"
+   ]
+  },
+  {
+   "part": 21,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "form"
+   ]
+  },
+  {
+   "part": 22,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "form"
+   ]
+  },
+  {
+   "part": 23,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "period"
+   ]
+  },
+  {
+   "part": 24,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "period"
+   ]
+  },
+  {
+   "part": 25,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fy"
+   ]
+  },
+  {
+   "part": 26,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fy"
+   ]
+  },
+  {
+   "part": 27,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fp"
+   ]
+  },
+  {
+   "part": 28,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fp"
+   ]
+  },
+  {
+   "part": 29,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fp"
+   ]
+  },
+  {
+   "part": 30,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "filed"
+   ]
+  },
+  {
+   "part": 31,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "accepted"
+   ]
+  },
+  {
+   "part": 32,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "accepted"
+   ]
+  },
+  {
+   "part": 33,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "prevrpt"
+   ]
+  },
+  {
+   "part": 34,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "nciks"
+   ]
+  },
+  {
+   "part": 35,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "afs"
+   ]
+  },
+  {
+   "part": 36,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "afs"
+   ]
+  },
+  {
+   "part": 37,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "afs"
+   ]
+  },
+  {
+   "part": 38,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "wksi"
+   ]
+  },
+  {
+   "part": 39,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fye"
+   ]
+  },
+  {
+   "part": 40,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fye"
+   ]
+  },
+  {
+   "part": 41,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "fye"
+   ]
+  },
+  {
+   "part": 42,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "instance"
+   ]
+  },
+  {
+   "part": 43,
+   "table": "sub",
+   "kind": "base_payload",
+   "columns": [
+    "instance"
+   ]
+  }
+ ],
+ "layout": {
+  "summary": "sub (one row per filing) in canonical row order, one part per int4 column, a U8 validity part per nullable column, flat text (U64 offsets + U8 bytes) per text column; name dictionary-encoded (U64 codes into a strictly sorted dictionary); adsh_order: the row positions sorted by adsh.",
+  "units": "rows: canonical sub rows; offsets: bytes; codes: dictionary positions; adsh_order: row positions"
+ }
+}

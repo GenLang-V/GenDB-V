@@ -1,0 +1,248 @@
+{
+ "fixture": "cov_s",
+ "description": "VERUS_SQL_COVERAGE task S: CASE (lazy), COALESCE, NULLIF, scalar subqueries (NULL, 21000), IN / NOT IN / ANY / ALL with three-valued logic and empty sets, SELECT DISTINCT and GROUP BY by value equality, WITH. Two cases use task N's integer division.",
+ "ddl": [
+  {
+   "sql": "CREATE TABLE r (k integer, v numeric(10,2), tag text, d integer NOT NULL);\nCREATE TABLE s (k integer, w integer, n numeric(6,3));"
+  }
+ ],
+ "tables": [
+  {
+   "name": "r",
+   "columns": [
+    "k",
+    "v",
+    "tag",
+    "d"
+   ],
+   "rows": [
+    [
+     1,
+     "1.50",
+     "a",
+     2
+    ],
+    [
+     1,
+     "1.50",
+     "a",
+     0
+    ],
+    [
+     2,
+     null,
+     "b",
+     1
+    ],
+    [
+     null,
+     "2.25",
+     null,
+     0
+    ],
+    [
+     3,
+     "-0.75",
+     "c",
+     3
+    ]
+   ]
+  },
+  {
+   "name": "s",
+   "columns": [
+    "k",
+    "w",
+    "n"
+   ],
+   "rows": [
+    [
+     1,
+     10,
+     "1.000"
+    ],
+    [
+     1,
+     null,
+     "2.500"
+    ],
+    [
+     null,
+     5,
+     null
+    ],
+    [
+     4,
+     7,
+     "0.500"
+    ]
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "case_searched",
+   "sql": "SELECT k, CASE WHEN v > 1 THEN 'big' WHEN v IS NULL THEN 'none' ELSE 'small' END AS size FROM r",
+   "note": "Searched CASE: first true WHEN wins; NULL v makes v > 1 Unknown (not taken)."
+  },
+  {
+   "name": "case_simple_no_else",
+   "sql": "SELECT k, CASE k WHEN 1 THEN 'one' WHEN 2 THEN 'two' END AS name FROM r",
+   "note": "Simple CASE is k = v per WHEN; no match (and NULL k) gives the implicit ELSE NULL."
+  },
+  {
+   "name": "case_mixed_scale",
+   "sql": "SELECT k, CASE WHEN k = 1 THEN v ELSE 0 END AS x FROM r",
+   "note": "Common type numeric of numeric(10,2) and int: each row keeps its own scale (1.50 vs 0); typmod dropped."
+  },
+  {
+   "name": "case_lazy_avoids_error",
+   "sql": "SELECT k, CASE WHEN d > 0 THEN d ELSE 2147483647 + d END AS x FROM r",
+   "note": "Lazy CASE: the int4 overflow of the ELSE branch (row-dependent, not constant-folded) is never computed for d > 0."
+  },
+  {
+   "name": "case_taken_branch_error",
+   "sql": "SELECT k, CASE WHEN d > 0 THEN 2147483647 + d ELSE 0 END AS x FROM r",
+   "expect": "error",
+   "note": "The taken branch overflows int4: 22003."
+  },
+  {
+   "name": "case_lazy_avoids_division_by_zero",
+   "sql": "SELECT k, CASE WHEN d = 0 THEN -1 ELSE 10 / d END AS x FROM r",
+   "note": "Lazy CASE: 10 / d (row-dependent, not constant-folded) is never computed for d = 0, so no 22012 (uses task N's integer division)."
+  },
+  {
+   "name": "case_division_by_zero_taken",
+   "sql": "SELECT k, CASE WHEN d = 0 THEN 10 / d ELSE 0 END AS x FROM r",
+   "expect": "error",
+   "note": "The taken branch divides by zero: 22012."
+  },
+  {
+   "name": "case_bool_result",
+   "sql": "SELECT k, CASE WHEN k > 1 THEN true ELSE false END AS b FROM r",
+   "note": "Boolean CASE result; NULL k takes ELSE."
+  },
+  {
+   "name": "case_in_aggregate",
+   "sql": "SELECT SUM(CASE WHEN tag = 'a' THEN v ELSE 0 END) AS sa, COUNT(CASE WHEN v IS NULL THEN 1 END) AS nulls FROM r",
+   "note": "CASE inside SUM (numeric scale 2 over mixed-scale inputs) and COUNT of a CASE with implicit NULL."
+  },
+  {
+   "name": "coalesce_nullif",
+   "sql": "SELECT k, COALESCE(v, 0) AS v0, COALESCE(tag, NULL, 'none') AS t, NULLIF(k, 1) AS nk, NULLIF(tag, 'a') AS nt FROM r",
+   "note": "COALESCE: first non-NULL argument, common type; NULLIF: NULL when equal, else the first argument."
+  },
+  {
+   "name": "scalar_subquery_uncorrelated",
+   "sql": "SELECT k, (SELECT SUM(w) FROM s) AS total FROM r",
+   "note": "Uncorrelated scalar subquery: one row per outer row (bigint)."
+  },
+  {
+   "name": "scalar_subquery_empty_is_null",
+   "sql": "SELECT k, (SELECT w FROM s WHERE s.k = r.k AND w > 5) AS w FROM r",
+   "note": "Correlated scalar subquery: one row gives its value, no row gives NULL."
+  },
+  {
+   "name": "scalar_subquery_cardinality",
+   "sql": "SELECT k, (SELECT w FROM s WHERE s.k = r.k) AS w FROM r",
+   "expect": "error",
+   "note": "k = 1 has two matching rows in s: 21000."
+  },
+  {
+   "name": "scalar_subquery_where_empty",
+   "sql": "SELECT k FROM r WHERE v > (SELECT n FROM s WHERE w > 100)",
+   "note": "Empty scalar subquery is NULL, so the comparison is Unknown for every row: no rows."
+  },
+  {
+   "name": "coalesce_subquery",
+   "sql": "SELECT k, COALESCE((SELECT SUM(w) FROM s WHERE s.k = r.k), 0) AS sw FROM r",
+   "note": "Correlated scalar aggregate subquery (NULL on no match) inside COALESCE."
+  },
+  {
+   "name": "in_subquery",
+   "sql": "SELECT k, tag FROM r WHERE k IN (SELECT k FROM s)",
+   "note": "IN keeps the matching rows (duplicates of r stay; duplicates in s do not multiply)."
+  },
+  {
+   "name": "not_in_with_null",
+   "sql": "SELECT k FROM r WHERE k NOT IN (SELECT k FROM s)",
+   "note": "s.k contains NULL: NOT IN is never true."
+  },
+  {
+   "name": "not_in_without_null",
+   "sql": "SELECT k FROM r WHERE k NOT IN (SELECT k FROM s WHERE k IS NOT NULL)",
+   "note": "Without NULLs: 2 and 3 qualify; a NULL k is Unknown against a non-empty set."
+  },
+  {
+   "name": "not_in_empty",
+   "sql": "SELECT k FROM r WHERE k NOT IN (SELECT k FROM s WHERE w > 100)",
+   "note": "NOT IN of an empty set is true for every row, NULL k included."
+  },
+  {
+   "name": "in_empty",
+   "sql": "SELECT k FROM r WHERE k IN (SELECT k FROM s WHERE w > 100)",
+   "note": "IN of an empty set is false."
+  },
+  {
+   "name": "any_all_3vl",
+   "sql": "SELECT k, CASE WHEN k = ANY (SELECT k FROM s) THEN 't' WHEN NOT (k = ANY (SELECT k FROM s)) THEN 'f' ELSE 'u' END AS m, CASE WHEN k < ALL (SELECT k FROM s WHERE k IS NOT NULL) THEN 't' WHEN NOT (k < ALL (SELECT k FROM s WHERE k IS NOT NULL)) THEN 'f' ELSE 'u' END AS lt_all FROM r",
+   "note": "Three-valued ANY / ALL through CASE: a NULL element or operand gives Unknown when no element decides."
+  },
+  {
+   "name": "some_numeric_cast",
+   "sql": "SELECT k FROM r WHERE v < SOME (SELECT w FROM s) AND v >= ALL (SELECT n FROM s WHERE n IS NOT NULL AND n < 1)",
+   "note": "numeric vs integer subquery column (the column side is cast); SOME = ANY; ALL."
+  },
+  {
+   "name": "in_grouped_subquery",
+   "sql": "SELECT k FROM r WHERE k IN (SELECT k FROM s GROUP BY k HAVING COUNT(*) > 1)",
+   "note": "IN over a grouped subquery with HAVING (TPC-H Q18 shape)."
+  },
+  {
+   "name": "having_correlated_subquery",
+   "sql": "SELECT k, COUNT(*) AS n FROM r GROUP BY k HAVING COUNT(*) > (SELECT COUNT(*) FROM s WHERE s.k = r.k)",
+   "note": "Correlated subquery in HAVING referencing the grouping key."
+  },
+  {
+   "name": "distinct_rows",
+   "sql": "SELECT DISTINCT k, tag FROM r",
+   "note": "DISTINCT removes the duplicate row; NULLs are not distinct from each other."
+  },
+  {
+   "name": "distinct_ordered",
+   "sql": "SELECT DISTINCT tag FROM r ORDER BY tag",
+   "order_keys": [
+    {
+     "column": "tag"
+    }
+   ],
+   "note": "DISTINCT with ORDER BY (NULLS LAST)."
+  },
+  {
+   "name": "distinct_value_equality",
+   "sql": "SELECT DISTINCT CASE WHEN d = 0 THEN 1.0 WHEN d = 1 THEN 1.00 ELSE 1 END AS x FROM r",
+   "value_only_columns": [
+    "x"
+   ],
+   "note": "1.0, 1.00 and 1 are one value: one row; the displayed scale is a plan-dependent representative (value-only)."
+  },
+  {
+   "name": "group_by_value_equality",
+   "sql": "SELECT x, COUNT(*) AS n FROM (SELECT CASE WHEN d = 0 THEN 1.0 WHEN d = 1 THEN 1.00 ELSE 1 END AS x FROM r) t GROUP BY x",
+   "value_only_columns": [
+    "x"
+   ],
+   "note": "GROUP BY groups numerics by value across scales (one group of 5)."
+  },
+  {
+   "name": "cte_twice",
+   "sql": "WITH t AS (SELECT k, SUM(v) AS total FROM r GROUP BY k) SELECT a.k, a.total FROM t a WHERE a.total = (SELECT SUM(total) FROM t WHERE k = 1)",
+   "note": "WITH query referenced twice (FROM and a scalar subquery), TPC-H Q15 shape."
+  },
+  {
+   "name": "cte_chain_columns",
+   "sql": "WITH a (kk) AS (SELECT k FROM s WHERE w IS NOT NULL), b AS (SELECT kk FROM a WHERE kk IS NOT NULL) SELECT r.k, r.tag FROM r, b WHERE r.k = b.kk",
+   "note": "Column aliases and a later WITH item reading an earlier one."
+  }
+ ]
+}
