@@ -29,8 +29,8 @@
 //!
 //! The evaluation time at the current scale (an evaluation at a large scale takes long) is the last evaluation of the branch's sessions timed at this scale, with its time per
 //! step; before any, an estimate labelled as one, from what GenDB has recorded: the parent's recorded cells at this
-//! scale (the interleaved timing runs each finished one again, 1 warm + 1 hot call) and the branch's last whole-crate
-//! Verus run.
+//! scale (the interleaved timing runs each finished one again, 1 warm + the run's timed hot calls,
+//! `general.timed_calls`) and the branch's last whole-crate Verus run.
 //!
 //! A run with one branch is one line of versions (`engine_general_sections::Shape::OneLine`): its
 //! facts name the head (the best version so far) and the line's versions, and nothing of branches, other branches'
@@ -55,6 +55,7 @@ use crate::controller::layout::RunLayout;
 use crate::controller::ledger::LedgerState;
 use crate::engine::branches::LadderState;
 use crate::engine::profile::{PROFILE_DIRECTORY, PROFILE_FILE, StatementProfile};
+use crate::engine::protocol::{DEFAULT_TIMED_CALLS, hot_calls_text};
 use crate::engine::score::{CellResult, CellStatus};
 use crate::engine::sessions::{SESSION_FILE, session_directory};
 use crate::engine::tree::{self, VersionTree, node_directory};
@@ -120,6 +121,12 @@ pub(crate) fn engine_dir(context: &Value) -> Option<PathBuf> {
 }
 
 /// The current scale's name.
+/// The hot calls of every timed cell of the run's development timings (`general.timed_calls`, the request's
+/// `engine.timed_calls`; 3 when absent).
+pub(crate) fn timed_calls(context: &Value) -> u32 {
+    context["general"]["timed_calls"].as_u64().and_then(|n| u32::try_from(n).ok()).unwrap_or(DEFAULT_TIMED_CALLS)
+}
+
 fn scale(context: &Value) -> String {
     plain(&context["general"]["scale"]["name"])
 }
@@ -414,13 +421,20 @@ fn evaluation_time_fact(context: &Value, view: &GeneralView) -> String {
         CellStatus::Finished { median_ns } | CellStatus::Unchecked { median_ns } => Some(median_ns),
         CellStatus::Unfinished { .. } => None,
     }).collect();
-    // The parent's finished cells run again in the timing; its unfinished ones do not (`performance.json`).
+    // The parent's finished cells run again in the timing; its unfinished ones do not (`performance.json`). Each side of
+    // a cell makes the development plan's calls (1 warm + the run's timed hot calls), each about the cell's recorded time.
+    let hot = timed_calls(context);
+    let calls = 1 + hot;
+    let protocol = format!("1 warm + {}", hot_calls_text(hot));
     let (parent_side, yours) = match finished.iter().sum::<u64>() {
-        0 => (String::new(), "1 warm + 1 hot call"),
-        ns => (format!("{parent}'s {} run again, 1 warm + 1 hot call each (about 2 × {:.1} s = {}), and ", counted(finished.len(), "finished cell"), ns as f64 / 1e9, minutes(2 * ns / 1_000_000)), "the same way"),
+        0 => (String::new(), protocol.clone()),
+        ns => (
+            format!("{parent}'s {} run again, {protocol} each (about {calls} × {:.1} s = {}), and ", counted(finished.len(), "finished cell"), ns as f64 / 1e9, minutes(u64::from(calls) * ns / 1_000_000)),
+            "the same way".to_string(),
+        ),
     };
     let estimate = format!(
-        "Evaluation time at {name}: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: {verus}, then the interleaved timing: {parent_side}each of your {cells_total} cells runs {yours} (up to 2 × {limit_s} s for a cell that does not finish); a storage you add is built at {name} before the timing."
+        "Evaluation time at {name}: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: {verus}, then the interleaved timing: {parent_side}each of your {cells_total} cells runs {yours} (up to {calls} × {limit_s} s for a cell that does not finish); a storage you add is built at {name} before the timing."
     );
     // A run of several workloads: the evaluation also runs on every other workload.
     match workloads::evaluation_time_others(context) {
@@ -1165,6 +1179,8 @@ fn race_table(context: &Value, race: &Value) -> Vec<String> {
         0 => String::new(),
         n => format!(" `(re-timed)`: {n} pair{} timed again once at the end, because a side was much slower than the parent's recorded time (the host is shared with other services); the re-timed result counts, and the first is kept in race.json.", if n == 1 { " was" } else { "s were" }),
     };
+    // 2 calls: also races recorded under the earlier development cell (1 warm + 1 hot); more: 1 warm call and the run's
+    // timed hot calls (`engine.timed_calls`, by default 3 as the final plan's), the median.
     let cell_time = match race["calls_per_cell"].as_u64() {
         Some(2) => "each side 1 warm + 1 hot call, the hot call's time the cell's time".to_string(),
         Some(calls) if calls > 2 => format!("each side 1 warm + {} hot calls, the median hot call the cell's time", calls - 1),

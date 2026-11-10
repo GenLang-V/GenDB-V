@@ -143,6 +143,7 @@ The argument texts are in parameter order (dates `YYYY-MM-DD`, decimals as text)
 | `timing_binding` | `"v0"` | engine: the binding the engine is timed at |
 | `branches` | `1` | engine: the lines of versions the agents search at once (one when the run has members) |
 | `call_limit_seconds` | `60` | engine: the time limit of one engine call |
+| `timed_calls` | `3` | engine: timed calls per query in each timing, the time is their median |
 | `memory_limit_bytes` | the host's memory | engine: the memory limit of one engine call |
 | `emphasis` | none | engine: `"co_optimization"`: the agent designs the storage and the operators together from the first version |
 | `one_engine` | `false` | engine: accept only versions in which every workload runs the same code |

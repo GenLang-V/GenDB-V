@@ -9,7 +9,7 @@
 //! 1. **Out of the box** (`engine/seed/out-of-the-box/`, [`OutOfTheBox`]): the seed version's `agent/**` and module list
 //!    (`engine::submission::write_root_from_version`), with the goal's plain storage uses, frozen for the goal under the
 //!    stage rules; when frozen, its whole crate verified; when verified, its storages and budget checked, timed alone at
-//!    the goal's scale and its finished templates checked (version 0's plan, `engine::protocol::VERSION_ZERO`). Every
+//!    the goal's scale and its finished templates checked (version 0's plan, `engine::protocol::version_zero`). Every
 //!    outcome is recorded (`record.json`, `OUT_OF_THE_BOX.md`): the refusal, the first compile or Verus errors, or the
 //!    score. Only the first blocking layer is seen.
 //! 2. **The sides**, node kind `stage_seed`, one per workload under `engine/seed/<name>/`: every kept workload's side is
@@ -47,7 +47,7 @@ use super::records::{MemberPart, MemberTiming, StorageFacts, WorkloadPart, copy_
 use super::StageRun;
 use crate::engine::acceptance::{AdmissionIntent, CheckedEngine, ENGINE_FINISHED_CHECKS_KIND, Runnable, fresh_directory, main_line_lock, select_version};
 use crate::engine::branches::{VERSION_ZERO_TIMING_KIND, framework_role};
-use crate::engine::protocol::{DEVELOPMENT, EvaluationPlan, VERSION_ZERO};
+use crate::engine::protocol::{EvaluationPlan, development, version_zero};
 use crate::engine::role::{EngineAuthorRole, EngineBench, copy_tree, float_free, storage_inputs, write_matrix};
 use crate::engine::score::CellResult;
 use crate::engine::submission::members::{MemberRecord, write_side_root, write_source_root};
@@ -1058,7 +1058,7 @@ impl FrameworkRoot<'_> {
             };
             let check = bench.check_answers_here(workload, &build.library, &storages, evaluation).map_err(|f| ("answers", failed(f)))?;
             let variants = bench.variant_answers(&subject, &BTreeSet::new(), evaluation).map_err(|f| ("checks", failed(f)))?;
-            let checks = json!({"plan":DEVELOPMENT.record(),"answers":check,"variants":variants});
+            let checks = json!({"plan":development(bench.timed_calls()).record(),"answers":check,"variants":variants});
             return Ok(Evaluated { score: None, cells: vec![], checks, storage_policy, timing: None, check: Some(check) });
         }
         let (matrix, scored) = bench.time_alone(&run, plan.cell_calls, &evaluation.join("timing")).map_err(|e| ("timing", e))?;
@@ -1096,9 +1096,10 @@ impl FrameworkRoot<'_> {
         }
     }
 
-    /// The plan a side of `w` is timed under: version 0's for the primary (the goal), the development plan otherwise.
-    fn plan_of(w: &super::StageWorkload) -> &'static EvaluationPlan {
-        if w.primary { &VERSION_ZERO } else { &DEVELOPMENT }
+    /// The plan a side of `w` is timed under, at the run's timed calls: version 0's for the primary (the goal), the
+    /// development plan otherwise.
+    fn plan_of(w: &super::StageWorkload, timed_calls: u32) -> EvaluationPlan {
+        if w.primary { version_zero(timed_calls) } else { development(timed_calls) }
     }
 }
 
@@ -1135,8 +1136,9 @@ impl RootWork for FrameworkRoot<'_> {
             }
         };
         // A stage run's goal: version 0's plan (as before); a run of several workloads' workload: its side's plan.
-        let plan = if self.run.form == WorkloadForm::Workloads { Self::plan_of(w) } else { &VERSION_ZERO };
-        match Self::evaluate_built(&mut bench, workload, w.role, &engine, &frozen_dir, &evaluation, &build, plan, &label) {
+        let timed_calls = bench.timed_calls();
+        let plan = if self.run.form == WorkloadForm::Workloads { Self::plan_of(w, timed_calls) } else { version_zero(timed_calls) };
+        match Self::evaluate_built(&mut bench, workload, w.role, &engine, &frozen_dir, &evaluation, &build, &plan, &label) {
             Ok(evaluated) => {
                 let score = evaluated.score.clone();
                 let step = if evaluated.check.is_some() { "answers" } else { "timing" };
@@ -1158,7 +1160,6 @@ impl RootWork for FrameworkRoot<'_> {
             (_, Some(seed)) if self.run.form == WorkloadForm::Workloads => format!("seed {}", seed_text(seed)),
             _ => self.seed_label(),
         };
-        let plan = if self.run.form == WorkloadForm::Workloads { Self::plan_of(w) } else if w.primary { &VERSION_ZERO } else { &DEVELOPMENT };
         let stopped = |what: &str, error: AdmissionError| AdmissionError::tool(format!("the root's side on {workload} ({source:?}) {what}: {error}"));
         let mut role = self.role(workload, dir)?;
         let mut bench = role.view();
@@ -1198,7 +1199,9 @@ impl RootWork for FrameworkRoot<'_> {
         fs::create_dir_all(&evaluation).map_err(AdmissionError::tool)?;
         let locks = bench.bench.config.locks.clone();
         let build = bench.builds.compile(&locks, &engine, &frozen_dir, &evaluation.join("verus-build"), true).map_err(|e| stopped("did not verify", e))?;
-        let evaluated = Self::evaluate_built(&mut bench, workload, w.role, &engine, &frozen_dir, &evaluation, &build, plan, &label).map_err(|(step, e)| stopped(&format!("failed at {step}"), e))?;
+        let timed_calls = bench.timed_calls();
+        let plan = if self.run.form == WorkloadForm::Workloads { Self::plan_of(w, timed_calls) } else if w.primary { version_zero(timed_calls) } else { development(timed_calls) };
+        let evaluated = Self::evaluate_built(&mut bench, workload, w.role, &engine, &frozen_dir, &evaluation, &build, &plan, &label).map_err(|(step, e)| stopped(&format!("failed at {step}"), e))?;
         Ok(Self::intent(source, &frozen_dir, &evaluation, &build, evaluated, label))
     }
 

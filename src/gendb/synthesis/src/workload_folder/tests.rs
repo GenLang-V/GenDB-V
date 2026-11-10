@@ -229,7 +229,7 @@ fn query_selection() {
 #[test]
 fn settings_overlay_paths_and_refusals() {
     let dir = scratch("settings");
-    std::fs::write(dir.join("gendb.toml"), "mode = \"engine\"\nbudget_usd = 438\nreuse = [\"libs/a\"]\nstart_from = \"runs/r:v001\"\n[[members]]\nfolder = \"../m\"\nrole = \"check\"\n").unwrap();
+    std::fs::write(dir.join("gendb.toml"), "mode = \"engine\"\nbudget_usd = 438\ntimed_calls = 5\nreuse = [\"libs/a\"]\nstart_from = \"runs/r:v001\"\n[[members]]\nfolder = \"../m\"\nrole = \"check\"\n").unwrap();
     std::fs::write(dir.join("other.toml"), "budget_usd = \"12.5\"\nthreads = [1, 8]\n").unwrap();
     let read = Settings::read(&dir, Some(&dir.join("other.toml"))).unwrap();
     assert_eq!((read.mode(), read.budget_usd.as_ref().map(DecimalText::text)), (Mode::Engine, Some("12.5".into())));
@@ -243,7 +243,7 @@ fn settings_overlay_paths_and_refusals() {
     assert_eq!(read.clone().overlay(cli).storage(), Storage::Plain);
     assert_eq!(read.name_or(Path::new("/x/TPC-H")), "tpc_h");
     let shared = Settings::default().with_shared_from(&read);
-    assert_eq!((shared.threads(), shared.budget_usd.is_some()), (vec![1, 8], true));
+    assert_eq!((shared.threads(), shared.budget_usd.is_some(), shared.timed_calls), (vec![1, 8], true, Some(5)));
 
     std::fs::write(dir.join("bad.toml"), "speed_up = 5\n").unwrap();
     assert_eq!(Settings::parse_file(&dir.join("bad.toml")).unwrap_err().reason, "settings_invalid");
@@ -408,6 +408,8 @@ fn engine_workloads_and_seeds() {
     };
     let continued = make(Settings { start_from: Some("/runs/g:v003".into()), ..settings() }, vec![]);
     assert_eq!((continued.seed_version.as_ref().map(|s| s.version.as_str()), continued.workloads.is_some()), (Some("v003"), false));
+    let timed = make(Settings { timed_calls: Some(5), ..settings() }, vec![]);
+    assert_eq!((timed.timed_calls(), continued.timed_calls), (5, None), "`timed_calls` maps to engine.timed_calls; unset, the request's default (3)");
     let member = requests::member_entry(&ctx, "sec", MemberRole::Counted, None);
     let several = make(Settings { one_engine: Some(true), start_from: Some("/exports/e".into()), ..settings() }, vec![member]);
     let workloads = several.workloads.unwrap();

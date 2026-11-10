@@ -68,7 +68,7 @@ export default function render({ data }) {
         h("h1.hero__title", h("span.hero__gen", "Gen"), "DB", h("span.hero__v", "-V")),
         h("p.hero__line", tagline(data.tagline))),
       h("div.wrap.hero__art",
-        h("img", { src: HERO, width: "1760", height: "700", alt: "The GenDB cockroach takes a bite out of a database. The mascots of other database systems lie fallen around it.", fetchpriority: "high", decoding: "async" }))),
+        h("img", { src: HERO, width: "880", height: "700", alt: "The GenDB cockroach takes a bite out of a database.", fetchpriority: "high", decoding: "async" }))),
     h("section.wrap.story", { "aria-label": "Why GenDB-V" },
       row("speed", "refresh-ccw", speed.problem, "zap", speed.answer, speedTable(speed)),
       row("correct", "bug", correctness.problem, "shield-check", correctness.answer, guarantees(correctness.guarantees))),

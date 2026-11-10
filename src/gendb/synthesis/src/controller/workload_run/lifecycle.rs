@@ -104,15 +104,18 @@ pub const BUDGET_RAISE: &str = "budget-raise.json";
 /// The stem of the later budget raise records.
 const BUDGET_RAISE_STEM: &str = "budget-raise";
 
-/// The first record of a general engine run's other allowed request change on relaunch (`record_request`): setting
-/// [`ONE_ENGINE_FIELD`]; later ones are `request-change-1.json`, `request-change-2.json`, ... in order, and the newest
-/// one's `to` is the run's value from then on.
+/// The first record of a general engine run's other allowed request changes on relaunch (`record_request`): setting
+/// [`ONE_ENGINE_FIELD`], changing [`TIMED_CALLS_FIELD`]; later ones are `request-change-1.json`, `request-change-2.json`,
+/// ... in order, each naming its `field`, and a field's newest record's `to` is the run's value from then on.
 pub const REQUEST_CHANGE: &str = "request-change.json";
 /// The stem of the later request change records.
 const REQUEST_CHANGE_STEM: &str = "request-change";
 /// The request field a general engine run's relaunch may set, never unset: only a version that is one engine can be
 /// accepted (`controller::request::EngineWorkloads::require_one_engine`).
 pub const ONE_ENGINE_FIELD: &str = "engine.workloads.require_one_engine";
+/// The request field a general engine run's relaunch may change either way: the hot calls of every timed cell of its
+/// development timings (`controller::request::EngineRequest::timed_calls`, absent 3).
+pub const TIMED_CALLS_FIELD: &str = "engine.timed_calls";
 
 /// Record `request` as the run's immutable `request.json`, or check that a restarted run presents the same request
 /// (the retired author-turn guard and the scheduling controls `max_concurrent_queries`, `max_concurrent_preparations`,
@@ -127,7 +130,8 @@ pub const ONE_ENGINE_FIELD: &str = "engine.workloads.require_one_engine";
 /// On the general engine line a relaunch may raise the run's budget `engine.limits.max_cost_usd`, never lower it
 /// ([`check_budget_raise`]): `request.json` stays as written, each raise is a new record `budget-raise[-N].json`, and
 /// later relaunches compare against the newest raise. Likewise it may set [`ONE_ENGINE_FIELD`], never unset it
-/// ([`check_one_engine_change`]): the change is a new record `request-change[-N].json`.
+/// ([`check_one_engine_change`]), and change [`TIMED_CALLS_FIELD`] ([`check_timed_calls_change`]): each change is a new
+/// record `request-change[-N].json`.
 pub fn record_request(root: &Path, request: &Value) -> Result<bool, RecordError> {
     let path = root.join("request.json");
     if !path.exists() {
@@ -146,8 +150,8 @@ pub fn record_request(root: &Path, request: &Value) -> Result<bool, RecordError>
     // others waiting for a slot with their records unchanged (`controller::schedule`); so is the general line's number
     // of branch slots (`EngineRequest::branches`): every branch's records stay, and only slots up to the count get new
     // sessions. A schema-line request has no `branches` (it is refused there). The general line's budget is compared
-    // on its own: a relaunch may raise it (`check_budget_raise`); so is its one-engine rule: a relaunch may set it
-    // (`check_one_engine_change`).
+    // on its own: a relaunch may raise it (`check_budget_raise`); so are its one-engine rule (a relaunch may set it,
+    // `check_one_engine_change`) and its timed calls (a relaunch may change them, `check_timed_calls_change`).
     let identity = |mut request: Value| {
         if let Some(fields) = request.as_object_mut() {
             fields.remove("max_concurrent_queries");
@@ -158,6 +162,7 @@ pub fn record_request(root: &Path, request: &Value) -> Result<bool, RecordError>
             engine.remove("pause_after_session");
             if engine.get("line").and_then(Value::as_str) == Some("general") {
                 engine.remove("branches");
+                engine.remove("timed_calls");
                 if let Some(limits) = engine.get_mut("limits").and_then(Value::as_object_mut) {
                     limits.remove("max_cost_usd");
                 }
@@ -172,6 +177,7 @@ pub fn record_request(root: &Path, request: &Value) -> Result<bool, RecordError>
         if request.pointer("/engine/line").and_then(Value::as_str) == Some("general") {
             check_budget_raise(root, &recorded, request)?;
             check_one_engine_change(root, &recorded, request)?;
+            check_timed_calls_change(root, &recorded, request)?;
         }
         return Ok(true);
     }
@@ -232,18 +238,15 @@ fn check_budget_raise(root: &Path, recorded: &Value, request: &Value) -> Result<
     Ok(())
 }
 
-/// A general engine run's relaunch value of [`ONE_ENGINE_FIELD`] (in `request`) against the run's: the newest change's
-/// `to`, else the recorded request's (absent is false). The same value is accepted as is; setting it is recorded as the
+/// A general engine run's relaunch value of [`ONE_ENGINE_FIELD`] (in `request`) against the run's: the field's newest
+/// change's `to`, else the recorded request's (absent is false). The same value is accepted as is; setting it is recorded as the
 /// next `request-change[-N].json` (field, from, to, when) and accepted; unsetting it is refused (the run's versions
 /// since then were accepted under it).
 fn check_one_engine_change(root: &Path, recorded: &Value, request: &Value) -> Result<(), RecordError> {
     let request_path = root.join("request.json");
     let set = |request: &Value| request.pointer("/engine/workloads/require_one_engine") == Some(&Value::Bool(true));
-    let (current, current_from) = match latest_record(root, REQUEST_CHANGE, REQUEST_CHANGE_STEM) {
-        Some(path) => {
-            let change: Value = records::read_json(&path)?;
-            (change["to"] == true, path)
-        }
+    let (current, current_from) = match latest_change(root, ONE_ENGINE_FIELD)? {
+        Some((change, path)) => (change["to"] == true, path),
         None => (set(recorded), request_path.clone()),
     };
     match (current, set(request)) {
@@ -258,6 +261,42 @@ fn check_one_engine_change(root: &Path, recorded: &Value, request: &Value) -> Re
             Ok(())
         }
         _ => Ok(()),
+    }
+}
+
+/// A general engine run's relaunch value of [`TIMED_CALLS_FIELD`] (in `request`, absent 3) against the run's: the
+/// field's newest change's `to`, else the recorded request's. A different value is recorded as the next
+/// `request-change[-N].json` (field, from, to, when) and accepted: from this launch on the run's development timings
+/// make that many hot calls per cell (cells timed before keep their recorded calls, `race.json` `calls_per_cell`).
+fn check_timed_calls_change(root: &Path, recorded: &Value, request: &Value) -> Result<(), RecordError> {
+    let timed_calls = |request: &Value| request.pointer("/engine/timed_calls").and_then(Value::as_u64).unwrap_or(u64::from(crate::engine::protocol::DEFAULT_TIMED_CALLS));
+    let current = match latest_change(root, TIMED_CALLS_FIELD)? {
+        Some((change, path)) => change["to"].as_u64().ok_or_else(|| RecordError::new(&path, "a timed-calls change without a number `to`"))?,
+        None => timed_calls(recorded),
+    };
+    let presented = timed_calls(request);
+    if presented != current {
+        let path = records::next_free_record(root, REQUEST_CHANGE, REQUEST_CHANGE_STEM);
+        records::write_new_json(&path, &json!({"format_version":1,"field":TIMED_CALLS_FIELD,"from":current,"to":presented,"at_unix_ms":records::now_unix_ms(),"request":root.join("request.json"),
+            "meaning":"the run's request was changed on relaunch: request.json is unchanged; from this launch on every timed cell of the run's development timings is 1 warm call and `to` hot calls, its time the median hot call (cells timed before keep their recorded calls)"}))?;
+    }
+    Ok(())
+}
+
+/// The newest request change record of `field` (`request-change[-N].json`), with its path, if any.
+fn latest_change(root: &Path, field: &str) -> Result<Option<(Value, PathBuf)>, RecordError> {
+    let mut latest = None;
+    let mut ordinal = 0usize;
+    loop {
+        let path = if ordinal == 0 { root.join(REQUEST_CHANGE) } else { root.join(format!("{REQUEST_CHANGE_STEM}-{ordinal}.json")) };
+        if !path.exists() {
+            return Ok(latest);
+        }
+        let change: Value = records::read_json(&path)?;
+        if change["field"] == field {
+            latest = Some((change, path));
+        }
+        ordinal += 1;
     }
 }
 
@@ -413,6 +452,39 @@ mod tests {
         let mut other = request(Some(true), "1500");
         other["engine"]["workloads"]["name"] = json!("sec");
         assert!(record_request(&root, &other).is_err(), "no other field may change");
+        assert_eq!(std::fs::read(root.join("request.json")).unwrap(), written, "request.json stays as written");
+        std::fs::remove_dir_all(&root).unwrap();
+    }
+
+    /// A general engine run's relaunch may change its timed calls (`engine.timed_calls`, absent 3) either way: absent and
+    /// 3 are the same value (no record), each change is one record naming the field beside the one-engine rule's, and
+    /// the one-engine rule still reads its own newest record.
+    #[test]
+    fn a_general_relaunch_may_change_the_timed_calls_with_a_record() {
+        let root = crate::controller::test_support::scratch_root("request-timed-calls-change");
+        records::create_dir(&root).unwrap();
+        let request = |timed_calls: Option<u32>, one_engine: bool| {
+            let mut request = json!({"format_version":2,"engine":{"line":"general","limits":{"max_cost_usd":"1000"},"workloads":{"name":"tpch","members":[]}}});
+            if let Some(timed_calls) = timed_calls {
+                request["engine"]["timed_calls"] = json!(timed_calls);
+            }
+            if one_engine {
+                request["engine"]["workloads"]["require_one_engine"] = json!(true);
+            }
+            request
+        };
+        assert!(!record_request(&root, &request(None, false)).unwrap());
+        let written = std::fs::read(root.join("request.json")).unwrap();
+        assert!(record_request(&root, &request(Some(3), false)).unwrap() && !root.join(REQUEST_CHANGE).exists(), "3 is the absent value: no change");
+        assert!(record_request(&root, &request(Some(5), true)).unwrap(), "a change beside the one-engine rule is accepted");
+        let changes: Vec<Value> = [REQUEST_CHANGE, "request-change-1.json"].iter().map(|f| records::read_json(&root.join(f)).unwrap()).collect();
+        let fields: Vec<(&str, &Value, &Value)> = changes.iter().map(|c| (c["field"].as_str().unwrap(), &c["from"], &c["to"])).collect();
+        assert_eq!(fields, [(ONE_ENGINE_FIELD, &json!(false), &json!(true)), (TIMED_CALLS_FIELD, &json!(3), &json!(5))]);
+        assert!(record_request(&root, &request(Some(5), true)).unwrap() && !root.join("request-change-2.json").exists(), "the same values again record nothing");
+        assert!(record_request(&root, &request(None, true)).unwrap(), "back to the default");
+        let back: Value = records::read_json(&root.join("request-change-2.json")).unwrap();
+        assert_eq!((back["field"].as_str(), back["from"].as_u64(), back["to"].as_u64()), (Some(TIMED_CALLS_FIELD), Some(5), Some(3)), "{back}");
+        assert!(record_request(&root, &request(None, false)).unwrap_err().to_string().contains("never unset it"), "the one-engine rule reads its own record");
         assert_eq!(std::fs::read(root.join("request.json")).unwrap(), written, "request.json stays as written");
         std::fs::remove_dir_all(&root).unwrap();
     }

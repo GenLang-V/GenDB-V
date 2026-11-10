@@ -525,6 +525,7 @@ pub(super) async fn prepare_scale_in(request: &WorkloadRequest, index: usize, re
         scales: engine.scales.len(),
         next_scale: engine.scales.get(index + 1).map(|s| s.name.clone()),
         call_limits,
+        timed_calls: engine.timed_calls(),
         branches: super::branches::branch_names(engine.branches.unwrap_or(1)),
         budget_usd: engine.limits.max_cost_usd,
         emphasis: engine.emphasis,

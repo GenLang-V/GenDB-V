@@ -589,7 +589,7 @@ fn a_fresh_session_after_a_scale_move_shows_the_new_scale_and_why_the_last_ended
     // Nothing was timed at sf10 yet: the facts estimate the evaluation time there (version 1 has no cells
     // recorded at sf10 in this fixture, and its evaluations recorded no Verus step), and the handoff gives the previous
     // session's last verdict without a time (the time per step is in the Scale facts).
-    assert!(plain_only.contains("\n\nEvaluation time at sf10: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (as long as your own whole-crate `verify`), then the interleaved timing: each of your 9 cells runs 1 warm + 1 hot call (up to 2 × 60 s for a cell that does not finish); a storage you add is built at sf10 before the timing.\n\n## Score at sf10"), "{plain_only}");
+    assert!(plain_only.contains("\n\nEvaluation time at sf10: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (as long as your own whole-crate `verify`), then the interleaved timing: each of your 9 cells runs 1 warm + 3 hot calls (up to 4 × 60 s for a cell that does not finish); a storage you add is built at sf10 before the timing.\n\n## Score at sf10"), "{plain_only}");
     let handoff = branch_handoff(&context, &view).join("\n");
     assert!(handoff.contains("- Its last evaluation (submission 3): not accepted, recorded as attempt b1-a002: refusal: schema_name") && !handoff.contains("it took"), "{handoff}");
     assert!(handoff.contains("- Why it ended: scale_move: the main-line head finishes every cell at sf1; this session ends here and the run moves to sf10; a fresh session continues from your notebook."), "{handoff}");
@@ -629,12 +629,16 @@ fn a_retimed_pair_is_marked_in_the_race_table() {
     assert!(table.contains("- Q12: 7100 (re-timed) → 7000 (re-timed) (0.99)"), "{table}");
     assert!(table.contains("- Q13: 17000 → 15000 (0.88)"), "{table}");
     assert!(table.contains("`(re-timed)`: 1 pair was timed again once at the end, because a side was much slower than the parent's recorded time (the host is shared with other services); the re-timed result counts, and the first is kept in race.json."), "{table}");
+    assert!(table.contains("(each side 1 warm + 1 hot call, the hot call's time the cell's time)"), "a race recorded under the earlier development cell: {table}");
     let plain = json!({"parent":"v022","calls_per_cell":2,"pairs":[race["pairs"][1].clone()]});
     assert!(!race_table(&context, &plain).join("\n").contains("re-timed"), "no re-timed pair, no mention");
+    let development = json!({"parent":"v022","calls_per_cell":4,"pairs":[race["pairs"][1].clone()]});
+    let development = race_table(&context, &development).join("\n");
+    assert!(development.contains("(each side 1 warm + 3 hot calls, the median hot call the cell's time)"), "the development plan's cell: {development}");
 }
 
 /// How long an evaluation takes at the current scale, in the Scale facts. Before any evaluation at a scale,
-/// an estimate labelled as one: the head's recorded finished cells there (run again, 1 warm + 1 hot call each) and the
+/// an estimate labelled as one: the head's recorded finished cells there (run again, 1 warm + 3 hot calls each) and the
 /// branch's last whole-crate Verus run; after one, the last evaluation timed at the scale with its time per step, left
 /// out when the evaluation section above shows that same evaluation.
 #[test]
@@ -648,7 +652,12 @@ fn the_evaluation_time_is_the_last_one_timed_here_or_an_estimate() {
     // Session 1's first call: nothing evaluated yet; version 0 finished 6 of its 9 cells at sf1 (99.45 s together).
     let context = one_line(session_context(&run, 1));
     let facts = general_facts(&context, &GeneralView::read(&context, None), None, &ledger_view(&run.session_one)).join("\n");
-    assert!(facts.contains("\n\nEvaluation time at sf1: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (as long as your own whole-crate `verify`), then the interleaved timing: the head's 6 finished cells run again, 1 warm + 1 hot call each (about 2 × 99.5 s = 3.3 min), and each of your 9 cells runs the same way (up to 2 × 60 s for a cell that does not finish); a storage you add is built at sf1 before the timing.\n\n## Score at sf1"), "{facts}");
+    assert!(facts.contains("\n\nEvaluation time at sf1: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (as long as your own whole-crate `verify`), then the interleaved timing: the head's 6 finished cells run again, 1 warm + 3 hot calls each (about 4 × 99.5 s = 6.6 min), and each of your 9 cells runs the same way (up to 4 × 60 s for a cell that does not finish); a storage you add is built at sf1 before the timing.\n\n## Score at sf1"), "{facts}");
+    // A run with other timed calls (`engine.timed_calls`, the context's `general.timed_calls`) estimates with them.
+    let mut once = context.clone();
+    once["general"]["timed_calls"] = json!(1);
+    let facts = general_facts(&once, &GeneralView::read(&once, None), None, &ledger_view(&run.session_one)).join("\n");
+    assert!(facts.contains("the head's 6 finished cells run again, 1 warm + 1 hot call each (about 2 × 99.5 s = 3.3 min), and each of your 9 cells runs the same way (up to 2 × 60 s for a cell that does not finish)"), "{facts}");
     // After the first submission, timed at sf1, with its steps recorded (as `engine::acceptance` records them).
     first_submission(&run);
     let mut ledger = Ledger::open(&run.session_one, ledger_identity(), limits()).unwrap();
@@ -674,7 +683,7 @@ fn the_evaluation_time_is_the_last_one_timed_here_or_an_estimate() {
     context["general"]["scale"]["name"] = json!("sf10");
     let view = GeneralView::read(&context, None);
     let facts = general_facts(&context, &view, None, &ledger_view(&run.session_two)).join("\n");
-    assert!(facts.contains("\n\nEvaluation time at sf10: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (the last whole-crate run in an evaluation took 2.2 min, at sf1), then the interleaved timing: the head's 8 finished cells run again, 1 warm + 1 hot call each (about 2 × 25.3 s = 0.8 min), and each of your 9 cells runs the same way"), "{facts}");
+    assert!(facts.contains("\n\nEvaluation time at sf10: no evaluation has been timed here yet. An estimate from GenDB's records, not a measurement: Verus on your whole crate (the last whole-crate run in an evaluation took 2.2 min, at sf1), then the interleaved timing: the head's 8 finished cells run again, 1 warm + 3 hot calls each (about 4 × 25.3 s = 1.7 min), and each of your 9 cells runs the same way"), "{facts}");
     // A continued call's facts leave it out: its evaluation section states the latest evaluation's time.
     assert!(!changed_facts(&context, &view, None, &ledger_view(&run.session_two)).join("\n").contains("Evaluation time"));
     fs::remove_dir_all(&root).unwrap();

@@ -538,6 +538,7 @@ pub fn engine_request(folder: &WorkloadFolder, ctx: &RunContext, scales: &[Scale
         pause_after_session: PauseCadence::Never,
         call_limit_seconds: Some(settings.call_limit_seconds()),
         anon_memory_limit_bytes: Some(settings.memory_limit_bytes()?),
+        timed_calls: settings.timed_calls,
         emphasis: settings.emphasis,
         stage: None,
         seed_version,

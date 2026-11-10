@@ -7,9 +7,10 @@
 //!   (`engine::rounds::prepare_engine_scale`), then version 0 ([`seed_version_zero`]): GenDB writes the interpreter
 //!   engine over the flat storage of every table (`engine::submission::write_version_zero`), freezes it under the
 //!   general line's rules, verifies and compiles the whole crate, times it alone at the first scale under the call and
-//!   memory limits (1 warm + 1 hot call per cell like every development timing; unfinished cells are recorded, not
-//!   refused), checks the finished templates and profiles it (`engine::protocol::VERSION_ZERO`), admits it as `v000` on
-//!   branch `main` (lineage `framework_generated`, no author, $0) and selects it as the main-line head. A continued run
+//!   memory limits (1 warm + `engine.timed_calls` hot calls per cell, the median, like every development timing;
+//!   unfinished cells are recorded, not refused), checks the finished templates and profiles it
+//!   (`engine::protocol::version_zero`), admits it as `v000` on branch `main` (lineage `framework_generated`, no author,
+//!   $0) and selects it as the main-line head. A continued run
 //!   (`engine.seed_version`) seeds its root the same way from an accepted version of another run
 //!   (its code and storage uses, [`RootSource::seeded`]) at the last scale of its ladder ([`LadderState::start`]).
 //! - **Branch slots** `b1`..`bN` (`engine.branches`). Each slot runs one session at a time on its own thread; the
@@ -53,7 +54,7 @@
 //! `scales/<scale>/` (statements, preparation) and `scale-moves/<scale>/` (the timings of a move).
 
 use super::acceptance::{ADMITTING_FILE, AdmissionIntent, CheckedEngine, Runnable, main_line_lock, record_cells, select_version};
-use super::protocol::{DEVELOPMENT, VERSION_ZERO};
+use super::protocol::{development, version_zero};
 use super::score::CellResult;
 use super::role::{EngineAuthorRole, EngineRoleConfig, EngineRoleMode, FirstScale, GeneralInputs, SessionConfig, storage_inputs};
 use super::rounds::{PAUSED, PAUSED_FOR_REVIEW, PreparedEngine, engine_directory, prepare_engine_scale};
@@ -523,13 +524,14 @@ fn evaluate_root(role: &mut EngineAuthorRole, request: &WorkloadRequest, prepare
     let storages = bench.storages(&engine, &frozen_dir, &evaluation, TrialVerification::WholeCrate)?;
     bench.check_storage_policy(&engine, &frozen_dir, &storages, &general.budget_rule())?;
     let run = Runnable { label: format!("v000 ({})", source.heading), library: build.library.clone(), inputs: storage_inputs(&storages) };
-    let (matrix, scored) = bench.time_alone(&run, VERSION_ZERO.cell_calls, &evaluation.join("timing"))?;
+    let plan = version_zero(bench.timed_calls());
+    let (matrix, scored) = bench.time_alone(&run, plan.cell_calls, &evaluation.join("timing"))?;
     let timing_file = evaluation.join("official-matrix.json");
     super::role::write_matrix(&matrix, &timing_file)?;
     write_json_atomic(&evaluation.join("score.json"), &json!(scored)).map_err(AdmissionError::tool)?;
     let score = RecordedScore::of(&general.scale.name, &scored, &evaluation.join("score.json"));
     let subject = CheckedEngine { library: &build.library, inputs: &run.inputs, frozen: None };
-    let checks = bench.finished_checks(&VERSION_ZERO, &subject, &scored, &evaluation).map_err(|reason| AdmissionError::tool(format!("the root's finished checks ({}): {reason}", source.heading)))?;
+    let checks = bench.finished_checks(&plan, &subject, &scored, &evaluation).map_err(|reason| AdmissionError::tool(format!("the root's finished checks ({}): {reason}", source.heading)))?;
     let lineage = VerusEngineLineageV1 { branch: tree::MAIN.into(), kind: "framework_generated".into(), parents: vec![] };
     let timing = json!({"score":scored.score,"cells_total":scored.cells_total,"beats_both":scored.beats_both,"file":timing_file,"generator":source.generator});
     let evidence = vec![(VERUS_ENGINE_LINEAGE_KIND.to_string(), json!(lineage)), (super::acceptance::ENGINE_FINISHED_CHECKS_KIND.to_string(), super::role::float_free(&checks)),
@@ -907,7 +909,7 @@ fn move_scale(request: &WorkloadRequest, next: &PreparedEngine, engine_dir: &Pat
     let mut timings = vec![];
     if rivals.is_empty() {
         let run = bench.admitted_runnable(&head, &dir.join(format!("{head}-storages")))?;
-        let (matrix, scored) = bench.time_alone(&run, DEVELOPMENT.cell_calls, &dir.join(format!("{head}-timing")))?;
+        let (matrix, scored) = bench.time_alone(&run, development(bench.timed_calls()).cell_calls, &dir.join(format!("{head}-timing")))?;
         let file = dir.join(format!("{head}-score.json"));
         write_json_atomic(&file, &json!(scored)).map_err(AdmissionError::tool)?;
         super::role::write_matrix(&matrix, &dir.join(format!("{head}-matrix.json")))?;
@@ -919,7 +921,7 @@ fn move_scale(request: &WorkloadRequest, next: &PreparedEngine, engine_dir: &Pat
         let parent = bench.admitted_runnable(&head, &dir.join(format!("{head}-storages")))?;
         let candidate = bench.admitted_runnable(&rival, &dir.join(format!("{rival}-storages")))?;
         let work = dir.join(format!("race-{head}-{rival}"));
-        let report = bench.race_runnables(&parent, &candidate, None, DEVELOPMENT.cell_calls, &work).map_err(|e| AdmissionError::tool(format!("the scale move's timing of {head} and {rival}: {e}")))?;
+        let report = bench.race_runnables(&parent, &candidate, None, development(bench.timed_calls()).cell_calls, &work).map_err(|e| AdmissionError::tool(format!("the scale move's timing of {head} and {rival}: {e}")))?;
         let file = dir.join(format!("race-{head}-{rival}.json"));
         write_json_atomic(&file, &json!(report)).map_err(AdmissionError::tool)?;
         for (version, scored) in [(&head, &report.parent_score), (&rival, &report.candidate_score)] {
@@ -1122,7 +1124,7 @@ mod tests {
         let scale = serde_json::from_value(json!({"name":names[index],"locations":{},"prepared_workload":"/p","bindings":"/b","targets":"/t","saved_answers":[],
             "original_data_bytes":1_000 * factor,"original_data_record":"/g.json"})).unwrap();
         GeneralInputs { scale, plain_storages: BTreeSet::from([package(1), package(2)]), plain_storage_bytes: 1_400 * factor, scale_index: index, scales: 3,
-            next_scale: names.get(index + 1).map(|n| n.to_string()), call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, branches: branch_names(branches),
+            next_scale: names.get(index + 1).map(|n| n.to_string()), call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, timed_calls: 3, branches: branch_names(branches),
             budget_usd: Money::parse("1000").unwrap(), emphasis: None, seed: None }
     }
 

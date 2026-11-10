@@ -32,7 +32,8 @@
 //! `super::score`, and [`CellTiming::status`] decides a timed cell's status against the call limit.
 //!
 //! **The general line's plans** (`super::protocol`): its timings run official cells at the plan's call count
-//! ([`run_official_recording_failures`]: 1 warm + 1 hot in development, 1 warm + 3 hot in the final evaluation), and its
+//! ([`run_official_recording_failures`]: 1 warm + `engine.timed_calls` hot in development, by default 3 as in the final
+//! evaluation), and its
 //! development evaluation checks variants for their answers only ([`check_answers`]: one call per statement, no time
 //! read).
 
@@ -667,15 +668,16 @@ mod tests {
         assert!(run_matrix(&r, MatrixKind::Official, &statements, &[1, 32], Path::new("work"), || Ok::<_, String>(())).is_err());
     }
 
-    /// The general line's development timing: official cells at 2 calls, 1 warm + 1 hot, the hot call the
-    /// cell's time; a timed cell needs a hot call. The answer check makes one call per statement and reads no time: an
+    /// The general line's development timing: official cells at the default 4 calls, 1 warm + 3 hot, the median hot
+    /// call the cell's time; a timed cell needs a hot call. The answer check makes one call per statement and reads no time: an
     /// agreeing answer is checked, an unfinished call or an uncompared answer is not, and a refused answer ends it.
     #[test]
     fn development_cells_and_answer_checks() {
         let r = runner(|_, w, hot| vec![10 * w as u64; hot as usize], "saved_answers_agree");
-        let matrix = run_official_recording_failures(&r, &[statement("Q01", None)], &[1, 32], 2, Path::new("work"), || Ok::<_, String>(())).unwrap();
-        assert_eq!(*r.log.borrow(), ["Q01 w1 c2 leases=0 work/Q01/w1", "Q01 w32 c2 leases=0 work/Q01/w32"]);
-        assert_eq!((matrix.calls_per_cell, matrix.cells[1].hot_ns.clone(), matrix.cells[1].median_ns), (2, vec![320], 320));
+        let calls = crate::engine::protocol::development(crate::engine::protocol::DEFAULT_TIMED_CALLS).cell_calls;
+        let matrix = run_official_recording_failures(&r, &[statement("Q01", None)], &[1, 32], calls, Path::new("work"), || Ok::<_, String>(())).unwrap();
+        assert_eq!(*r.log.borrow(), ["Q01 w1 c4 leases=0 work/Q01/w1", "Q01 w32 c4 leases=0 work/Q01/w32"]);
+        assert_eq!((matrix.calls_per_cell, matrix.cells[1].hot_ns.clone(), matrix.cells[1].median_ns), (4, vec![320; 3], 320));
         assert_eq!(matrix.cell_results(Some(1_000)).unwrap()[1].status, CellStatus::Finished { median_ns: 320 });
         assert!(run_official_recording_failures(&r, &[statement("Q01", None)], &[1], 1, Path::new("work"), || Ok::<_, String>(())).is_err(), "no hot call");
 

@@ -26,6 +26,7 @@
 //! | `start_from` | none | engine: `RUN:VERSION` (`engine.seed_version`) or an exported engine folder (the primary seed); templates: a work folder |
 //! | `capture` | the run's own | `prepared_workload` (another run's capture) |
 //! | `timing_binding`, `branches`, `call_limit_seconds`, `memory_limit_bytes`, `emphasis`, `one_engine`, `reuse` | `v0`, `1`, `60`, the host's memory, none, false, none | the engine section's fields of the same meaning |
+//! | `timed_calls` | `3` | `engine.timed_calls`: the hot calls of every timed cell during the run (a cell's time is their median) |
 //! | `[[members]]` `folder`, `role`, `start_from` | none | `engine.workloads.members[]` |
 
 use super::FolderError;
@@ -127,6 +128,7 @@ pub struct Settings {
     pub timing_binding: Option<String>,
     pub branches: Option<u32>,
     pub call_limit_seconds: Option<u64>,
+    pub timed_calls: Option<u32>,
     pub memory_limit_bytes: Option<u64>,
     pub emphasis: Option<EngineEmphasis>,
     pub one_engine: Option<bool>,
@@ -181,18 +183,19 @@ impl Settings {
         pick!(
             name, mode, queries, scale, scales, threads, goal, storage, storage_budget_bytes, max_submissions, session_budget_usd, budget_usd, speedup,
             compare_with, baselines, numeric_tolerance, parallel_queries, parallel_preparations, model, start_from, capture, timing_binding, branches,
-            call_limit_seconds, memory_limit_bytes, emphasis, one_engine, reuse, members,
+            call_limit_seconds, timed_calls, memory_limit_bytes, emphasis, one_engine, reuse, members,
         )
     }
 
     /// The fields every workload of one engine shares (`hardware.threads`, `engine.{branches, call_limit_seconds,
-    /// anon_memory_limit_bytes}`) and the budget (a member's request states it; the run's budget is the primary's)
-    /// taken from `primary`: the settings a member's request is written with.
+    /// timed_calls, anon_memory_limit_bytes}`) and the budget (a member's request states it; the run's budget is the
+    /// primary's) taken from `primary`: the settings a member's request is written with.
     pub fn with_shared_from(mut self, primary: &Settings) -> Settings {
         self.threads = primary.threads.clone();
         self.budget_usd = primary.budget_usd.clone();
         self.branches = primary.branches;
         self.call_limit_seconds = primary.call_limit_seconds;
+        self.timed_calls = primary.timed_calls;
         self.memory_limit_bytes = primary.memory_limit_bytes;
         self
     }

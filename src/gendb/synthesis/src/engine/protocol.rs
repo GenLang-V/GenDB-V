@@ -1,16 +1,18 @@
-//! The general line's two evaluation protocols: fast feedback during development (1 warm + 1 hot call per cell, the
-//! variants checked at the first scale), and the full protocol (1 warm + 3 hot) only for the final evaluation of the
-//! performance.
+//! The general line's two evaluation protocols: fast feedback during development (1 warm call and the request's
+//! `engine.timed_calls` hot calls per cell, [`DEFAULT_TIMED_CALLS`] when absent, the median hot call the cell's time;
+//! the variants checked at the first scale), and the full protocol only for the final evaluation of the performance.
 //!
-//! - [`DEVELOPMENT`]: every timing of the run (a submission's evaluation and the main-line race, `engine::acceptance`;
-//!   a scale move, `engine::branches`). Each timed cell is 1 warm + 1 hot call and the hot call's time is the cell's
-//!   time. A submission's variants run at the first scale of the ladder only, one call each, for their answers only (no
-//!   time is read). No qualification at the other visible bindings and no automatic profile. Version 0 is timed the
-//!   same way and keeps its checks and profile ([`VERSION_ZERO`]).
+//! - [`development`]: every timing of the run (a submission's evaluation and the main-line race, `engine::acceptance`;
+//!   a scale move, `engine::branches`). Each timed cell is 1 warm + `engine.timed_calls` hot calls (default 3, the
+//!   cell protocol of [`FINAL`] and of the saved baselines) and its time the median hot call. A submission's variants
+//!   run at the first scale of the ladder only, one call each, for their answers only (no time is read). No
+//!   qualification at the other visible bindings and no automatic profile. Version 0 is timed the same way and keeps
+//!   its checks and profile ([`version_zero`]).
 //! - [`FINAL`]: the final evaluation of one admitted version at one scale for reporting (`gendb engine final-evaluation`,
 //!   `engine::final_evaluation`; run by the operator, never automatically). Each timed cell is 1 warm + 3 hot calls (the protocol
-//!   the saved baselines were measured with) and its time the median hot call; the qualification at every visible
-//!   binding; the variants timed at that scale (1 warm + 1 hot, with the variant/template ratio report); and a profile.
+//!   the saved baselines were measured with) and its time the median hot call, timed alone; the qualification at every
+//!   visible binding; the variants timed at that scale (1 warm + 1 hot, with the variant/template ratio report); and a
+//!   profile.
 //!
 //! Both plans run their variants at [`QUALIFICATION_WORKERS`] workers and compare every answer with the saved answers; a
 //! wrong answer refuses a submission. At the evaluated scale only the variants of the templates finished at every worker
@@ -25,8 +27,9 @@ use gendb_verification::admission::engine::QUALIFICATION_WORKERS;
 use serde::Serialize;
 use serde_json::{Value, json};
 
-/// Calls per timed cell of the development plan: 1 warm, then 1 hot (the cell's time).
-pub const DEVELOPMENT_CELL_CALLS: u32 = 2;
+/// Hot calls per timed cell of the development plan when the request names none (`engine.timed_calls`): 3, as many as
+/// the final plan's ([`OFFICIAL_CALLS`]) and the saved baselines'.
+pub const DEFAULT_TIMED_CALLS: u32 = 3;
 /// Calls per variant when only its answer is checked: one call, no time read.
 pub const ANSWER_CALLS: u32 = 1;
 
@@ -96,7 +99,7 @@ impl EvaluationPlan {
 
     /// The plan as records and the contract state it.
     pub fn record(&self) -> Value {
-        json!({"plan":self.name,"cell":format!("1 warm + {} hot calls per timed cell, the cell's time the median hot call", self.hot_calls()),
+        json!({"plan":self.name,"cell":format!("1 warm + {} per timed cell, the cell's time the median hot call", hot_calls_text(self.hot_calls())),
             "cell_calls":self.cell_calls,"qualification":self.qualification,
             "variants":{"run":self.variants,"calls":self.variants.calls(),"workers":self.variants.workers(),
                 "of":if self.variants.finished_templates_only() { "the templates finished at every worker count" } else { "every template (each variant with AST bytes of its own)" },
@@ -105,28 +108,43 @@ impl EvaluationPlan {
     }
 }
 
-/// The development evaluation (module documentation): every timing of the run.
-pub const DEVELOPMENT: EvaluationPlan =
-    EvaluationPlan { name: "development", cell_calls: DEVELOPMENT_CELL_CALLS, qualification: false, variants: VariantRun::AnswersAtFirstScale, profile: false };
+/// `n` hot calls as text: `1 hot call`, `3 hot calls` (the plans' records and the author's texts).
+pub fn hot_calls_text(n: u32) -> String {
+    if n == 1 { "1 hot call".to_string() } else { format!("{n} hot calls") }
+}
+
+/// The development evaluation (module documentation): every timing of the run, each timed cell 1 warm + `timed_calls`
+/// hot calls (the run's `engine.timed_calls`).
+pub const fn development(timed_calls: u32) -> EvaluationPlan {
+    EvaluationPlan { name: "development", cell_calls: 1 + timed_calls, qualification: false, variants: VariantRun::AnswersAtFirstScale, profile: false }
+}
 
 /// The final evaluation for reporting (module documentation): the full protocol.
 pub const FINAL: EvaluationPlan = EvaluationPlan { name: "final", cell_calls: OFFICIAL_CALLS, qualification: true, variants: VariantRun::TimedAtScale, profile: true };
 
 /// Version 0 (`engine::branches::seed_version_zero`, framework work once per run at the first scale): timed like every
 /// development timing (its cells are the first parent record), with the finished checks and the profile it always had
-/// (the first session reads where the interpreter's time goes).
-pub const VERSION_ZERO: EvaluationPlan =
-    EvaluationPlan { name: "version_0", cell_calls: DEVELOPMENT_CELL_CALLS, qualification: true, variants: VariantRun::TimedAtScale, profile: true };
+/// (the first session reads where the interpreter's time goes), each timed cell 1 warm + `timed_calls` hot calls.
+pub const fn version_zero(timed_calls: u32) -> EvaluationPlan {
+    EvaluationPlan { name: "version_0", cell_calls: 1 + timed_calls, qualification: true, variants: VariantRun::TimedAtScale, profile: true }
+}
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    /// The development plan : each timed cell 1 warm + 1 hot; the variants planned at the
-    /// ladder's first scale, one call each, whatever scale is evaluated; no qualification and no profile.
+    /// The development plan: each timed cell 1 warm + `engine.timed_calls` hot calls, by default 3 as the final plan's;
+    /// version 0 timed the same way; the variants planned at the ladder's first scale, one call each, whatever scale is
+    /// evaluated; no qualification and no profile.
     #[test]
-    fn the_development_plan_is_one_warm_one_hot_with_answer_only_variants_at_the_first_scale() {
-        assert_eq!((DEVELOPMENT.cell_calls, DEVELOPMENT.hot_calls()), (2, 1));
+    fn the_development_plan_is_one_warm_and_the_timed_calls_with_answer_only_variants_at_the_first_scale() {
+        const DEVELOPMENT: EvaluationPlan = development(DEFAULT_TIMED_CALLS);
+        assert_eq!((DEVELOPMENT.cell_calls, DEVELOPMENT.hot_calls()), (4, 3));
+        assert_eq!(DEVELOPMENT.cell_calls, FINAL.cell_calls, "by default the cell protocol of the final plan and the saved baselines");
+        for timed_calls in [1, 3, 5] {
+            assert_eq!((development(timed_calls).hot_calls(), version_zero(timed_calls).hot_calls()), (timed_calls, timed_calls), "version 0 is timed like every development timing");
+        }
+        assert_eq!(development(1).record()["cell"], "1 warm + 1 hot call per timed cell, the cell's time the median hot call");
         assert_eq!(DEVELOPMENT.variants, VariantRun::AnswersAtFirstScale);
         assert_eq!(DEVELOPMENT.variants.calls(), 1, "one call per variant, for its answer");
         assert!(!DEVELOPMENT.variants.finished_templates_only(), "every variant with AST bytes of its own, not only the finished templates'");
@@ -135,7 +153,7 @@ mod tests {
         }
         assert!(!DEVELOPMENT.qualification, "no qualification at the other visible bindings");
         assert!(!DEVELOPMENT.profile, "no automatic profile");
-        assert_eq!(DEVELOPMENT.record()["cell"], "1 warm + 1 hot calls per timed cell, the cell's time the median hot call");
+        assert_eq!(DEVELOPMENT.record()["cell"], "1 warm + 3 hot calls per timed cell, the cell's time the median hot call");
     }
 
     /// The final plan has the full protocol: 1 warm + 3 hot calls per cell (the baselines' protocol), qualification at

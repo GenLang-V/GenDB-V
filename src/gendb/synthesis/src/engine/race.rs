@@ -5,8 +5,9 @@
 //! it) and the **candidate**. Every official cell (template at the timing binding x worker count) is run
 //! for both sides back to back, each in a fresh worker child through its own [`EngineCellRunner`], with the order
 //! alternating across consecutive cells (parent first, then candidate first: ABBA). Each side of a cell makes the
-//! setup's calls ([`RaceSetup::calls`], the evaluation plan's, `super::protocol`: 1 warm + 1 hot in development, where
-//! the hot call's time is the cell's time and a warm call over the limit ends the cell unfinished with no hot call).
+//! setup's calls ([`RaceSetup::calls`], the evaluation plan's, `super::protocol`: in development 1 warm call and the
+//! run's `engine.timed_calls` hot calls, by default 3, where the median hot call is the cell's time and a warm call over
+//! the limit ends the cell unfinished with no hot call).
 //!
 //! Each pair first passes the **quiet-moment gate** (`super::quiet`: it waits, at most ten minutes, until the
 //! host's 1-minute load average is below a quarter of the CPUs; the wait is recorded with the pair), then takes one
@@ -513,7 +514,7 @@ fn official_binding(statements: &[EngineStatement]) -> Result<String, RaceError>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::engine::protocol::{DEVELOPMENT, FINAL};
+    use crate::engine::protocol::{DEFAULT_TIMED_CALLS, FINAL, development};
     use crate::engine::timing::parse_load_average;
     use gendb_runtime::worker::UnfinishedReason;
     use serde_json::{Value, json};
@@ -610,7 +611,7 @@ mod tests {
     }
 
     fn setup_with<'a>(statements: &'a [EngineStatement], baselines: &'a Baselines, record: Option<&'a [CellResult]>) -> RaceSetup<'a> {
-        RaceSetup { statements, workers: &[1, 32], baselines, call_limit_ns: LIMIT, calls: DEVELOPMENT.cell_calls, parent_record: record, work: Path::new("work") }
+        RaceSetup { statements, workers: &[1, 32], baselines, call_limit_ns: LIMIT, calls: development(DEFAULT_TIMED_CALLS).cell_calls, parent_record: record, work: Path::new("work") }
     }
 
     fn run(log: &Log, parent: fn(&str, usize, u32) -> Option<u64>, candidate: fn(&str, usize, u32) -> Option<u64>, record: Option<&[CellResult]>) -> Result<RaceReport, RaceError> {
@@ -666,18 +667,18 @@ mod tests {
         assert!(json["pairs"][0].get("retimed").is_none() && json.get("reused").is_none());
     }
 
-    /// The general line's race: every side of every cell is 1 warm + 1 hot call (the development plan), the
-    /// hot call's time is the cell's time, and the report records the protocol; the final plan's race makes 1 warm + 3
-    /// hot calls per side.
+    /// The general line's race: every side of every cell is 1 warm + 3 hot calls (the development plan at the default
+    /// `engine.timed_calls`), the median hot call is the cell's time, and the report records the protocol; the final
+    /// plan's race makes the same 1 warm + 3 hot calls per side.
     #[test]
-    fn a_development_race_cell_is_one_warm_and_one_hot_call() {
+    fn a_development_race_cell_is_one_warm_and_three_hot_calls() {
         let log = new_log();
         let report = run(&log, |_, w, _| Some(10_000_000 * w as u64), |_, w, _| Some(5_000_000 * w as u64), None).unwrap();
-        assert_eq!(report.calls_per_cell, 2);
+        assert_eq!(report.calls_per_cell, 4);
         for pair in &report.pairs {
             for side in [&pair.timing.parent, &pair.timing.candidate] {
                 let timed = side.timed.as_ref().unwrap();
-                assert_eq!((timed.hot_ns.len(), side.status), (1, CellStatus::Finished { median_ns: timed.hot_ns[0] }), "one hot call, the cell's time");
+                assert_eq!((timed.hot_ns.len(), side.status), (3, CellStatus::Finished { median_ns: timed.hot_ns[1] }), "three hot calls, the median the cell's time");
             }
         }
         let statements = statements();

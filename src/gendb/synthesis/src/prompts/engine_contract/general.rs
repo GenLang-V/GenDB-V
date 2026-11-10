@@ -23,7 +23,7 @@
 //!   attempt.
 
 use crate::engine::profile::PROFILE_METHOD;
-use crate::engine::protocol::{DEVELOPMENT, FINAL};
+use crate::engine::protocol::{FINAL, development, hot_calls_text};
 use crate::prompts::engine_general_sections::{ENGINE_MANIFEST_RULE, STORAGE_AUTHORING_FILE, Shape};
 use crate::engine::race::RACE_RULE;
 use crate::engine::role::GeneralInputs;
@@ -288,9 +288,10 @@ pub fn performance(training: &Value, workers: &[usize], general: &GeneralContrac
     for stale in ["official_matrix", "totals", "stop_rule", "variant_matrix", "other_bindings"] {
         fields.remove(stale);
     }
+    let timed_calls = general.inputs.timed_calls;
     fields.insert("submission_timing".into(), json!({"rule":RACE_RULE,
-        "cells":format!("every training template at the timing binding {} x every configured worker count {workers:?}; each side of a cell is one fresh worker child, 1 warm call then 1 hot call (the development plan), the cell's time the hot call; a warm call over the limit leaves the cell unfinished", training["timing_binding"])}));
-    fields.insert("evaluation_plans".into(), json!({"development":DEVELOPMENT.record(),"final":FINAL.record(),
+        "cells":format!("every training template at the timing binding {} x every configured worker count {workers:?}; each side of a cell is one fresh worker child, 1 warm call then {} (the development plan, engine.timed_calls), the cell's time the median hot call; a warm call over the limit leaves the cell unfinished", training["timing_binding"], hot_calls_text(timed_calls))}));
+    fields.insert("evaluation_plans".into(), json!({"development":development(timed_calls).record(),"final":FINAL.record(),
         "meaning":"every submission (and every other timing of the run) is evaluated under the development plan; the final plan, the full protocol, is run by the operator for the final numbers only (gendb engine final-evaluation) and never decides a submission"}));
     fields.insert("score".into(), json!({"rule":SCORE_RULE,"baselines":"the saved totals of DuckDB and Umbra at this scale (templates.json baseline_totals); the target at each worker count is the faster one"}));
     fields.insert("finished_checks".into(), json!("after the timing (the development plan): every variant with AST bytes of its own, at the first scale of the ladder, one call at 64 workers, its answer compared with its template's saved answers there (no time read); a wrong answer refuses the submission, an unfinished call is recorded. No qualification at the other visible bindings: the final evaluation runs it (for the templates finished at the timing binding, and the variants of the templates finished at every worker count)"));
@@ -319,7 +320,7 @@ pub fn tools_file(training: &Value, workers: &[usize], general: &GeneralContract
     tools["tools"]["trial"] = json!("compile (or verification not_run) + the engine over the training matrix (templates x workers at one binding) or your sql statements, one fresh child per cell under the timing lease and the call limits (an unfinished cell is reported with its reason)");
     tools["tools"]["profile"] = json!("one cell, 1 warm + 1 measured call under the call limits, with the sampled self time per function of the measured call");
     tools["result_fields"]["profile"] = json!("status, profile {statement, workers, calls[] (wall, process and calling-thread CPU, peak anonymous memory), stopped, sampled_call, samples_taken, functions[] (function, object, self_samples, self_permille)}, report (PROFILE.md of the job), method");
-    tools["arguments"]["hot_calls"] = json!("trial only, optional, at least 1 (default 1): a submission's evaluation also runs 1 warm + 1 hot call per cell (the development plan); only the final evaluation runs 1 warm + 3 hot");
+    tools["arguments"]["hot_calls"] = json!(format!("trial only, optional, at least 1 (default 1): a submission's evaluation runs 1 warm + {} per cell, the cell's time the median hot call (the development plan); the final evaluation runs 1 warm + 3 hot calls", hot_calls_text(general.inputs.timed_calls)));
     tools["arguments"]["sql"] = json!(format!(
         "trial/profile: your own SQL statements over the schema (no parameters), instead of templates; each is translated and encoded like the templates; no saved answer (status, row count and times only). An answer's rows are stored up to {}: a larger answer keeps its first rows, and the cell's stored_answers gives its row count, the SHA-256 of its result wire and the rows stored (the rest is not stored)",
         AnswerBound::STORED.describe()

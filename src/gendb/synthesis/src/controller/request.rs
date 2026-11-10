@@ -275,6 +275,13 @@ pub struct EngineRequest {
     /// (144 GiB in the general-engine runs, the memory of the saved Umbra baseline), the same for every version and scale.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub anon_memory_limit_bytes: Option<u64>,
+    /// General line: the hot calls of every timed cell of the run's development timings (a submission's and the main
+    /// line's race, a scale move's timing, version 0): each cell is 1 warm call and this many hot calls, its time the
+    /// median hot call (`engine::protocol::development`; at least 1). Absent: [`EngineRequest::timed_calls`]'s default,
+    /// 3, and the request keeps its JSON identity. The final evaluation always makes 3. A relaunch may change it; the
+    /// change is recorded (`lifecycle::record_request`). Every workload of a run shares it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timed_calls: Option<u32>,
     /// General line: the prompt's main direction from the first version ([`EngineEmphasis`]).
     /// Absent: the general prompt has no main-direction section, and the request keeps its JSON identity. Part of the run's
     /// identity: a relaunch keeps it.
@@ -308,7 +315,7 @@ pub struct EngineRequest {
 /// seed and library, distinct from every other workload's; its `limits` and `emphasis` unused, no `output_home`) with its
 /// role and, optionally, the seed of its side. The fields every workload shares must be equal, as in a stage run:
 /// `hardware.threads`, `barriers`, `author_executable` and `engine.{call_limit_seconds, anon_memory_limit_bytes,
-/// branches}`. There is no guard per workload: the summed score decides.
+/// branches, timed_calls}`. There is no guard per workload: the summed score decides.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EngineWorkloads {
@@ -552,7 +559,7 @@ impl WorkloadSet {
 /// constraints, templates, variants, scales, storage seed and library (distinct from every other workload's); it runs at
 /// its last scale (its first scale checks variants); its `limits` and `emphasis` are not used (the run's are the goal
 /// request's) and it has no `output_home`. The fields every workload shares must be equal: `hardware.threads`,
-/// `barriers`, `author_executable` and `engine.{call_limit_seconds, anon_memory_limit_bytes, branches}`.
+/// `barriers`, `author_executable` and `engine.{call_limit_seconds, anon_memory_limit_bytes, branches, timed_calls}`.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EngineStage {
@@ -731,6 +738,12 @@ impl EngineRequest {
         self.engine_line() == Ok(EngineLine::General)
     }
 
+    /// The hot calls per timed cell of the run's development timings (`engine.timed_calls`, default
+    /// `engine::protocol::DEFAULT_TIMED_CALLS`, 3).
+    pub fn timed_calls(&self) -> u32 {
+        self.timed_calls.unwrap_or(crate::engine::protocol::DEFAULT_TIMED_CALLS)
+    }
+
     /// Whether only a version that is one engine can be accepted ([`EngineWorkloads::require_one_engine`]).
     pub fn requires_one_engine(&self) -> bool {
         self.workloads.as_ref().is_some_and(|w| w.require_one_engine)
@@ -765,6 +778,9 @@ impl EngineRequest {
         }
         if !self.anon_memory_limit_bytes.is_some_and(|b| b > 0) {
             return Err("engine.anon_memory_limit_bytes (the worker child's memory limit, 144 GiB) is required and positive for the general line".into());
+        }
+        if self.timed_calls == Some(0) {
+            return Err("engine.timed_calls (the hot calls of a timed cell, default 3) is at least 1".into());
         }
         if self.limits.max_cost_usd.is_unset() {
             return Err("engine.limits.max_cost_usd is the general line's budget (all branches' calls together) and is required".into());
@@ -836,6 +852,7 @@ impl EngineRequest {
             ("pause_after_session", !self.pause_after_session.is_never()),
             ("call_limit_seconds", self.call_limit_seconds.is_some()),
             ("anon_memory_limit_bytes", self.anon_memory_limit_bytes.is_some()),
+            ("timed_calls", self.timed_calls.is_some()),
             ("emphasis", self.emphasis.is_some()),
             ("stage", self.stage.is_some()),
             ("seed_version", self.seed_version.is_some()),
@@ -1328,7 +1345,8 @@ impl WorkloadRequest {
     /// validated, in the stage's order; empty for a request without `engine.stage`. Refused by name: a kept request that
     /// is not a general-line request, is itself a stage run, has an output home, uses the library of another workload,
     /// or differs from this (the goal) request in a field every workload shares (`hardware.threads`, `barriers`,
-    /// `author_executable`, `engine.call_limit_seconds`, `engine.anon_memory_limit_bytes`, `engine.branches`).
+    /// `author_executable`, `engine.call_limit_seconds`, `engine.anon_memory_limit_bytes`, `engine.branches`,
+    /// `engine.timed_calls`).
     pub fn kept_workloads(&self) -> Result<Vec<KeptWorkloadRequest>, RequestError> {
         let Some(stage) = self.engine.as_ref().and_then(|e| e.stage.as_ref()) else { return Ok(vec![]) };
         let mut libraries = vec![self.library.clone()];
@@ -1380,7 +1398,7 @@ impl WorkloadRequest {
     /// `role`, in a run of form `form`: a general-line request, not itself a run of several workloads, without an output
     /// home, with a library of its own (not one of `libraries`, to which it is added) and the fields every workload
     /// shares equal to this request's (`hardware.threads`, `barriers`, `author_executable`, `engine.call_limit_seconds`,
-    /// `engine.anon_memory_limit_bytes`, `engine.branches`).
+    /// `engine.anon_memory_limit_bytes`, `engine.branches`, `engine.timed_calls` with absent as 3).
     fn read_member_request(&self, at: &str, path: &Path, role: MemberRole, form: RunForm, libraries: &mut Vec<PathBuf>) -> Result<WorkloadRequest, RequestError> {
         let at = |detail: String| RequestError::Invalid(format!("{at}: {detail}"));
         let (what, run) = match form {
@@ -1420,6 +1438,7 @@ impl WorkloadRequest {
             ("engine.call_limit_seconds", engine.call_limit_seconds != goal.call_limit_seconds),
             ("engine.anon_memory_limit_bytes", engine.anon_memory_limit_bytes != goal.anon_memory_limit_bytes),
             ("engine.branches", engine.branches != goal.branches),
+            ("engine.timed_calls", engine.timed_calls() != goal.timed_calls()),
         ];
         if let Some((field, _)) = shared.iter().find(|(_, differs)| *differs) {
             return Err(at(format!("{field} differs from the {run} request's: every workload of a {run} shares it")));
@@ -1781,6 +1800,11 @@ mod tests {
         assert_eq!(json!(emphasized)["engine"]["emphasis"], "co_optimization");
         assert!(engine.emphasis.is_none() && json!(valid)["engine"].get("emphasis").is_none(), "absent, the request keeps its JSON identity");
         assert!(parse(&|v| v["engine"]["emphasis"] = json!("speed")).is_err(), "an unknown emphasis is refused when decoded");
+        // The timed calls: optional, at least 1, absent from the JSON when not set (default 3).
+        assert!(engine.timed_calls() == 3 && json!(valid)["engine"].get("timed_calls").is_none(), "absent: 3, and the request keeps its JSON identity");
+        let five = parse(&|v| v["engine"]["timed_calls"] = json!(5)).unwrap();
+        assert!(five.validate().is_ok() && five.engine().unwrap().timed_calls() == 5 && json!(five)["engine"]["timed_calls"] == 5);
+        refused(&|v| v["engine"]["timed_calls"] = json!(0), "timed_calls");
         // The schema line refuses every general-line field and keeps its JSON identity without them.
         let schema_line = |edit: &dyn Fn(&mut Value)| {
             let mut value = base.clone();
@@ -1799,7 +1823,7 @@ mod tests {
         assert!(schema_line(&|_| {}).validate().is_ok());
         let fields: Vec<String> = json!(schema_line(&|_| {}))["engine"].as_object().unwrap().keys().cloned().collect();
         assert!(!fields.iter().any(|f| ["line", "scales", "branches", "pause_after_session", "call_limit_seconds", "anon_memory_limit_bytes", "emphasis"].contains(&f.as_str())), "{fields:?}");
-        for (field, value) in [("branches", json!(1)), ("call_limit_seconds", json!(60)), ("pause_after_session", json!("every_session")), ("emphasis", json!("co_optimization")),
+        for (field, value) in [("branches", json!(1)), ("call_limit_seconds", json!(60)), ("timed_calls", json!(3)), ("pause_after_session", json!("every_session")), ("emphasis", json!("co_optimization")),
             ("stage", json!({"workload":"w","seed_version":{"run":"r","version":"v1"},"kept_workloads":[]})), ("seed_version", json!({"run":"r","version":"v1"})),
             ("workloads", json!({"name":"w","members":[]}))] {
             let error = schema_line(&|v| v["engine"][field] = value.clone()).validate().unwrap_err().to_string();
@@ -1978,6 +2002,7 @@ mod tests {
         refused("barriers", &|v| v["barriers"]["race_lock"] = json!(format!("{locks}/other")), "barriers differs");
         refused("branches", &|v| v["engine"]["branches"] = json!(2), "engine.branches differs");
         refused("call-limit", &|v| v["engine"]["call_limit_seconds"] = json!(30), "engine.call_limit_seconds differs");
+        refused("timed-calls", &|v| v["engine"]["timed_calls"] = json!(5), "engine.timed_calls differs");
         refused("library", &|v| v["library"] = json!("../library-sec"), "another workload's");
         refused("output", &|v| v["output_home"] = json!("out"), "no output_home");
         refused("nested", &|v| v["engine"]["stage"] = stage.clone(), "not itself a stage run");

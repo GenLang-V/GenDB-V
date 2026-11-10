@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/hero-s.svg" width="760" alt="The GenDB cockroach, in a GenDB helmet, takes a bite out of a database. The mascots of other database systems lie fallen around it.">
+  <img src="docs/assets/hero-s.svg" width="380" alt="The GenDB cockroach, in a GenDB helmet, takes a bite out of a database.">
 </p>
 
 <h1 align="center">GenDB-V</h1>

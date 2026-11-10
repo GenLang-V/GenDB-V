@@ -39,7 +39,7 @@
 .page-home .hero__line .hero__ver { color: var(--ver-text); font-weight: var(--fw-semibold); white-space: nowrap; }
 .page-home .hero__line { font-size: clamp(18px, 2.3vw, 26px); font-weight: var(--fw-medium); color: var(--ink-2); letter-spacing: -0.015em; text-wrap: balance; }
 .page-home .hero__art { margin-top: clamp(16px, 3vw, 32px); }
-.page-home .hero__art img { width: min(100%, 1060px); height: auto; margin-inline: auto; }
+.page-home .hero__art img { width: min(100%, 530px); height: auto; margin-inline: auto; }
 @media (prefers-reduced-motion: no-preference) {
   .page-home .hero__text, .page-home .hero__art { animation: home-rise .7s var(--ease) both; }
   .page-home .hero__art { animation-delay: .12s; }

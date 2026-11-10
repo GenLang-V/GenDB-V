@@ -461,7 +461,7 @@ pub fn design_and_proofs(shape: Shape) -> String {
 /// verifies, builds and times the goal workload, decides on the goal's score, and only then verifies, builds, times
 /// (recorded, never deciding) and checks the variants of every kept workload, and admits in every workload's library.
 fn evaluation_steps(rejected: &str, admitted: &str, workloads: Workloads) -> String {
-    const TIMING: &str = "for every cell, parent and candidate run back to back in fresh worker children under one timing lease, the order alternating from cell to cell, the load average recorded; each side of a cell is 1 warm call and 1 hot call, and the hot call's time is the cell's time (a warm call over the limit leaves the cell unfinished); every answer is compared with the saved answers (the exact rule, with the wait for a quiet host, the parent cells not run again and the re-timing of suspicious pairs: `performance.json` `submission_timing`)";
+    const TIMING: &str = "for every cell, parent and candidate run back to back in fresh worker children under one timing lease, the order alternating from cell to cell, the load average recorded; each side of a cell is 1 warm call and @TIMED_CALLS@, and the median hot call is the cell's time (a warm call over the limit leaves the cell unfinished); every answer is compared with the saved answers (the exact rule, with the wait for a quiet host, the parent cells not run again and the re-timing of suspicious pairs: `performance.json` `submission_timing`)";
     let steps = match workloads {
         Workloads::One => format!(
             r#"- **The evaluation of a submission**, every step gating, in order:
@@ -500,7 +500,7 @@ fn evaluation_steps(rejected: &str, admitted: &str, workloads: Workloads) -> Str
         r#"{steps}
 
   A wrong answer refuses the submission and is flagged for the operator's review. A failure of the framework is not yours: that submission is evaluated again.
-- **The final evaluation** is separate: the full protocol (1 warm + 3 hot calls per cell at every worker count, every template at every visible binding, the variants timed at the scale, and a profile) runs only for the final numbers, never for a submission.
+- **The final evaluation** is separate: the full protocol (the version timed alone, 1 warm + 3 hot calls per cell at every worker count, every template at every visible binding, the variants timed at the scale, and a profile) runs only for the final numbers, never for a submission.
 - **Framework safety limits**, the same for every version: every engine call ends at @CALL_LIMIT@ of wall time and at @MEMORY_LIMIT@ of anonymous memory, and such a call leaves its cell unfinished. They are not goals; they keep one slow version from blocking the shared host."#
     )
 }
@@ -901,18 +901,19 @@ mod tests {
         }
     }
 
-    /// The loop describes the development evaluation: 1 warm + 1 hot call per cell, the variants at the
-    /// first scale for their answers only and no qualification at the other bindings; the full protocol only for the
-    /// final numbers; no profile after an admission (How to work). Nothing asks for a submission per verified gain.
+    /// The loop describes the development evaluation: 1 warm call and the run's timed hot calls per cell
+    /// (`@TIMED_CALLS@`), the median hot call the cell's time, the variants at the first scale for their answers only
+    /// and no qualification at the other bindings; the full protocol only for the final numbers; no profile after an
+    /// admission (How to work). Nothing asks for a submission per verified gain.
     #[test]
     fn the_loop_describes_the_development_evaluation() {
         for shape in [Shape::OneLine, Shape::Branches] {
             let text = the_loop(shape, Workloads::One);
-            for kept in ["each side of a cell is 1 warm call and 1 hot call, and the hot call's time is the cell's time", "every variant runs at the first scale of the ladder, one call each at 64 workers, for its answer only",
-                "**The final evaluation** is separate: the full protocol (1 warm + 3 hot calls per cell at every worker count", "runs only for the final numbers, never for a submission", "`performance.json` `submission_timing`"] {
+            for kept in ["each side of a cell is 1 warm call and @TIMED_CALLS@, and the median hot call is the cell's time", "every variant runs at the first scale of the ladder, one call each at 64 workers, for its answer only",
+                "**The final evaluation** is separate: the full protocol (the version timed alone, 1 warm + 3 hot calls per cell at every worker count", "runs only for the final numbers, never for a submission", "`performance.json` `submission_timing`"] {
                 assert!(text.contains(kept), "{shape:?}: {kept}");
             }
-            for gone in ["other visible bindings", "8. a profile", "1 warm + 3 hot calls per cell, the cell's time"] {
+            for gone in ["other visible bindings", "8. a profile", "1 warm + 3 hot calls per cell, the cell's time", "1 hot call, and the hot call's time"] {
                 assert!(!text.contains(gone), "{shape:?}: {gone}");
             }
         }

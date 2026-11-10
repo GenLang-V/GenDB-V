@@ -6,7 +6,8 @@
 //! (default: its last scale, where the run times it), with its inputs prepared under the run's records of that
 //! workload (`engine/kept/<name>/scales/<scale>/` for a stage run's kept one, `engine/workloads/<name>/scales/<scale>/`
 //! for a member of `engine.workloads`). A check workload is never timed: its final evaluation is refused. The run's own
-//! timings are the development plan's (1 warm + 1 hot call per cell); this one:
+//! timings are the development plan's (interleaved with a parent, 1 warm + `engine.timed_calls` hot calls per cell);
+//! this one:
 //! 1. resolves the version's admitted storages at the scale (`EngineBench::admitted_runnable`: a derived storage's asset
 //!    built by its verified builder when missing; a flat storage's must exist, `gendb prepare-flat-storage`);
 //! 2. times it alone over every official cell, 1 warm + 3 hot calls at every worker count, the cell's time the median

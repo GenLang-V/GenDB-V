@@ -49,7 +49,7 @@
 //! notes included, and the instruction sections never include the notes.
 
 use super::data_sections::{self, AuthorKind, DataViews};
-use super::engine_facts::general::{GeneralView, branch_handoff, changed_facts, evaluation_section, general_facts, resumed_facts};
+use super::engine_facts::general::{GeneralView, branch_handoff, changed_facts, evaluation_section, general_facts, resumed_facts, timed_calls};
 use super::engine_facts::{engine_facts, rounds_handoff};
 use super::engine_general_sections::{self as general, Shape, Workloads};
 use super::engine_sections as engine;
@@ -60,6 +60,7 @@ use crate::controller::layout::RunLayout;
 use crate::controller::ledger::LedgerState;
 use crate::controller::limits::count_guard_text;
 use crate::controller::{PromptInput, RolePolicy, StopReason, Trial, records};
+use crate::engine::protocol::hot_calls_text;
 use crate::engine::sessions::{self as engine_sessions, HeldInstructions, InstructionsSent, ProviderContext};
 use crate::providers::claude_code::CONTROLLER_LOSS_RECOVERY_FILE;
 use serde_json::{Value, json};
@@ -536,6 +537,7 @@ fn general_filled(text: &str, context: &Value) -> String {
     let kinds: Vec<String> = context["engine"]["training"]["variants"]["kinds"].as_array().into_iter().flatten().filter_map(|k| k.as_str().map(|k| format!("`{k}`"))).collect();
     let memory = general["limits"]["anon_memory_limit_bytes"].as_u64().map_or("-".to_string(), |b| format!("{} GiB", b as f64 / (1u64 << 30) as f64));
     text.replace("@CALL_LIMIT@", &general["limits"]["call_limit_seconds"].as_u64().map_or("-".to_string(), |s| format!("{s} s")))
+        .replace("@TIMED_CALLS@", &hot_calls_text(timed_calls(context)))
         .replace("@MEMORY_LIMIT@", &memory)
         .replace("@BRANCHES@", &general["branches"].as_array().map_or("-".to_string(), |b| b.len().to_string()))
         .replace("@VARIANT_KINDS@", &if kinds.is_empty() { "none".to_string() } else { kinds.join(", ") })
@@ -700,7 +702,8 @@ pub(crate) mod tests {
 
     /// Golden: without a stage, every general-line render is byte for byte as before the
     /// stage texts were added (digests recorded with the unchanged prompt, facts and contract code, over this
-    /// repository's prompt wording).
+    /// repository's prompt wording), except that the loop's timing step, the final evaluation's sentence and the
+    /// evaluation-time estimate state the development cell: 1 warm call and the run's timed hot calls (3 here).
     #[test]
     fn the_general_renders_without_a_stage_are_unchanged() {
         let root = crate::controller::test_support::scratch_root("general-unchanged");
@@ -710,17 +713,27 @@ pub(crate) mod tests {
         assert_eq!(digests, expected, "a general-line render without a stage changed");
     }
 
+    /// The loop states the run's timed calls (`general.timed_calls`, the request's `engine.timed_calls`; 3 when absent).
+    #[test]
+    fn the_loop_states_the_runs_timed_calls() {
+        let text = general::the_loop(Shape::OneLine, Workloads::One);
+        for (general, expected) in [(json!({}), "1 warm call and 3 hot calls, and the median"), (json!({"timed_calls":5}), "1 warm call and 5 hot calls, and the median"),
+            (json!({"timed_calls":1}), "1 warm call and 1 hot call, and the median")] {
+            assert!(general_filled(&text, &json!({"general":general})).contains(expected), "{expected}");
+        }
+    }
+
     const GENERAL_RENDER_GOLDEN: [(&str, &str); 10] = [
-        ("first-call-b1-session-1", "50f5a4b1bab5206c1577335243cc36a6fedb0ec97c6556f37dc1d45f3a0c2ef0"),
+        ("first-call-b1-session-1", "eea806e1a8a48b523f93137f6ed108faa1ff5c622aef671c35c00bfe64184501"),
         ("continued-call-b1-session-1-after-submission-1", "93ae78c7e87fb6aae268a65dcb85c1e341d64f6578f72ea4f4a9b134a9323320"),
-        ("fresh-provider-session-b1-session-1-call-2", "6b666ae07a6c0af1e1c36221277e098f2b14548c459229ae091afdf1032b4895"),
-        ("first-call-b1-session-2-fresh", "a5002980b90470fd579c351b2fd3469472fbc0896e68200f664120f0c54a9dcd"),
-        ("one-line-plain-first-call", "54ff453cf1a3754265113af10118381ab9d2ecd8be8d861569fcb51c5d1e7f97"),
+        ("fresh-provider-session-b1-session-1-call-2", "3fa6ad1fd61b7cf1f1719beec29f9c3daca7901fb051587568bd37c9a6623863"),
+        ("first-call-b1-session-2-fresh", "a52434c227d19e628c7a288fc7d540216a283b8370978042bdcf0377b33e765d"),
+        ("one-line-plain-first-call", "419b6c921973f3047a58071175eae6c38d0e69e13d3015b23d5f22beb8b3d57d"),
         ("one-line-plain-continued-call", "54f68b70d45001aa85f692b84d0afd8331e2de580ee6ec5794fe71e8958d4ffc"),
-        ("one-line-plain-fresh-session-2", "c51900d2899d0f52e575fcc002951c0f51bed5a8b967c7ebd77e874ba263e419"),
-        ("one-line-co_optimization-first-call", "59d234a1a751e3f4d085335c4485889107f51815541d7b976ef51e163c7332e8"),
+        ("one-line-plain-fresh-session-2", "b52ba5f04ec8b379e4bcf82810b7de33c221eb497d2110127c23eb7407255d62"),
+        ("one-line-co_optimization-first-call", "d81887b7fe420819d19f175effd32462818603e6fd75bbea1c06f231e521ad5f"),
         ("one-line-co_optimization-continued-call", "54f68b70d45001aa85f692b84d0afd8331e2de580ee6ec5794fe71e8958d4ffc"),
-        ("one-line-co_optimization-fresh-session-2", "0a2d1118601b6b5321f8993aca0ae02526c9da99d20b49a8f1275f98bc3eea01"),
+        ("one-line-co_optimization-fresh-session-2", "a205d47c1602ba3221d695e238210b1032a6f0ae160b3f1d58b78cc4d36f0767"),
     ];
 
     fn unfilled_placeholder(prompt: &str) -> Option<&str> {

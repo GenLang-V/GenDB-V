@@ -29,7 +29,7 @@
 //! the checked cells (`admission::engine::EngineRunner::cell`).
 
 use super::super::acceptance::{
-    CheckedEngine, ENGINE_FINISHED_CHECKS_KIND, ENGINE_RACE_KIND, Failure, NOT_BETTER_REASON, Parent, Runnable, SUBMISSION_PLAN, StepTimes, answer_failure, lineage_parents, race_failure,
+    CheckedEngine, ENGINE_FINISHED_CHECKS_KIND, ENGINE_RACE_KIND, Failure, NOT_BETTER_REASON, Parent, Runnable, StepTimes, answer_failure, lineage_parents, race_failure,
     race_summary, recorded_cells,
 };
 use super::super::race::RaceReport;
@@ -495,7 +495,7 @@ impl MemberSteps for BenchSteps<'_, '_> {
             let candidate_run = Runnable { label: candidate_label, library: build.library.clone(), inputs: storage_inputs(&state.storages) };
             // The parent's recorded cells on this workload (the primary's are the version folder's own).
             let parent_record = if primary { recorded_cells(&engine_dir, &parent.id, &general.scale.name) } else { records::workload_cells(&engine_dir, &parent.id, &workload, &general.scale.name) };
-            let raced = timings.time(step, || bench.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), SUBMISSION_PLAN.cell_calls, &state.evaluation.join("race")));
+            let raced = timings.time(step, || bench.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), bench.submission_plan().cell_calls, &state.evaluation.join("race")));
             let report = raced.map_err(|error| race_failure(&engine_dir, &parent.id, error))?;
             let file = state.evaluation.join("race.json");
             write_json_atomic(&file, &json!(report)).map_err(AdmissionError::tool)?;
@@ -515,9 +515,9 @@ impl MemberSteps for BenchSteps<'_, '_> {
             let uses = storage_inputs(&state.storages);
             let subject = CheckedEngine { library: &build.library, inputs: &uses, frozen: Some((&state.engine.storage_uses, &state.frozen)) };
             let checks = timings.time(step, || match &state.race {
-                Some((report, _, _)) => bench.check_finished_templates(SUBMISSION_PLAN, &subject, &report.candidate_score, &state.evaluation),
+                Some((report, _, _)) => bench.check_finished_templates(&bench.submission_plan(), &subject, &report.candidate_score, &state.evaluation),
                 // A check workload has no race: every variant's answer.
-                None => bench.variant_answers(&subject, &BTreeSet::new(), &state.evaluation).map(|variants| json!({"plan":SUBMISSION_PLAN.record(),"variants":variants})),
+                None => bench.variant_answers(&subject, &BTreeSet::new(), &state.evaluation).map(|variants| json!({"plan":bench.submission_plan().record(),"variants":variants})),
             })?;
             state.checks = checks;
             Ok(())

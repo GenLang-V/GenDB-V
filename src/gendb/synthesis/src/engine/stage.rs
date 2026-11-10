@@ -53,7 +53,7 @@ pub mod root;
 pub mod view;
 
 use super::acceptance::{
-    CheckedEngine, ENGINE_FINISHED_CHECKS_KIND, ENGINE_RACE_KIND, Failure, Parent, Runnable, SUBMISSION_PLAN, StepTimes, lineage_parents, race_failure, race_summary,
+    CheckedEngine, ENGINE_FINISHED_CHECKS_KIND, ENGINE_RACE_KIND, Failure, Parent, Runnable, StepTimes, lineage_parents, race_failure, race_summary,
 };
 use super::role::{EngineBench, EngineRoleConfig, EngineRoleMode, FirstScale, float_free, storage_inputs};
 use super::rounds::{PreparedEngine, prepare_stage_inputs};
@@ -644,13 +644,14 @@ impl EngineBench<'_> {
         })?;
         let candidate_run = Runnable { label: format!("{} ({name})", parent_run.label.replace(&parent.id, "candidate")), library: build.library.clone(), inputs: storage_inputs(&storages) };
         let parent_record = records::workload_cells(engine_dir, &parent.id, name, &general.scale.name);
-        let raced = steps.time(format!("{name}:interleaved_timing"), || self.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), SUBMISSION_PLAN.cell_calls, &dir.join("race")));
+        let plan = self.submission_plan();
+        let raced = steps.time(format!("{name}:interleaved_timing"), || self.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), plan.cell_calls, &dir.join("race")));
         let report = raced.map_err(|error| race_failure(engine_dir, &parent.id, error))?;
         let race_file = dir.join("race.json");
         write_json_atomic(&race_file, &json!(report)).map_err(AdmissionError::tool)?;
         let score = RecordedScore::of(&general.scale.name, &report.candidate_score, &race_file);
         let subject = CheckedEngine { library: &build.library, inputs: &candidate_run.inputs, frozen: Some((&engine.storage_uses, frozen)) };
-        let checks = steps.time(format!("{name}:variants"), || self.check_finished_templates(SUBMISSION_PLAN, &subject, &report.candidate_score, dir))?;
+        let checks = steps.time(format!("{name}:variants"), || self.check_finished_templates(&plan, &subject, &report.candidate_score, dir))?;
         let store = self.bench.store()?;
         let parents = lineage_parents(tree, &store, parent, lineage.merge_from.as_deref(), lineage.session_kind)?;
         let lineage = VerusEngineLineageV1 { branch: lineage.branch.clone(), kind: lineage.kind.clone(), parents };

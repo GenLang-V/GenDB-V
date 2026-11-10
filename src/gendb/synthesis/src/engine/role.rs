@@ -161,6 +161,9 @@ pub struct GeneralInputs {
     pub next_scale: Option<String>,
     /// The per-call limits of every engine call (`engine.call_limit_seconds`, `engine.anon_memory_limit_bytes`).
     pub call_limits: CallLimits,
+    /// The hot calls of every timed cell of the run's development timings (`engine.timed_calls`, default 3;
+    /// `engine::protocol::development`); every workload of a run shares it.
+    pub timed_calls: u32,
     /// The run's branch slots (`b1`, ...).
     pub branches: Vec<String>,
     /// The run's budget of engine-agent calls.

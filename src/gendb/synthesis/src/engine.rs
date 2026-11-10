@@ -26,9 +26,9 @@
 //! The general line (request `engine.line: "general"`) adds:
 //! - [`tree`]: the version tree (versions, attempts, parents, branches, heads), the findings log and the operator's flags;
 //! - [`sessions`]: one session of a branch (records, provider context, when it ends, its policy) and the run's spend;
-//! - [`protocol`]: the two evaluation plans: the development evaluation of every submission (1 warm + 1 hot call per
-//!   cell, variants at the first scale for their answers only) and the final evaluation for reporting (the full
-//!   protocol);
+//! - [`protocol`]: the two evaluation plans: the development evaluation of every submission (1 warm +
+//!   `engine.timed_calls` hot calls per cell, by default 3, the median; variants at the first scale for their answers
+//!   only) and the final evaluation for reporting (the full protocol);
 //! - [`acceptance`]: a submission's evaluation (the interleaved timing against its parent, the decision, admission with
 //!   lineage, the version folder, the main-line head);
 //! - [`branches`]: the run (version 0, the branch slots, merges, the review cadence, the scale ladder, the stop) and

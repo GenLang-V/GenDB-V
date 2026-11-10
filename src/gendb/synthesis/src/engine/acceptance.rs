@@ -2,8 +2,10 @@
 //! stages of a general-line session (`engine::role` in session mode) and the timing of admitted versions that version
 //! 0 and the scale ladder reuse (`engine::branches`).
 //!
-//! A submission is evaluated under the development plan ([`SUBMISSION_PLAN`], `engine::protocol::DEVELOPMENT`; the
-//! full protocol is for the final numbers only, `engine::final_evaluation`), every step gating:
+//! A submission is evaluated under the development plan ([`EngineBench::submission_plan`],
+//! `engine::protocol::development`; the full protocol is for the final numbers only, `engine::final_evaluation`; its
+//! timed cells are 1 warm + `engine.timed_calls` hot calls, by default 3 as the final plan's, the median hot call the
+//! cell's time), every step gating:
 //! 1. freeze and scans (`engine::submission::freeze_engine` under the general line's rule set). A refusal there is
 //!    evaluated as an attempt like any other outcome ([`REFUSED_CANDIDATE_KIND`]), so every submission's evaluation
 //!    names the next call's provider session and every refused submission is a node of the tree;
@@ -11,9 +13,9 @@
 //! 3. storages: the new storages built, the storage policy and the budget rule (plain storage
 //!    only is allowed as is; changed storage within the original data size at the current scale;
 //!    `engine::role::GeneralInputs::budget_rule`);
-//! 4. the interleaved timing against the parent at the current scale (`engine::race`), each side of a cell 1 warm + 1
-//!    hot call (the hot call's time is the cell's time), every answer compared with the saved answers; each pair after
-//!    the host's quiet-moment gate, and the suspicious pairs timed again once at the end;
+//! 4. the interleaved timing against the parent at the current scale (`engine::race`), each side of a cell 1 warm call
+//!    and the run's timed hot calls (the median hot call is the cell's time), every answer compared with the saved
+//!    answers; each pair after the host's quiet-moment gate, and the suspicious pairs timed again once at the end;
 //! 5. the score decision (`engine::score`): not better, the submission is an attempt and the branch head stays;
 //! 6. every variant with AST bytes of its own, at the first scale of the ladder (every template finishes there), one
 //!    call each at 64 workers for its answer only (a session at a later scale resolves the candidate's storages there
@@ -86,7 +88,7 @@
 
 use super::branches::{due_scale_move, ladder_check};
 use super::facts::EncodedStatement;
-use super::protocol::{DEVELOPMENT, EvaluationPlan, VariantRun};
+use super::protocol::{DEFAULT_TIMED_CALLS, EvaluationPlan, VariantRun, development, hot_calls_text};
 use super::re_evaluation::ReEvaluationPlan;
 use super::quiet::{HostClock, QuietGate};
 use super::race::{Contender, RaceError, RaceHost, RaceReport, RaceSetup, RecordedRace, Side, race, retime_recorded};
@@ -135,9 +137,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-/// The plan every submission is evaluated under (module documentation).
-pub const SUBMISSION_PLAN: &EvaluationPlan = &DEVELOPMENT;
-
 /// `kind` of a submission refused at freeze in a general-line session: its evaluation records the attempt.
 pub const REFUSED_CANDIDATE_KIND: &str = "verus_engine_refused";
 /// Record kind of an interleaved timing's summary stored as evidence (admission, selection).
@@ -165,16 +164,18 @@ const RECORDED_FILE: &str = "recorded.json";
 const MAIN_LINE_LOCK: &str = "main-line.lock";
 
 /// The claim of an accepted general-line version.
-const ACCEPTED_CLAIM: &str = "Verus checked the whole frozen engine crate (framework files, toolkit, copied storage interfaces and the agent) with 0 errors against the fixed engine entry under the recorded TCB and the general line's source rules: the engine claim is the correctness claim. It beat its parent in one interleaved timing of the development plan (1 warm + 1 hot call per cell; more finished cells, or as many and a smaller normalized time), and every answer of the timing and of the variants (at the first scale of the ladder) agreed with the saved answers of other engines (agreement and echo are checks of the trusted base, not proof)";
+const ACCEPTED_CLAIM: &str = "Verus checked the whole frozen engine crate (framework files, toolkit, copied storage interfaces and the agent) with 0 errors against the fixed engine entry under the recorded TCB and the general line's source rules: the engine claim is the correctness claim. It beat its parent in one interleaved timing of the development plan (@CELL@; more finished cells, or as many and a smaller normalized time), and every answer of the timing and of the variants (at the first scale of the ladder) agreed with the saved answers of other engines (agreement and echo are checks of the trusted base, not proof)";
 
 /// The claim of the first one-engine version of a run of several workloads accepted by the one-engine rule
 /// (`engine::stage::one_engine`): the same proof and answer checks, without the timing claim.
-const ONE_ENGINE_TRANSITION_CLAIM: &str = "Verus checked every workload's whole frozen engine crate (framework files, toolkit, copied storage interfaces and the agent) with 0 errors against the fixed engine entry under the recorded TCB and the run's source rules: the engine claim is the correctness claim. It is the first one-engine version of the line, accepted by the request's one-engine rule although its combined score is not better than its parent's: every check workload's answers and every counted cell of its interleaved timings (1 warm + 1 hot call per cell) finished and agreed with the saved answers of other engines, and so did its variants (agreement and echo are checks of the trusted base, not proof)";
+const ONE_ENGINE_TRANSITION_CLAIM: &str = "Verus checked every workload's whole frozen engine crate (framework files, toolkit, copied storage interfaces and the agent) with 0 errors against the fixed engine entry under the recorded TCB and the run's source rules: the engine claim is the correctness claim. It is the first one-engine version of the line, accepted by the request's one-engine rule although its combined score is not better than its parent's: every check workload's answers and every counted cell of its interleaved timings (@CELL@) finished and agreed with the saved answers of other engines, and so did its variants (agreement and echo are checks of the trusted base, not proof)";
 
 /// The claim of an accepted version: [`ONE_ENGINE_TRANSITION_CLAIM`] for one the one-engine rule accepted (its
-/// evaluation's `parts`), else [`ACCEPTED_CLAIM`].
-fn accepted_claim(parts: &Value) -> &'static str {
-    if parts["combined"][stage::one_engine::ONE_ENGINE_TRANSITION].is_object() { ONE_ENGINE_TRANSITION_CLAIM } else { ACCEPTED_CLAIM }
+/// evaluation's `parts`), else [`ACCEPTED_CLAIM`], each with its timings' cell (`timed_calls` hot calls after the warm
+/// one, `engine.timed_calls`).
+fn accepted_claim(parts: &Value, timed_calls: u32) -> String {
+    let claim = if parts["combined"][stage::one_engine::ONE_ENGINE_TRANSITION].is_object() { ONE_ENGINE_TRANSITION_CLAIM } else { ACCEPTED_CLAIM };
+    claim.replace("@CELL@", &format!("1 warm + {} per cell, the median hot call the cell's time", hot_calls_text(timed_calls)))
 }
 
 /// How an attempt's reason starts when the score decision (step 5) refused it: the attempts `gendb engine re-evaluate`
@@ -359,6 +360,18 @@ struct SubmissionKeep {
 }
 
 impl EngineBench<'_> {
+    /// The hot calls of every timed cell of the run's development timings (`engine.timed_calls`,
+    /// `GeneralInputs::timed_calls`; every workload of a run shares it).
+    pub(super) fn timed_calls(&self) -> u32 {
+        self.inputs().general.as_ref().map_or(DEFAULT_TIMED_CALLS, |g| g.timed_calls)
+    }
+
+    /// The plan every submission is evaluated under (module documentation): the development plan at the run's timed
+    /// calls.
+    pub(super) fn submission_plan(&self) -> EvaluationPlan {
+        development(self.timed_calls())
+    }
+
     // ------------------------------------------------------------------------------------------------ session stages
 
     /// Prepare a general-line session's workspace once (seeded from its seed version, the branch's notebook carried, a
@@ -407,6 +420,7 @@ impl EngineBench<'_> {
             "budget_rule":crate::prompts::engine_contract::BUDGET_RULE_TEXT,
             "limits":{"call_limit_seconds":general.call_limits.call_limit_ns / 1_000_000_000,"anon_memory_limit_bytes":general.call_limits.anon_memory_limit_bytes,
                 "meaning":"framework limits of every engine call, the same for every version: a call over the time or memory limit leaves its cell unfinished"},
+            "timed_calls":general.timed_calls,
             "spend":{"spent_usd":spend.spent,"reserved_usd":spend.reserved,"complete":spend.complete,"budget_usd":session.spend.budget,"left_usd":session.spend.budget.remaining_after(spend.spent)},
             "library_bytes":library,
             "storage_assets":crate::storage::asset_release::storage_assets_facts(&self.bench.config.library),
@@ -496,7 +510,7 @@ impl EngineBench<'_> {
             let next = next_call(end.as_deref(), &context);
             let (mut evaluation, parts) = match verdict {
                 Verdict::Accepted { node, record, merge_accepted, main_line, parts } => (json!({"kind":"verus_engine","eligible":true,"accepted":true,"status":"version_accepted",
-                    "claim":accepted_claim(&parts),"node":node.id,"version":node.id,"parents":node.parents,"branch":node.branch,"score":node.score,"directory":node.directory(&config.engine_dir),
+                    "claim":accepted_claim(&parts, self.timed_calls()),"node":node.id,"version":node.id,"parents":node.parents,"branch":node.branch,"score":node.score,"directory":node.directory(&config.engine_dir),
                     "version_record":node.directory(&config.engine_dir).join("version.json"),"admission":record["admission"]["admission"],
                     "library_version":record["admission"]["library_version"],"merge_accepted":merge_accepted,"main_line":main_line,"next_call":next}), parts),
                 Verdict::Attempt { node, flagged, parts } => (json!({"kind":"verus_engine","eligible":false,"accepted":false,"status":"attempt","node":node.id,
@@ -509,7 +523,7 @@ impl EngineBench<'_> {
             Ok(evaluation)
         })();
         let mut evaluation = result.unwrap_or_else(|error| json!({"kind":"verus_engine","eligible":false,"status":error.class,"failure_class":error.class,"error":error.to_string()}));
-        evaluation["plan"] = SUBMISSION_PLAN.record();
+        evaluation["plan"] = self.submission_plan().record();
         evaluation["steps"] = steps.record();
         evaluation
     }
@@ -671,15 +685,16 @@ impl EngineBench<'_> {
 
     /// The records of an admitted submission (step 7 after the admission): the version folder, the main-line head
     /// (its decision kept beside the frozen submission, so a resumed evaluation does not time it again), the findings
-    /// entry and the recorded verdict. The submission plan profiles nothing ([`SUBMISSION_PLAN`]); a plan with a profile
-    /// records it with the admission first (never gating; not run again on resume).
+    /// entry and the recorded verdict. The submission plan profiles nothing ([`EngineBench::submission_plan`]); a plan
+    /// with a profile records it with the admission first (never gating; not run again on resume).
     #[allow(clippy::too_many_arguments)]
     fn finish_accepted(&mut self, dir: &Path, frozen_dir: &Path, facts: &SubmissionFacts, node: TreeNode, mut record: Value, parent: &str, steps: &mut StepTimes) -> Result<Verdict, Failure> {
         if record["profile"].is_null() && !node_directory(&self.config.engine_dir, &node.id, true).join(tree::NODE_FILE).is_file() {
-            record["profile"] = if SUBMISSION_PLAN.profile {
+            let plan = self.submission_plan();
+            record["profile"] = if plan.profile {
                 steps.time("profile", || self.profile_admitted(&node, &record, dir))
             } else {
-                json!({"status":"not_run","plan":SUBMISSION_PLAN.name,
+                json!({"status":"not_run","plan":plan.name,
                     "reason":"the development evaluation profiles nothing after an admission: the profile tool profiles on request, and the final evaluation (gendb engine final-evaluation) profiles the version"})
             };
             write_json_atomic(&frozen_dir.join(ADMITTED_FILE), &json!({"node":node,"record":record,"parent":parent})).map_err(AdmissionError::tool)?;
@@ -845,11 +860,12 @@ impl EngineBench<'_> {
         // 4. The interleaved timing against the parent, under the submission plan.
         let candidate_run = Runnable { label: format!("{} iteration {}", session.record.branch, facts.iteration), library: build.library.clone(), inputs: storage_inputs(&storages) };
         let parent_record = recorded_cells(&config.engine_dir, &parent.id, &general.scale.name);
+        let plan = self.submission_plan();
         let raced = steps.time("interleaved_timing", || match from {
-            JudgedFrom::Submission => self.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), SUBMISSION_PLAN.cell_calls, &dir.join("race")),
+            JudgedFrom::Submission => self.race_runnables(&parent_run, &candidate_run, parent_record.as_deref(), plan.cell_calls, &dir.join("race")),
             JudgedFrom::RecordedAttempt { race, .. } => RecordedRace::read(race)
                 .map_err(|e| RaceError::Score(ScoreError(format!("the attempt's recorded race: {e}"))))
-                .and_then(|recorded| self.retime_runnables(&parent_run, &candidate_run, parent_record.as_deref(), SUBMISSION_PLAN.cell_calls, recorded, &dir.join("race"))),
+                .and_then(|recorded| self.retime_runnables(&parent_run, &candidate_run, parent_record.as_deref(), plan.cell_calls, recorded, &dir.join("race"))),
         });
         let report = match raced {
             Ok(report) => report,
@@ -874,7 +890,7 @@ impl EngineBench<'_> {
         }
         // 6. The finished templates' checks under the submission plan: the variants' answers at the ladder's first scale.
         let subject = CheckedEngine { library: &build.library, inputs: &candidate_run.inputs, frozen: Some((&engine.storage_uses, frozen_dir)) };
-        let checks = steps.time("variants", || self.check_finished_templates(SUBMISSION_PLAN, &subject, &report.candidate_score, dir)).map_err(|f| match f {
+        let checks = steps.time("variants", || self.check_finished_templates(&plan, &subject, &report.candidate_score, dir)).map_err(|f| match f {
             Failure::Candidate { reason, flagged, .. } => Failure::Candidate { reason, flagged, score: Some(candidate_score.clone()) },
             other => other,
         })?;
@@ -1356,7 +1372,7 @@ impl EngineBench<'_> {
                 let parent = self.admitted_runnable(&main, &dir.join("main-line/parent-storages"))?;
                 let candidate = self.admitted_runnable(&accepted.id, &dir.join("main-line/candidate-storages"))?;
                 let parent_record = recorded_cells(&engine_dir, &main, &scale);
-                let report = self.race_runnables(&parent, &candidate, parent_record.as_deref(), SUBMISSION_PLAN.cell_calls, &dir.join("main-line/race")).map_err(|e| match e {
+                let report = self.race_runnables(&parent, &candidate, parent_record.as_deref(), self.submission_plan().cell_calls, &dir.join("main-line/race")).map_err(|e| match e {
                     RaceError::Cell { ref version, .. } => {
                         let _ = append_flag(&engine_dir, &json!({"at_unix_ms":now_unix_ms(),"node":version,"kind":"incident","reason":format!("an admitted version failed in the main-line race: {e}")}));
                         AdmissionError::tool(format!("incident: an admitted version failed in the main-line race ({e}); flagged for the operator"))
@@ -2078,7 +2094,7 @@ fn version_readme(version: &Value) -> String {
         "It beat its parent in one interleaved timing (`race.json`)"
     };
     format!(
-        "# Engine version {}\n\nBranch {}, kind {}, parents {}. Scale {}: {} of {} cells finished, normalized time {} (the sum over worker counts of the engine's total over the faster baseline's total). {decided}.\n\nStorage: {} serving bytes; the budget for changed storage is {} bytes ({}).\n\nDirection: {}\n\nRecords: `version.json` (goal, assumptions, proof, storage, times, cost), `node.json`, `admission.json`, `race.json` (1 warm + 1 hot call per cell), `cells/`, `variant-answers.json` (the variants' answers at the first scale of the ladder), `receipts.json`; `code/` holds the author's sources (code and proofs), `code-view/` their reading view, `NOTES.md` the branch notebook at submission.\n",
+        "# Engine version {}\n\nBranch {}, kind {}, parents {}. Scale {}: {} of {} cells finished, normalized time {} (the sum over worker counts of the engine's total over the faster baseline's total). {decided}.\n\nStorage: {} serving bytes; the budget for changed storage is {} bytes ({}).\n\nDirection: {}\n\nRecords: `version.json` (goal, assumptions, proof, storage, times, cost), `node.json`, `admission.json`, `race.json` (per cell 1 warm call and the run's timed hot calls, `calls_per_cell`; the cell's time the median hot call), `cells/`, `variant-answers.json` (the variants' answers at the first scale of the ladder), `receipts.json`; `code/` holds the author's sources (code and proofs), `code-view/` their reading view, `NOTES.md` the branch notebook at submission.\n",
         version["version"].as_str().unwrap_or("-"),
         version["branch"].as_str().unwrap_or("-"),
         version["kind"].as_str().unwrap_or("-"),
@@ -2119,14 +2135,17 @@ mod tests {
         RecordedScore { scale: scale.into(), score: Score { finished, normalized_time: NormalizedTime::from_billionths(g) }, cells: 66, beats_both: false, record: PathBuf::new() }
     }
 
-    /// Every submission is evaluated under the development plan (its race 1 warm + 1 hot call per cell, its
-    /// variants at the first scale for their answers, no qualification and no profile), and the evaluation records
-    /// the wall time of each step it ran, in order, a failed step included.
+    /// Every submission is evaluated under the development plan (its race 1 warm call and the run's timed hot calls
+    /// per cell, by default 3, its variants at the first scale for their answers, no qualification and no profile), and
+    /// the evaluation records the wall time of each step it ran, in order, a failed step included. The claim names the
+    /// cell.
     #[test]
     fn submissions_are_evaluated_under_the_development_plan_with_step_times() {
-        assert_eq!(*SUBMISSION_PLAN, DEVELOPMENT);
-        assert!(SUBMISSION_PLAN.cell_calls == 2 && !SUBMISSION_PLAN.qualification && !SUBMISSION_PLAN.profile);
-        assert_eq!(SUBMISSION_PLAN.variants, VariantRun::AnswersAtFirstScale);
+        let plan = development(DEFAULT_TIMED_CALLS);
+        assert!(plan.cell_calls == 4 && !plan.qualification && !plan.profile);
+        assert_eq!(plan.variants, VariantRun::AnswersAtFirstScale);
+        assert!(accepted_claim(&json!({}), 3).contains("one interleaved timing of the development plan (1 warm + 3 hot calls per cell, the median hot call the cell's time; more finished cells"));
+        assert!(accepted_claim(&json!({}), 1).contains("(1 warm + 1 hot call per cell, the median hot call the cell's time;"));
         let mut steps = StepTimes::default();
         assert_eq!(steps.time("verus", || 7), 7);
         assert!(steps.time("interleaved_timing", || Err::<(), _>("refused")).is_err());
@@ -2150,7 +2169,7 @@ mod tests {
         let variants = [variant("Q01", "wrapped_tables"), variant("Q09", "from_permutation"), variant("Q21", "between_expansion")];
         let finished = BTreeSet::from(["Q01".to_string()]);
         let names = |run: VariantRun| -> Vec<String> { selected_variants(run, &variants, &finished).iter().map(|s| s.name().to_string()).collect() };
-        assert_eq!(names(SUBMISSION_PLAN.variants), ["Q01-wrapped_tables", "Q09-from_permutation", "Q21-between_expansion"], "every variant at the first scale");
+        assert_eq!(names(development(DEFAULT_TIMED_CALLS).variants), ["Q01-wrapped_tables", "Q09-from_permutation", "Q21-between_expansion"], "every variant at the first scale");
         assert_eq!(names(super::super::protocol::FINAL.variants), ["Q01-wrapped_tables"], "the final plan: the finished templates' only");
     }
 

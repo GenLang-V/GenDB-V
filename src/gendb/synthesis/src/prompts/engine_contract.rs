@@ -281,13 +281,13 @@ fn write_contract(root: &Path, inputs: &EngineContractInputs, several: Option<Se
         "local_tools":{"transport":"typed stdio MCP sibling","server":tools::SERVER_NAME,"mcp_context":root.join(tools::CONTEXT_FILE),
             "required_tools":tools::required_tools(),"actions":ToolAction::ALL.iter().map(|a| a.name()).collect::<Vec<_>>()},
         "output":format!("Return CandidateSubmission whose candidate_manifest is your {MANIFEST_FILE} inside this workspace; files.author_contract maps every input")});
-    if general_line.is_some() {
+    if let Some(g) = general_line {
         facts["files"]["budget_rule"] = json!(c(BUDGET_RULE_FILE));
         facts["files"]["plain_columns"] = json!(c(PLAIN_COLUMNS_CONTRACT_FILE));
         // The main author may run sub-agents, at most 5 at a time; the
         // transport reads this key (`ClaudeCode::configure_context`).
         facts["author_subagents"] = json!({"max_concurrent":5});
-        facts["performance"]["evaluation_timing"] = json!("each submission is timed interleaved with its parent under the development plan: per cell (template at the timing binding, worker count) both in fresh children back to back, 1 warm + 1 hot call each, the hot call's time the cell's time, under the call limits; planning inside the call is timed, SQL translation and encoding are not. The full protocol (1 warm + 3 hot calls) runs only in the final evaluation, for the final numbers");
+        facts["performance"]["evaluation_timing"] = json!(format!("each submission is timed interleaved with its parent under the development plan: per cell (template at the timing binding, worker count) both in fresh children back to back, 1 warm + {} each (engine.timed_calls), the median hot call the cell's time, under the call limits; planning inside the call is timed, SQL translation and encoding are not. The full protocol (the version timed alone, 1 warm + 3 hot calls per cell, every visible binding, the variants timed and a profile) runs only in the final evaluation, for the final numbers", crate::engine::protocol::hot_calls_text(g.inputs.timed_calls)));
     }
     if let Some(workloads) = workloads_files {
         facts["files"]["workloads"] = workloads;
@@ -668,7 +668,7 @@ mod tests {
         let scale: crate::controller::request::EngineScale = serde_json::from_value(serde_json::json!({"name":"sf1","locations":{},"prepared_workload":"/p","bindings":"/b",
             "targets":"/t","saved_answers":[],"original_data_bytes":1_100_693_130u64,"original_data_record":"/g.json"})).unwrap();
         let plain_storages = std::collections::BTreeSet::from([gendb_artifacts::ContentId::from_bytes([7; 32])]);
-        let inputs = crate::engine::role::GeneralInputs { scale, plain_storages, plain_storage_bytes: 1_586_435_879, scale_index: 0, scales: 3, next_scale: Some("sf10".into()), call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE,
+        let inputs = crate::engine::role::GeneralInputs { scale, plain_storages, plain_storage_bytes: 1_586_435_879, scale_index: 0, scales: 3, next_scale: Some("sf10".into()), call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, timed_calls: 3,
             branches: vec!["b1".into(), "b2".into(), "b3".into()], budget_usd: crate::controller::limits::Money::parse("1000").unwrap(), emphasis: None, seed: None };
         let g = GeneralContract { engine_dir: &run.engine_dir, rules: &rules_set, inputs: &inputs };
         let contract = Path::new("/w/contract/engine");
@@ -754,7 +754,7 @@ mod tests {
         let scale: crate::controller::request::EngineScale = serde_json::from_value(serde_json::json!({"name":"sf3","locations":{},"prepared_workload":"/p","bindings":"/b",
             "targets":"/t","saved_answers":[],"original_data_bytes":5_439_582_957u64,"original_data_record":"/export.report.json"})).unwrap();
         let inputs = crate::engine::role::GeneralInputs { scale, plain_storages: Default::default(), plain_storage_bytes: 7_746_659_210, scale_index: 0, scales: 1, next_scale: None,
-            call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, branches: vec!["b1".into()], budget_usd: crate::controller::limits::Money::parse("1000").unwrap(), emphasis: None, seed: None };
+            call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, timed_calls: 3, branches: vec!["b1".into()], budget_usd: crate::controller::limits::Money::parse("1000").unwrap(), emphasis: None, seed: None };
         let g = GeneralContract { engine_dir: &run.engine_dir, rules: &rules_set, inputs: &inputs };
         let root = out.join("w");
         let shape = super::super::engine_general_sections::Shape::OneLine;
@@ -794,7 +794,7 @@ mod tests {
         let scale: crate::controller::request::EngineScale = serde_json::from_value(serde_json::json!({"name":"sf100","locations":{},"prepared_workload":"/p","bindings":"/b",
             "targets":"/t","saved_answers":[],"original_data_bytes":114_641_618_862u64,"original_data_record":"/generation.json"})).unwrap();
         let inputs = crate::engine::role::GeneralInputs { scale, plain_storages: Default::default(), plain_storage_bytes: 158_618_806_633, scale_index: 1, scales: 2, next_scale: None,
-            call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, branches: vec!["b1".into()], budget_usd: crate::controller::limits::Money::parse("1000").unwrap(), emphasis: None, seed: None };
+            call_limits: gendb_runtime::worker::CallLimits::GENERAL_ENGINE, timed_calls: 3, branches: vec!["b1".into()], budget_usd: crate::controller::limits::Money::parse("1000").unwrap(), emphasis: None, seed: None };
         let g = GeneralContract { engine_dir: &run.engine_dir, rules: &rules_set, inputs: &inputs };
         let root = out.join("w");
         let shape = super::super::engine_general_sections::Shape::OneLine;
